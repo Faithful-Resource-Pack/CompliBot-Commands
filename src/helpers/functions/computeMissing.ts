@@ -38,27 +38,83 @@ export type MissingEdition = MinecraftEdition | "all";
 export type PackProgress = Record<string, Record<MinecraftEdition, string>>;
 
 /**
+ * Compute missing results for a given pack and set of editions/versions
+ * @author Evorp
+ * @param client Discord client
+ * @param pack Pack to compute results for
+ * @param edition Edition(s) to compute for
+ * @param version Version to compute for
+ * @param checkModded Whether to check modded textures
+ * @param onProgress Callback to run when a step has finished executing
+ * @returns Array of results for each edition
+ */
+export default async function computeMissing(
+	client: Client,
+	pack: string,
+	edition: MissingEdition,
+	version: string,
+	checkModded: boolean,
+	onProgress?: (step: string) => Promise<void>,
+): Promise<MissingResult[]> {
+	const onError = (err: unknown): MissingResult => {
+		let errMessage = (err as Error).message;
+		if (!errMessage) {
+			console.error(err);
+			errMessage = `An error occured when running /missing.\n\nInformation: ${err}`;
+		}
+
+		return {
+			results: [errMessage],
+			data: { edition, version, pack },
+		};
+	};
+
+	// always use latest bedrock version, easier to format
+	if (edition === "bedrock") version = "latest";
+	if (edition === "all") {
+		const editions = (
+			await axios.get<MinecraftEdition[]>(`${client.tokens.apiUrl}textures/editions`)
+		).data;
+
+		// since missing editions use independent git repos they can safely run in parallel
+		return Promise.all(
+			editions.map((edition) =>
+				computeMissingEdition(client, pack, edition, version, checkModded, onProgress).catch(
+					onError,
+				),
+			),
+		);
+	}
+
+	return [
+		await computeMissingEdition(client, pack, edition, version, checkModded, onProgress).catch(
+			onError,
+		),
+	];
+}
+
+/**
  * Compute missing results for a given pack, edition, and version
  * @author Juknum, Evorp
- * @returns Computed results
+ * @param client Discord client
+ * @param pack Pack to compute results for
+ * @param edition Edition to compute for
+ * @param version Version to compute for
+ * @param checkModded Whether to check modded textures
+ * @param onProgress Callback to run when a step has finished executing
+ * @returns A result object for the given edition
  */
-export async function computeMissingResults(
+export async function computeMissingEdition(
 	client: Client,
 	pack: string,
 	edition: MinecraftEdition,
 	version: string,
 	checkModded: boolean,
-	callback?: (step: string) => Promise<void>,
+	onProgress: (step: string) => Promise<void> = async () => {},
 ): Promise<MissingResult> {
-	callback ||= async () => {};
-
-	const baseData = { pack, edition };
 	const packs = (await axios.get<Record<string, Pack>>(`${client.tokens.apiUrl}packs/raw`)).data;
 	if (!packs[pack].github[edition])
-		return {
-			results: [`${formatPack(pack).name} doesn't support ${toTitleCase(edition)} Edition.`],
-			data: { ...baseData, version, completion: 0 },
-		};
+		throw new Error(`${formatPack(pack).name} doesn't support ${toTitleCase(edition)} Edition.`);
 
 	const versions = (
 		await axios.get<string[]>(`${client.tokens.apiUrl}textures/versions/${edition}`)
@@ -69,11 +125,11 @@ export async function computeMissingResults(
 
 	// same steps are reused for compared repos
 	const [defaultPath, requestPath] = await Promise.all([
-		syncRepo(packs.default, edition, version, callback),
-		syncRepo(packs[pack], edition, version, callback),
+		syncRepo(packs.default, edition, version, onProgress),
+		syncRepo(packs[pack], edition, version, onProgress),
 	]);
 
-	await callback("Searching for differences…");
+	await onProgress("Searching for differences…");
 
 	// ignore modded textures if we aren't checking modded
 	const editionFilter = (
@@ -115,39 +171,20 @@ export async function computeMissingResults(
 		? Buffer.from(formatResults(nonvanillaTextures), "utf8")
 		: undefined;
 
+	const completion = 100 * (1 - diffResult.length / defaultTextures.length);
 	return {
 		data: {
-			...baseData,
+			pack,
+			edition,
 			version,
-			completion: Number((100 * (1 - diffResult.length / defaultTextures.length)).toFixed(2)),
+			// cap to two decimals then shave off unnecessary zeros
+			completion: Number(completion.toFixed(2)),
 			total: defaultTextures.length,
 		},
 		results: diffResult,
 		diffFile: Buffer.from(formatResults(diffResult), "utf8"),
 		nonvanillaFile,
 	};
-}
-
-/**
- * Compute missing results for all Minecraft editions
- * @author Juknum
- * @returns Array of computed results
- */
-export async function computeAllEditions(
-	client: Client,
-	pack: string,
-	version: string,
-	checkModded: boolean,
-	callback?: (step: string) => Promise<void>,
-) {
-	const editions = (await axios.get<MinecraftEdition[]>(`${client.tokens.apiUrl}textures/editions`))
-		.data;
-
-	return Promise.all(
-		editions.map((edition) =>
-			computeMissingResults(client, pack, edition, version, checkModded, callback),
-		),
-	);
 }
 
 /**
@@ -196,19 +233,19 @@ export async function syncRepo(
 	pack: Pack,
 	edition: MinecraftEdition,
 	version: string,
-	callback?: (step: string) => Promise<void>,
+	onProgress?: (step: string) => Promise<void>,
 ) {
 	const githubInfo: PackGitHub = pack.github[edition];
 	const url = gitToURL(githubInfo);
 	const cwd = join(process.cwd(), BASE_REPOS_PATH, githubInfo.repo);
 
 	if (!existsSync(cwd)) {
-		await callback?.(`Downloading \`${pack.name}\` (${edition}) pack…`);
+		await onProgress?.(`Downloading \`${pack.name}\` (${edition}) pack…`);
 		mkdirSync(cwd, { recursive: true });
 		await exec(`git clone ${url} .`, { cwd });
 	}
 
-	await callback?.(`Updating ${pack.name} with latest version of \`${version}\` known…`);
+	await onProgress?.(`Updating ${pack.name} with latest version of \`${version}\` known…`);
 	await series(
 		["git stash", "git remote update", "git fetch", `git checkout ${version}`, `git pull`],
 		{ cwd },

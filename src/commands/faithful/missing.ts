@@ -2,14 +2,7 @@ import type { SlashCommand } from "@interfaces/interactions";
 import type { Pack } from "@interfaces/database";
 import { EmbedBuilder } from "@client";
 import { SlashCommandBuilder, Message, AttachmentBuilder } from "discord.js";
-import {
-	computeMissingResults,
-	computeAllEditions,
-	MissingData,
-	MissingResult,
-	updateProgressChannel,
-	MissingEdition,
-} from "@functions/computeMissing";
+import computeMissing, { updateProgressChannel, MissingEdition } from "@functions/computeMissing";
 import axios from "axios";
 import formatPack from "@utility/formatPack";
 import { toTitleCase } from "@utility/methods";
@@ -66,12 +59,7 @@ export const command: SlashCommand = {
 		const edition = interaction.options.getString("edition", true) as MissingEdition;
 		const pack = interaction.options.getString("pack", true);
 		const checkModded = interaction.options.getBoolean("modded", false) ?? false;
-		const version =
-			edition === "bedrock"
-				? "latest" // always use latest bedrock version, easier to format
-				: (interaction.options.getString("version") ?? "latest");
-
-		const updateChannels = version === "latest";
+		const version = interaction.options.getString("version") ?? "latest";
 
 		const loading = (
 			await axios.get<string>(`${interaction.client.tokens.apiUrl}settings/images.loading`)
@@ -86,59 +74,25 @@ export const command: SlashCommand = {
 		await interaction
 			.editReply({ embeds: [loadingEmbed] })
 			.then((message: Message) => message.deleteButton());
-		let steps: string[] = [];
 
-		const stepCallback = async (step: string) => {
+		const steps: string[] = [];
+		const responses = await computeMissing(
+			interaction.client,
+			pack,
+			edition,
+			version,
+			checkModded,
 			// when in the computing function this function is called when a step is being executed
-			if (step === "") steps = ["Next one…"];
-			else {
-				if (steps.length === 1 && steps[0] === "Next one…") steps = [];
-				steps.push(step);
-			}
-
-			loadingEmbed.spliceFields(0, 1, { name: "Steps", value: steps.join("\n") });
-			await interaction.editReply({ embeds: [loadingEmbed] }).catch(() => {});
-		};
-
-		const catchErr = (err: string | Error, options: MissingData): MissingResult => {
-			let errMessage = (err as Error).message;
-			if (!errMessage) {
-				console.error(err);
-				errMessage = `An error occured when running /missing.\n\nInformation: ${err}`;
-			}
-
-			return {
-				results: [errMessage],
-				data: options,
-			};
-		};
-
-		let responses: MissingResult[];
-
-		if (edition === "all") {
-			responses = await computeAllEditions(
-				interaction.client,
-				pack,
-				version,
-				checkModded,
-				stepCallback,
-			).catch((err: any) => [catchErr(err, { completion: 0, pack, version, edition })]);
-		} else {
-			// the args and error handling here change so we can't just switch out the args
-			responses = [
-				await computeMissingResults(
-					interaction.client,
-					pack,
-					edition,
-					version,
-					checkModded,
-					stepCallback,
-				).catch((err: any) => catchErr(err, { completion: 0, pack, version, edition })),
-			];
-		}
+			async (step: string) => {
+				steps.push(step || "No step name provided…");
+				loadingEmbed.spliceFields(0, 1, { name: "Steps", value: steps.join("\n") });
+				await interaction.editReply({ embeds: [loadingEmbed] }).catch(() => {});
+			},
+		);
 
 		const files: AttachmentBuilder[] = [];
 		const resultEmbed = new EmbedBuilder().setTimestamp();
+		const updateChannels = version === "latest";
 
 		for (const response of responses) {
 			const packName = formatPack(pack).name;
