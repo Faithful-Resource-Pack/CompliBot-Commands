@@ -158,7 +158,7 @@ export const command: SlashCommand = {
 					// error messages are stored in response.results[0] (stupid I know)
 					value: response.results[0],
 				});
-				break;
+				continue;
 			}
 
 			if (response.results.length)
