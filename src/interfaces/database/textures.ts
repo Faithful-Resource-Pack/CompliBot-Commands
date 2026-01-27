@@ -12,6 +12,7 @@ export interface Use {
 	id: string;
 	name: string | null;
 	edition: MinecraftEdition;
+	texture: number; // texture ID
 }
 
 // when you don't add the "all" flag when searching on the API
@@ -38,7 +39,7 @@ export interface GalleryTexture extends Omit<Texture, keyof BaseTexture> {
 export interface Contribution {
 	id: string;
 	date: number; // unix timestamp
-	texture: string; // texture ID
+	texture: number; // texture ID
 	pack: string;
 	authors: string[];
 }
