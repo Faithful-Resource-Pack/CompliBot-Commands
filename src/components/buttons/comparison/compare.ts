@@ -1,8 +1,9 @@
 import type { Component } from "@interfaces/components";
 import { info } from "@helpers/logger";
-import { Message, ButtonInteraction } from "@client";
+import { ButtonInteraction } from "@client";
 import compareTexture from "@functions/compareTexture";
 import { imageTooBig } from "@helpers/warnUser";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export default {
 	id: "compare",
@@ -33,8 +34,9 @@ export default {
 
 		messageOptions.embeds[0].setTimestamp();
 
-		return interaction
-			.editReply(messageOptions)
-			.then((message: Message) => message.deleteButton(true));
+		return interaction.editReply({
+			...messageOptions,
+			components: addDeleteButton(messageOptions.components, true),
+		});
 	},
 } as Component<ButtonInteraction>;

@@ -1,11 +1,11 @@
 import type { SlashCommand } from "@interfaces/interactions";
 import type { Pack } from "@interfaces/database";
 import { SlashCommandBuilder } from "discord.js";
-import { Message } from "@client";
 import { getTexture } from "@functions/getTexture";
 import parseTextureName from "@functions/parseTextureName";
 import { textureChoiceEmbed } from "@helpers/choiceEmbed";
 import axios from "axios";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export const command: SlashCommand = {
 	async data(client) {
@@ -58,8 +58,10 @@ export const command: SlashCommand = {
 
 			// no results found
 			if (!replyOptions.files) return interaction.ephemeralReply(replyOptions);
-
-			return interaction.editReply(replyOptions).then((message: Message) => message.deleteButton());
+			return interaction.editReply({
+				...replyOptions,
+				components: addDeleteButton(replyOptions.components),
+			});
 		}
 
 		// multiple results

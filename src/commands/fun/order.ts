@@ -1,4 +1,5 @@
 import type { SlashCommand } from "@interfaces/interactions";
+import addDeleteButton from "@utility/addDeleteButton";
 import { SlashCommandBuilder, AttachmentBuilder } from "discord.js";
 
 interface OrderOptions {
@@ -49,16 +50,14 @@ export const command: SlashCommand = {
 		),
 	async execute(interaction) {
 		const choice = options[interaction.options.getString("item", true)];
-		interaction
-			.reply({
-				content: choice.caption,
-				files: [
-					new AttachmentBuilder(choice.url, {
-						name: choice.url,
-					}),
-				],
-				withResponse: true,
-			})
-			.then(({ resource }) => resource.message.deleteButton());
+		interaction.reply({
+			content: choice.caption,
+			files: [
+				new AttachmentBuilder(choice.url, {
+					name: choice.url,
+				}),
+			],
+			components: addDeleteButton(),
+		});
 	},
 };

@@ -1,4 +1,4 @@
-import { EmbedBuilder, Message, StringSelectMenuInteraction } from "@client";
+import { EmbedBuilder, StringSelectMenuInteraction } from "@client";
 import {
 	ActionRowBuilder,
 	SelectMenuComponentOptionData,
@@ -8,6 +8,7 @@ import type { Texture } from "@interfaces/database";
 import versionRange from "@utility/versionRange";
 import axios from "axios";
 import type { AnyInteraction } from "@interfaces/interactions";
+import addDeleteButton from "@utility/addDeleteButton";
 
 // todo: look into the actual length (you can go a bit higher than this and it still works)
 export const MAX_LENGTH = 6000;
@@ -68,9 +69,7 @@ export async function generalChoiceEmbed(
 	if (messageLength > MAX_LENGTH)
 		embed.setTitle(`Showing 1–${resultCount} of ${choices.length} results`);
 
-	await interaction
-		.editReply({ embeds: [embed], components })
-		.then((message: Message) => message.deleteButton());
+	return interaction.editReply({ embeds: [embed], components: addDeleteButton(components) });
 }
 
 /**

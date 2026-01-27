@@ -3,6 +3,7 @@ import { SlashCommandBuilder } from "discord.js";
 import axios from "axios";
 import { FaithfulGuild } from "@client";
 import { toTitleCase } from "@utility/methods";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export const command: SlashCommand = {
 	async data(client) {
@@ -30,7 +31,7 @@ export const command: SlashCommand = {
 	},
 	async execute(interaction) {
 		const content = interaction.options.getString("server", true);
-		if (content == "all") {
+		if (content === "all") {
 			if (!interaction.hasPermission("manager")) return;
 			await interaction.complete();
 
@@ -38,8 +39,6 @@ export const command: SlashCommand = {
 				content: `### Faithful:\nhttps://discord.gg/sN9YRQbBv7\n### Classic Faithful:\nhttps://discord.gg/KSEhCVtg4J\n### Minecraft:\nhttps://discord.gg/minecraft`,
 			});
 		}
-		return interaction
-			.reply({ content, withResponse: true })
-			.then(({ resource }) => resource.message.deleteButton());
+		return interaction.reply({ content, components: addDeleteButton() });
 	},
 };

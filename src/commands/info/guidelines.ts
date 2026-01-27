@@ -1,4 +1,5 @@
 import type { SlashCommand } from "@interfaces/interactions";
+import addDeleteButton from "@utility/addDeleteButton";
 import { SlashCommandBuilder } from "discord.js";
 
 export const command: SlashCommand = {
@@ -26,8 +27,6 @@ export const command: SlashCommand = {
 				"https://docs.faithfulpack.net/pages/textures/cf32-texturing-guidelines",
 		};
 
-		interaction
-			.reply({ content: guidelines[pack], withResponse: true })
-			.then(({ resource }) => resource.message.deleteButton());
+		return interaction.reply({ content: guidelines[pack], components: addDeleteButton() });
 	},
 };

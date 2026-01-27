@@ -19,7 +19,7 @@ export default {
 				flags: MessageFlags.Ephemeral,
 			});
 
-		if (!message.reference && interaction.user.id != authorId)
+		if (!message.reference || interaction.user.id !== authorId)
 			// stupid check because undefined
 			return interaction.reply({
 				embeds: [

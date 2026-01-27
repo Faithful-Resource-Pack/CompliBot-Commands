@@ -1,8 +1,9 @@
 import type { SlashCommand } from "@interfaces/interactions";
-import { EmbedBuilder, Message } from "@client";
+import { EmbedBuilder } from "@client";
 import { SlashCommandBuilder } from "discord.js";
 import axios from "axios";
 import { colors } from "@utility/colors";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -60,10 +61,6 @@ export const command: SlashCommand = {
 				`https://docs.faithfulpack.net/pages/textures/glossary#${escapedTitle.toLowerCase().replace(/ /g, "-")}`,
 			);
 
-		return interaction
-			.editReply({
-				embeds: [finalEmbed],
-			})
-			.then((message: Message) => message.deleteButton());
+		return interaction.editReply({ embeds: [finalEmbed], components: addDeleteButton() });
 	},
 };

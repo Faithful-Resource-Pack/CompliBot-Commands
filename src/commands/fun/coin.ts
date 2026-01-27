@@ -3,6 +3,7 @@ import { ActionRowBuilder, ButtonBuilder, SlashCommandBuilder } from "discord.js
 import { EmbedBuilder } from "@client";
 import { colors } from "@utility/colors";
 import { reflip } from "@utility/buttons";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -20,12 +21,9 @@ export const command: SlashCommand = {
 			)
 			.setColor(colors.coin);
 
-		interaction
-			.reply({
-				embeds: [embed],
-				components: [new ActionRowBuilder<ButtonBuilder>().addComponents(reflip)],
-				withResponse: true,
-			})
-			.then(({ resource }) => resource.message.deleteButton());
+		interaction.reply({
+			embeds: [embed],
+			components: addDeleteButton([new ActionRowBuilder<ButtonBuilder>().addComponents(reflip)]),
+		});
 	},
 };

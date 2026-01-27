@@ -4,6 +4,7 @@ import compareTexture from "@functions/compareTexture";
 import parseTextureName from "@functions/parseTextureName";
 import { textureChoiceEmbed } from "@helpers/choiceEmbed";
 import { imageTooBig } from "@helpers/warnUser";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -57,8 +58,10 @@ export const command: SlashCommand = {
 				version,
 			);
 			if (!replyOptions) return imageTooBig(interaction);
-
-			return interaction.editReply(replyOptions).then((message) => message.deleteButton());
+			return interaction.editReply({
+				...replyOptions,
+				components: addDeleteButton(replyOptions.components),
+			});
 		}
 
 		// multiple results

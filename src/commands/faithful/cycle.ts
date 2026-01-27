@@ -1,9 +1,9 @@
 import type { SlashCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder } from "discord.js";
-import { Message } from "@client";
 import { cycleTexture } from "@functions/cycleTexture";
 import parseTextureName from "@functions/parseTextureName";
 import { textureChoiceEmbed } from "@helpers/choiceEmbed";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -53,7 +53,10 @@ export const command: SlashCommand = {
 				framerate,
 			);
 
-			return interaction.editReply(replyOptions).then((message: Message) => message.deleteButton());
+			return interaction.editReply({
+				...replyOptions,
+				components: addDeleteButton(replyOptions.components),
+			});
 		}
 
 		// multiple results

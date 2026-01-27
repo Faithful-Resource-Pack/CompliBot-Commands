@@ -1,4 +1,4 @@
-import { Message, StringSelectMenuInteraction, EmbedBuilder } from "@client";
+import { StringSelectMenuInteraction, EmbedBuilder } from "@client";
 import type { Component } from "@interfaces/components";
 import { info } from "@helpers/logger";
 import { MessageFlags } from "discord.js";
@@ -6,6 +6,7 @@ import compareTexture from "@functions/compareTexture";
 import { imageTooBig } from "@helpers/warnUser";
 import { colors } from "@utility/colors";
 import { unencodeChoice } from "@helpers/choiceEmbed";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export default {
 	id: "compareSelect",
@@ -42,6 +43,6 @@ export default {
 			return imageTooBig(interaction);
 		}
 
-		message.edit(editOptions).then((message: Message) => message.deleteButton());
+		message.edit({ ...editOptions, components: addDeleteButton(editOptions.components) });
 	},
 } as Component<StringSelectMenuInteraction>;

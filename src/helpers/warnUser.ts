@@ -1,28 +1,29 @@
 import { Message, EmbedBuilder } from "@client";
 import type { AnyInteraction } from "@interfaces/interactions";
+import addDeleteButton from "@utility/addDeleteButton";
 import { colors } from "@utility/colors";
+import { InteractionReplyOptions, MessageFlags } from "discord.js";
 
 export async function warnUser(
 	interaction: AnyInteraction | Message,
 	title: string,
 	description: string,
 ) {
-	const args: any = {
-		embeds: [new EmbedBuilder().setTitle(title).setDescription(description).setColor(colors.red)],
-	};
-
-	// make ephemeral if possible
+	const embed = new EmbedBuilder().setTitle(title).setDescription(description).setColor(colors.red);
 	if (interaction instanceof Message)
-		return interaction.reply(args).then((message: Message) => message.deleteButton());
+		return interaction.reply({ embeds: [embed], components: addDeleteButton() });
 
 	// no need for delete button because it's guaranteed ephemeral
+	const options: InteractionReplyOptions = {
+		embeds: [embed],
+		flags: MessageFlags.Ephemeral,
+	};
 
-	args.ephemeral = true;
 	try {
-		await interaction.reply(args);
+		await interaction.reply(options);
 	} catch {
 		// deferred
-		await interaction.ephemeralReply(args);
+		await interaction.ephemeralReply(options);
 	}
 }
 

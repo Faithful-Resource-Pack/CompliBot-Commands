@@ -1,10 +1,10 @@
 import type { SlashCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder } from "discord.js";
-import { Message } from "@client";
 import { tileToAttachment, TileShape, TileRandom } from "@images/tile";
 import getImage, { imageNotFound } from "@images/getImage";
 import { tileButtons } from "@utility/buttons";
 import { imageTooBig } from "@helpers/warnUser";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -51,14 +51,8 @@ export const command: SlashCommand = {
 		if (!image) return imageNotFound(interaction);
 
 		const file = await tileToAttachment(image, { random, shape, magnify });
-
 		if (!file) return imageTooBig(interaction);
 
-		await interaction
-			.editReply({
-				files: [file],
-				components: [tileButtons],
-			})
-			.then((message: Message) => message.deleteButton());
+		await interaction.editReply({ files: [file], components: addDeleteButton([tileButtons]) });
 	},
 };

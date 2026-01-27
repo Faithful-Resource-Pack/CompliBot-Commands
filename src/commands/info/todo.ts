@@ -1,4 +1,5 @@
 import type { SlashCommand } from "@interfaces/interactions";
+import addDeleteButton from "@utility/addDeleteButton";
 import { SlashCommandBuilder } from "discord.js";
 
 export const command: SlashCommand = {
@@ -34,8 +35,6 @@ export const command: SlashCommand = {
 				break;
 		}
 
-		interaction
-			.reply({ content, withResponse: true })
-			.then(({ resource }) => resource.message.deleteButton());
+		interaction.reply({ content, components: addDeleteButton() });
 	},
 };

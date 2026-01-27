@@ -4,6 +4,7 @@ import { media } from "@utility/infoembed";
 import { EmbedBuilder } from "@client";
 import axios from "axios";
 import { colors } from "@utility/colors";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -53,8 +54,6 @@ export const command: SlashCommand = {
 			.setColor(colors[key as keyof typeof colors] ?? colors.brand)
 			.setThumbnail(images[key == "default" ? "main" : key]);
 
-		interaction
-			.reply({ embeds: [embed], withResponse: true })
-			.then(({ resource }) => resource.message.deleteButton());
+		return interaction.reply({ embeds: [embed], components: addDeleteButton() });
 	},
 };

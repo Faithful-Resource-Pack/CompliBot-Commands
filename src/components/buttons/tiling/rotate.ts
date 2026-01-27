@@ -6,6 +6,7 @@ import { palette, flip, tile } from "@utility/buttons";
 import getImage, { imageNotFound } from "@images/getImage";
 import { imageTooBig } from "@helpers/warnUser";
 import { ActionRowBuilder, ButtonBuilder } from "discord.js";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export default {
 	id: "rotate",
@@ -20,18 +21,18 @@ export default {
 
 		if (!attachment) return imageTooBig(interaction);
 
-		return interaction
-			.reply({
-				embeds: [
-					new EmbedBuilder()
-						.setImage(`attachment://${attachment.name}`)
-						.setFooter({ text: `${interaction.user.username} | ${interaction.user.id}` })
-						.setTimestamp(),
-				],
-				files: [attachment],
-				components: [new ActionRowBuilder<ButtonBuilder>().addComponents(tile, flip, palette)],
-				withResponse: true,
-			})
-			.then(({ resource }) => resource.message.deleteButton(true));
+		return interaction.reply({
+			embeds: [
+				new EmbedBuilder()
+					.setImage(`attachment://${attachment.name}`)
+					.setFooter({ text: `${interaction.user.username} | ${interaction.user.id}` })
+					.setTimestamp(),
+			],
+			files: [attachment],
+			components: addDeleteButton(
+				[new ActionRowBuilder<ButtonBuilder>().addComponents(tile, flip, palette)],
+				true,
+			),
+		});
 	},
 } as Component<ButtonInteraction>;

@@ -1,9 +1,9 @@
 import type { SlashCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder } from "discord.js";
-import { Message } from "@client";
 import { magnifyToAttachment } from "@images/magnify";
 import getImage, { imageNotFound } from "@images/getImage";
 import { magnifyButtons } from "@utility/buttons";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -36,11 +36,6 @@ export const command: SlashCommand = {
 			factor: interaction.options.getNumber("factor", false),
 		});
 
-		await interaction
-			.editReply({
-				files: [file],
-				components: [magnifyButtons],
-			})
-			.then((message: Message) => message.deleteButton());
+		await interaction.editReply({ files: [file], components: addDeleteButton([magnifyButtons]) });
 	},
 };

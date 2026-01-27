@@ -3,6 +3,7 @@ import { SlashCommandBuilder } from "discord.js";
 import { paletteToAttachment } from "@images/palette";
 import getImage, { imageNotFound } from "@images/getImage";
 import { imageTooBig } from "@helpers/warnUser";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -17,15 +18,12 @@ export const command: SlashCommand = {
 		if (!image) return imageNotFound(interaction);
 
 		const [file, embed] = await paletteToAttachment(image);
-
 		if (!file || !embed) return imageTooBig(interaction);
 
-		await interaction
-			.reply({
-				embeds: [embed],
-				files: [file],
-				withResponse: true,
-			})
-			.then(({ resource }) => resource.message.deleteButton());
+		await interaction.reply({
+			embeds: [embed],
+			files: [file],
+			components: addDeleteButton(),
+		});
 	},
 };

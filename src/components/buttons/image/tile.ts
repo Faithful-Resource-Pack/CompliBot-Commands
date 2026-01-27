@@ -5,6 +5,7 @@ import { tileToAttachment } from "@images/tile";
 import { tileButtons } from "@utility/buttons";
 import getImage, { imageNotFound } from "@images/getImage";
 import { imageTooBig } from "@helpers/warnUser";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export default {
 	id: "tile",
@@ -18,18 +19,15 @@ export default {
 
 		if (!attachment) return imageTooBig(interaction);
 
-		return interaction
-			.reply({
-				embeds: [
-					new EmbedBuilder()
-						.setImage(`attachment://${attachment.name}`)
-						.setFooter({ text: `${interaction.user.username} | ${interaction.user.id}` })
-						.setTimestamp(),
-				],
-				files: [attachment],
-				components: [tileButtons],
-				withResponse: true,
-			})
-			.then(({ resource }) => resource.message.deleteButton(true));
+		return interaction.reply({
+			embeds: [
+				new EmbedBuilder()
+					.setImage(`attachment://${attachment.name}`)
+					.setFooter({ text: `${interaction.user.username} | ${interaction.user.id}` })
+					.setTimestamp(),
+			],
+			files: [attachment],
+			components: addDeleteButton([tileButtons], true),
+		});
 	},
 } as Component<ButtonInteraction>;

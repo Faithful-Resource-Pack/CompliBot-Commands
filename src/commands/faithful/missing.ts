@@ -1,11 +1,12 @@
 import type { SlashCommand } from "@interfaces/interactions";
 import type { Pack } from "@interfaces/database";
 import { EmbedBuilder } from "@client";
-import { SlashCommandBuilder, Message, AttachmentBuilder } from "discord.js";
+import { SlashCommandBuilder, AttachmentBuilder } from "discord.js";
 import computeMissing, { updateProgressChannel, MissingEdition } from "@functions/computeMissing";
 import axios from "axios";
 import formatPack from "@utility/formatPack";
 import { toTitleCase } from "@utility/methods";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export const command: SlashCommand = {
 	async data(client) {
@@ -71,9 +72,7 @@ export const command: SlashCommand = {
 			.setThumbnail(loading)
 			.addFields({ name: "Steps", value: "\u200b" });
 
-		await interaction
-			.editReply({ embeds: [loadingEmbed] })
-			.then((message: Message) => message.deleteButton());
+		await interaction.editReply({ embeds: [loadingEmbed], components: addDeleteButton() });
 
 		const steps: string[] = [];
 		const responses = await computeMissing(

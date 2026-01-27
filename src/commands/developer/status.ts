@@ -6,6 +6,7 @@ import {
 } from "discord.js";
 import { EmbedBuilder } from "@client";
 import type { SlashCommand } from "@interfaces/interactions";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -58,11 +59,9 @@ export const command: SlashCommand = {
 			status: presence,
 		});
 
-		await interaction
-			.reply({
-				embeds: [new EmbedBuilder().setTitle("Bot status successfully changed!")],
-				withResponse: true,
-			})
-			.then(({ resource }) => resource.message.deleteButton());
+		await interaction.reply({
+			embeds: [new EmbedBuilder().setTitle("Bot status successfully changed!")],
+			components: addDeleteButton(),
+		});
 	},
 };

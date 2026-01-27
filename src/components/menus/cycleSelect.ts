@@ -1,10 +1,11 @@
-import { Message, StringSelectMenuInteraction, EmbedBuilder } from "@client";
+import { StringSelectMenuInteraction, EmbedBuilder } from "@client";
 import type { Component } from "@interfaces/components";
 import { info } from "@helpers/logger";
 import { cycleTexture } from "@functions/cycleTexture";
 import { colors } from "@utility/colors";
 import { unencodeChoice } from "@helpers/choiceEmbed";
 import { MessageFlags } from "discord.js";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export default {
 	id: "cycleSelect",
@@ -34,7 +35,6 @@ export default {
 
 		const [id, display, framerate] = unencodeChoice(interaction);
 		const editOptions = await cycleTexture(interaction.client, id, display, Number(framerate));
-
-		message.edit(editOptions).then((message: Message) => message.deleteButton());
+		message.edit({ ...editOptions, components: addDeleteButton(editOptions.components) });
 	},
 } as Component<StringSelectMenuInteraction>;

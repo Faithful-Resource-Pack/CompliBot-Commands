@@ -4,6 +4,7 @@ import { ButtonInteraction } from "@client";
 import { paletteToAttachment } from "@images/palette";
 import getImage, { imageNotFound } from "@images/getImage";
 import { imageTooBig } from "@helpers/warnUser";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export default {
 	id: "palette",
@@ -17,16 +18,14 @@ export default {
 
 		if (!file || !embed) return imageTooBig(interaction);
 
-		return interaction
-			.reply({
-				embeds: [
-					embed
-						.setFooter({ text: `${interaction.user.username} | ${interaction.user.id}` })
-						.setTimestamp(),
-				],
-				files: [file],
-				withResponse: true,
-			})
-			.then(({ resource }) => resource.message.deleteButton(true));
+		return interaction.reply({
+			embeds: [
+				embed
+					.setFooter({ text: `${interaction.user.username} | ${interaction.user.id}` })
+					.setTimestamp(),
+			],
+			files: [file],
+			components: addDeleteButton([], true),
+		});
 	},
 } as Component<ButtonInteraction>;

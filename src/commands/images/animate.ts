@@ -1,6 +1,6 @@
 import type { SlashCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder } from "discord.js";
-import { EmbedBuilder, Message } from "@client";
+import { EmbedBuilder } from "@client";
 import getImage, { imageNotFound } from "@images/getImage";
 import { animateToAttachment } from "@helpers/images/animate";
 import mcmetaList from "@json/mcmetas.json";
@@ -8,6 +8,7 @@ import { magnify } from "@helpers/images/magnify";
 import { colors } from "@utility/colors";
 import axios from "axios";
 import { MCMETA } from "@interfaces/database";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -105,8 +106,6 @@ export const command: SlashCommand = {
 		}
 
 		const file = await animateToAttachment(magnified, mcmeta);
-		await interaction
-			.editReply({ files: [file] })
-			.then((message: Message) => message.deleteButton());
+		await interaction.editReply({ files: [file], components: addDeleteButton() });
 	},
 };

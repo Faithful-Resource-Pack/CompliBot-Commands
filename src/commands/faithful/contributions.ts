@@ -1,11 +1,12 @@
 import type { SlashCommand } from "@interfaces/interactions";
-import { Message, EmbedBuilder } from "@client";
+import { EmbedBuilder } from "@client";
 import { SlashCommandBuilder, AttachmentBuilder } from "discord.js";
 import axios from "axios";
 import formatPack from "@utility/formatPack";
 import type { Pack } from "@interfaces/database";
 import { colors } from "@utility/colors";
 import getContributions from "@functions/getContributions";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export const command: SlashCommand = {
 	async data(client) {
@@ -96,8 +97,6 @@ export const command: SlashCommand = {
 		if (response.results.length)
 			files.push(new AttachmentBuilder(response.file, { name: `${fileName}.txt` }));
 
-		await interaction
-			.editReply({ embeds: [embed], files })
-			.then((message: Message) => message.deleteButton());
+		await interaction.editReply({ embeds: [embed], files, components: addDeleteButton() });
 	},
 };

@@ -9,6 +9,7 @@ import {
 import { EmbedBuilder } from "@client";
 import axios from "axios";
 import { colors } from "@utility/colors";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -64,9 +65,7 @@ export const command: SlashCommand = {
 					text: "Made with love",
 					iconURL: heart,
 				});
-			interaction
-				.reply({ embeds: [embed], withResponse: true })
-				.then(({ resource }) => resource.message.deleteButton());
+			interaction.reply({ embeds: [embed], components: addDeleteButton() });
 		})
 		.set("command", async (interaction) => {
 			const command = interaction.options.getString("command");

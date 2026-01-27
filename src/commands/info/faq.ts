@@ -5,6 +5,7 @@ import { colors } from "@utility/colors";
 import faqStrings from "@json/faq.json";
 import axios from "axios";
 import embedSeries from "@functions/embedSeries";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -57,8 +58,6 @@ export const command: SlashCommand = {
 			.setThumbnail(question)
 			.setFooter({ text: `Keywords: ${faqChoice.keywords.join(" • ")}` });
 
-		interaction
-			.reply({ embeds: [faqEmbed], withResponse: true })
-			.then(({ resource }) => resource.message.deleteButton());
+		interaction.reply({ embeds: [faqEmbed], components: addDeleteButton() });
 	},
 };

@@ -4,6 +4,7 @@ import { ButtonInteraction, EmbedBuilder } from "@client";
 import { magnifyToAttachment } from "@images/magnify";
 import { magnifyButtons } from "@utility/buttons";
 import getImage, { imageNotFound } from "@images/getImage";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export default {
 	id: "magnify",
@@ -15,18 +16,15 @@ export default {
 		if (!url) return imageNotFound(interaction);
 		const attachment = await magnifyToAttachment(url);
 
-		return interaction
-			.reply({
-				embeds: [
-					new EmbedBuilder()
-						.setImage(`attachment://${attachment.name}`)
-						.setFooter({ text: `${interaction.user.username} | ${interaction.user.id}` })
-						.setTimestamp(),
-				],
-				files: [attachment],
-				components: [magnifyButtons],
-				withResponse: true,
-			})
-			.then(({ resource }) => resource.message.deleteButton(true));
+		return interaction.reply({
+			embeds: [
+				new EmbedBuilder()
+					.setImage(`attachment://${attachment.name}`)
+					.setFooter({ text: `${interaction.user.username} | ${interaction.user.id}` })
+					.setTimestamp(),
+			],
+			files: [attachment],
+			components: addDeleteButton([magnifyButtons], true),
+		});
 	},
 } as Component<ButtonInteraction>;

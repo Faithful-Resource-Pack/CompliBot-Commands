@@ -5,6 +5,7 @@ import { colors } from "@utility/colors";
 import ruleStrings from "@json/rules.json";
 import axios from "axios";
 import embedSeries from "@functions/embedSeries";
+import addDeleteButton from "@utility/addDeleteButton";
 
 export const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -95,17 +96,15 @@ export const command: SlashCommand = {
 		}
 
 		const ruleChoice: (typeof ruleStrings.rules)[number] = ruleStrings.rules[Number(choice)];
-		return interaction
-			.reply({
-				embeds: [
-					new EmbedBuilder()
-						.setTitle(ruleChoice.title)
-						.setDescription(ruleChoice.description)
-						.setThumbnail(images.rules)
-						.setURL(`${baseUrl}#${Number(choice) + 1}`),
-				],
-				withResponse: true,
-			})
-			.then(({ resource }) => resource.message.deleteButton());
+		return interaction.reply({
+			embeds: [
+				new EmbedBuilder()
+					.setTitle(ruleChoice.title)
+					.setDescription(ruleChoice.description)
+					.setThumbnail(images.rules)
+					.setURL(`${baseUrl}#${Number(choice) + 1}`),
+			],
+			components: addDeleteButton(),
+		});
 	},
 };
