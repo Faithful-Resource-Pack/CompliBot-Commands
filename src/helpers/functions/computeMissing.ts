@@ -117,7 +117,7 @@ export async function computeMissingEdition(
 		throw new Error(`${formatPack(pack).name} doesn't support ${toTitleCase(edition)} Edition.`);
 
 	const versions = (
-		await axios.get<string[]>(`${client.tokens.apiUrl}textures/versions/${edition}`)
+		await axios.get<string[]>(`${client.tokens.apiUrl}versions/edition/${edition}`)
 	).data;
 
 	// need to fetch since client.versions doesn't filter by edition

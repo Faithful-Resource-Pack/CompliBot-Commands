@@ -357,7 +357,7 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 	private async loadVersions() {
 		// horrible workaround for autocomplete (loading this every time takes too long)
 		this.versions = await axios
-			.get<string[]>(`${this.tokens.apiUrl}textures/versions`)
+			.get<string[]>(`${this.tokens.apiUrl}versions/list`)
 			.then((res) => res.data);
 	}
 
