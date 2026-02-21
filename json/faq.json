@@ -44,7 +44,7 @@
     {
         "question": "Is Faithful available for [Minecraft version/edition]?",
         "answer": "Each pack is different:\n- Faithful 32x currently supports Bedrock Edition, and Java versions from 1.6 to the latest release, 1.4 and Beta 1.7.\n- Both Classic Faithful 32x packs are also available from 1.6 to the latest release and Bedrock Edition, but are currently not complete for b1.7–1.5.\n- Faithful and Classic Faithful 64x Jappa currently support only the latest Minecraft Java and Bedrock version, and Classic Faithful 64x supports just Java Edition.",
-        "keywords": ["version", "versions", "ver"],
+        "keywords": ["version", "versions"],
         "categories": ["installation", "packs", "issues"]
     },
     {
