@@ -32,7 +32,7 @@
     {
         "question": "Can Faithful be installed on consoles?",
         "answer": "There are methods of installing custom resource packs on consoles, but they're very unreliable and change often as it's not officially supported behavior. There's no universal method that will work for everyone and hacky workarounds will probably be needed, sometimes even involving paid file managers. You may have luck searching up methods for an individual console online but results are not guaranteed and may stop working in the future.",
-        "keywords": ["console", "console support", "xbox", "playstation", "switch"],
+        "keywords": ["console", "console support", "xbox", "playstation", "ps5", "switch"],
         "categories": ["installation"]
     },
     {
@@ -44,7 +44,7 @@
     {
         "question": "Is Faithful available for [Minecraft version/edition]?",
         "answer": "Each pack is different:\n- Faithful 32x currently supports Bedrock Edition, and Java versions from 1.6 to the latest release, 1.4 and Beta 1.7.\n- Both Classic Faithful 32x packs are also available from 1.6 to the latest release and Bedrock Edition, but are currently not complete for b1.7–1.5.\n- Faithful and Classic Faithful 64x Jappa currently support only the latest Minecraft Java and Bedrock version, and Classic Faithful 64x supports just Java Edition.",
-        "keywords": ["version", "versions"],
+        "keywords": ["version", "versions", "ver"],
         "categories": ["installation", "packs", "issues"]
     },
     {
@@ -56,7 +56,7 @@
     {
         "question": "Why am I seeing missing/16x/vanilla textures while using Faithful?",
         "answer": "You're most likely using an incomplete pack. You can see each pack's completion at the top of the channel list of their respective Discord servers. If you want to help to get rid of these missing textures, you can help us out by making a texture!",
-        "keywords": ["missing textures", "missing texture"],
+        "keywords": ["missing textures", "missing texture", "no texture"],
         "categories": ["issues", "packs"]
     },
     {
@@ -78,14 +78,18 @@
             "faithful vs classic faithful",
             "classic faithful vs faithful",
             "classic faithful",
-            "cf difference"
+            "cf",
+            "cf difference",
+            "cf vs faithful",
+            "faithful vs cf",
+            "difference"
         ],
         "categories": ["installation", "packs"]
     },
     {
         "question": "What are Jappa and Programmer Art textures?",
         "answer": "JAPPA is the online nickname of Jasper Boerstra, Minecraft's art director and the author of the majority of textures used in versions 1.14 and newer. The \"new\" Minecraft textures are often called Jappa textures in his honour.\nProgrammer Art (oftentimes abbreviated as \"progart\" or \"PA\") is the name given by Mojang and used by the Minecraft artist community for the old textures, used in Minecraft prior to release 1.14. It's also the name of the built-in resource pack featured in newer versions that contains the old textures.\n*Whether a texture is Jappa or Programmer Art is not related to its pixel resolution (e.g. 16x16, 32x, 64x).*",
-        "keywords": ["jappa", "progart", "prog art"],
+        "keywords": ["jappa", "progart", "prog art", "pa"],
         "categories": ["installation", "packs"]
     },
     {
@@ -139,7 +143,7 @@
     {
         "question": "How do I submit a texture for a mod?",
         "answer": "You can make a pull request to our [GitHub repository](https://github.com/Faithful-Resource-Pack/Faithful-32x-Mods) with your textures to the correct branch. There are plans in the future to make this easier to do; if you have any trouble with GitHub, please contact a manager.",
-        "keywords": ["submit mod"],
+        "keywords": ["submit mod", "mod submit", "add mod"],
         "categories": ["creating"]
     },
     {
@@ -189,13 +193,13 @@
     {
         "question": "Does Faithful accept sponsors or paid partners?",
         "answer": "Simply put, no. Not only do sponsors/advertisements go against our open sourced ethos, but since Faithful has no single owner, any rewards can't be fairly distributed.",
-        "keywords": ["sponsor", "sponsorship"],
+        "keywords": ["sponsor", "sponsorship", "partners"],
         "categories": ["creating"]
     },
     {
         "question": "How can I use Faithful textures in my own projects?",
         "answer": "First, read [our license](https://faithfulpack.net/license) to see that your project meets our terms (no monetization, giving clear credit, etc). If it meets all the terms and conditions, no further permission is required.",
-        "keywords": ["permission", "usage", "distribution"],
+        "keywords": ["permission", "usage", "distribution", "licence", "license"],
         "categories": ["creating"]
     }
 ]
