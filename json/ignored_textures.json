@@ -134,7 +134,12 @@
         "entity/zombie_villager/profession/fisherman.png.mcmeta",
         "entity/zombie_villager/profession/fletcher.png.mcmeta",
         "entity/zombie_villager/profession/librarian.png.mcmeta",
-        "entity/zombie_villager/profession/shepherd.png.mcmeta"
+        "entity/zombie_villager/profession/shepherd.png.mcmeta",
+        "block/tripwire.png.mcmeta",
+        "entity/end_portal/end_portal.png",
+        "entity/llama/llama_spit.png",
+        "entity/phantom/phantom_eyes.png",
+        "gui/sprites/widget/preedit.png.mcmeta"
     ],
     "bedrock": [
         "_mers.tga",
