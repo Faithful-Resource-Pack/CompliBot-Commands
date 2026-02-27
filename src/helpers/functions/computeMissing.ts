@@ -116,11 +116,10 @@ export async function computeMissingEdition(
 	if (!packs[pack].github[edition])
 		throw new Error(`${formatPack(pack).name} doesn't support ${toTitleCase(edition)} Edition.`);
 
-	const versions = (
-		await axios.get<string[]>(`${client.tokens.apiUrl}versions/edition/${edition}`)
-	).data;
-
 	// need to fetch since client.versions doesn't filter by edition
+	const versions = (await axios.get<string[]>(`${client.tokens.apiUrl}versions/edition/${edition}`))
+		.data;
+
 	if (!versions.includes(version)) version = versions[0];
 
 	// same steps are reused for compared repos
