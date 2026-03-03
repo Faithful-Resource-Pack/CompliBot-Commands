@@ -21,7 +21,7 @@ export function strings(this: AnyInteraction, forceEnglish = false): AllStrings 
 		let out: AllStrings;
 		try {
 			// prevent errors if language isn't done
-			out = mergeDeep({}, acc, require(`@/lang/${this.locale}/${json}.json`));
+			out = mergeDeep({}, acc, require(`@lang/${this.locale}/${json}.json`));
 		} catch {
 			out = acc;
 		}
