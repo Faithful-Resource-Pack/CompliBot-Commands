@@ -26,6 +26,12 @@ export default async function parseTextureName(
 		)
 		.setColor(colors.red);
 
+	// commas are used to separate bulk searches, causes schema mismatch issues
+	if (name.includes(",")) {
+		interaction.ephemeralReply({ embeds: [noResultEmbed] });
+		return;
+	}
+
 	let results: Texture | Texture[];
 	try {
 		results = (
