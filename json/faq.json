@@ -187,7 +187,7 @@
     {
         "question": "Why do my GUI and items look distorted in-game?",
         "answer": "This is likely caused by an incompatible GUI scaling factor. Due to the way Minecraft renders menus, you must use a GUI scale divisible by two for 32x packs and a GUI scale divisible by four for 64x packs. There is unfortunately no other way to prevent distortion besides manually adjusting the scale.",
-        "keywords": ["distortion", "distorted", "gui scale", "gui scaling"],
+        "keywords": ["distortion", "distorted", "gui scale", "gui scaling", "gui"],
         "categories": ["issues"]
     },
     {
