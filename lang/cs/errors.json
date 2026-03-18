@@ -32,7 +32,7 @@
             "not_found": "Nebyl nalezen žádný obrázek!",
             "suggestion": "Zkontroluj, zda jsi nahrál(a) funkční obrázek, odpověděl(a) na funkční obrázek nebo použil(a) platný odkaz na obrázek a že jsi ve správném kanále."
         },
-        "command": "Jeden z mých vývojářů při psaní tohoto příkazu někde udělal chybu! Nezoufej, chyba není na tvojí straně. Kontaktuj prosím <@360249987927638016>, <@473860522710794250> nebo <@173336582265241601> pokud k chybě dochází opakovaně.",
+        "command": "Jeden z mých vývojářů při psaní tohoto příkazu někde udělal chybu! Nezoufej, chyba není na tvojí straně. Kontaktuj prosím <@360249987927638016> nebo <@173336582265241601> pokud k chybě dochází opakovaně.",
         "permission": {
             "notice": "K této akci nemáš oprávnění!",
             "role_locked": "Toto mohou použít pouze uživatelé s rolí %TYPE%.",

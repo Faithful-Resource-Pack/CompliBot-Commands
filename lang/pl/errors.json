@@ -36,7 +36,7 @@
             "not_found": "Nie znaleziono żadnego obrazu!",
             "suggestion": "Upewnij się, że przesłałeś obraz, odpowiedziałeś na poprawny obraz, użyłeś poprawnego adresu URL obrazu, lub że znajdujesz się na właściwym kanale."
         },
-        "command": "Jeden z moich deweloperów popełnił błąd podczas tworzenia tego polecenia! Nie martw się, błąd nie jest po Twojej stronie. Jeśli znów to nastąpi, skontaktuj się z <@360249987927638016>, <@473860522710794250>, lub <@173336582265241601>.",
+        "command": "Jeden z moich deweloperów popełnił błąd podczas tworzenia tego polecenia! Nie martw się, błąd nie jest po Twojej stronie. Jeśli znów to nastąpi, skontaktuj się z <@360249987927638016> lub <@173336582265241601>.",
         "polls_removed": "Przeprowadzono ankiety Complibota zbędny przez natywny Discorda funkcje I zatem był, usunięto.",
         "permission": {
             "notice": "Nie masz do tego uprawnień!",

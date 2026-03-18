@@ -8,7 +8,7 @@
         "message": {
             "deleted": "Ce message a déjà été supprimé !"
         },
-        "command": "Un de mes développeurs a fait une erreur en faisant cette commande ! Ne vous inquiétez pas, l'erreur n'est pas de votre côté. Veuillez contacter <@360249987927638016>, <@473860522710794250>, ou <@173336582265241601> si cela persiste.",
+        "command": "Un de mes développeurs a fait une erreur en faisant cette commande ! Ne vous inquiétez pas, l'erreur n'est pas de votre côté. Veuillez contacter <@360249987927638016> ou <@173336582265241601> si cela persiste.",
         "not_found": "%THING% introuvable !",
         "interaction": {
             "reserved": "Cette interaction est réservée à %USER%!"

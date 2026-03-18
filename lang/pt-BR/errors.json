@@ -36,7 +36,7 @@
             "not_found": "Nenhuma imagem foi encontrada!",
             "suggestion": "Certifique-se de ter carregado uma imagem, respondido a uma imagem válida, usado um URL de imagem válido ou estar no canal correto."
         },
-        "command": "Um dos meus desenvolvedores cometeu um erro ao criar este comando! Não se preocupe, o erro não é sua culpa. \nEntre em contato com <@360249987927638016>, <@473860522710794250>, ou <@173336582265241601>, se isto continuar acontecendo.",
+        "command": "Um dos meus desenvolvedores cometeu um erro ao criar este comando! Não se preocupe, o erro não é sua culpa. \nEntre em contato com <@360249987927638016> ou <@173336582265241601>, se isto continuar acontecendo.",
         "polls_removed": "As enquetes do CompliBot foram consideradas redundantes pelo recurso nativo do Discord e, portanto, foram removidas.",
         "permission": {
             "notice": "Você não tem permissão para fazer isso!",

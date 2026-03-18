@@ -32,7 +32,7 @@
             "not_found": "Nessuna immagine è stata trovata!",
             "suggestion": "Assicurati di aver caricato un'immagine, risposto a un'immagine valida, utilizzato un URL di immagine valido o di essere nel canale corretto."
         },
-        "command": "Uno dei miei sviluppatori ha commesso un errore durante la creazione di questo comando! Non preoccupatevi, l'errore non dipende da voi. Si prega di contattare <@360249987927638016>, <@473860522710794250>, o <@173336582265241601> (in inglese) se l'errore continua a verificarsi.",
+        "command": "Uno dei miei sviluppatori ha commesso un errore durante la creazione di questo comando! Non preoccupatevi, l'errore non dipende da voi. Si prega di contattare <@360249987927638016> o <@173336582265241601> (in inglese) se l'errore continua a verificarsi.",
         "permission": {
             "notice": "Non hai il permesso di farlo!",
             "role_locked": "Solo %TYPE%i possono utilizzare questo.",

@@ -36,7 +36,7 @@
             "not_found": "No image was found!",
             "suggestion": "Make sure you uploaded an image, replied to a valid image, used a valid image URL, or are in the correct channel."
         },
-        "command": "One of my developers made an error while making this command! Don't worry, the error is not on your side. Please contact <@360249987927638016>, <@473860522710794250>, or <@173336582265241601> if this keeps occurring.",
+        "command": "One of my developers made an error while making this command! Don't worry, the error is not on your side. Please contact <@360249987927638016> or <@173336582265241601> if this keeps occurring.",
         "polls_removed": "CompliBot polls have been made redundant by the native Discord feature and have thus been removed.",
         "permission": {
             "notice": "You don't have permission to do that!",

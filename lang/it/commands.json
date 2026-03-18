@@ -51,7 +51,7 @@
             },
             "developing": {
                 "title": "Sviluppo",
-                "description": "Il mio codice è completamente pubblico (scritto in TypeScript e Discord.js) e può essere clonato sul mio repository GitHub [qui](https://github.com/faithful-resource-pack/complibot).\n\nSe siete interessati a sviluppare, contattate <@473860522710794250>, <@360249987927638016>, o <@173336582265241601> (in inglese) per maggiori informazioni."
+                "description": "Il mio codice è completamente pubblico (scritto in TypeScript e Discord.js) e può essere clonato sul mio repository GitHub [qui](https://github.com/faithful-resource-pack/complibot).\n\nSe siete interessati a sviluppare, contattate <@360249987927638016> o <@173336582265241601> (in inglese) per maggiori informazioni."
             }
         }
     }

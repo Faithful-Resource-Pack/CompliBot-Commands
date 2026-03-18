@@ -36,7 +36,7 @@
             "not_found": "Nu a fost găsită nicio imagine!",
             "suggestion": "Asigură-te că ai încărcat o imagine, ai răspuns la o imagine validă, ai folosit un URL cu o imagine validă sau că ești pe canalul corect."
         },
-        "command": "Unul dintre dezvoltatorii mei a făcut o eroare în timp ce făcea această comandă! Nu-ți face griji, eroarea nu este de partea ta. Vă rugăm să contactați <@360249987927638016>, <@473860522710794250>, sau <@173336582265241601> în cazul în care acest lucru continuă să se întâmple.",
+        "command": "Unul dintre dezvoltatorii mei a făcut o eroare în timp ce făcea această comandă! Nu-ți face griji, eroarea nu este de partea ta. Vă rugăm să contactați <@360249987927638016> sau <@173336582265241601> în cazul în care acest lucru continuă să se întâmple.",
         "polls_removed": "Sondajele CompliBot au fost redundante de către opțiunea nativă Discord și astfel au fost eliminate.",
         "permission": {
             "notice": "Nu ai permisiunea să faci asta!",

@@ -148,7 +148,7 @@
     },
     {
         "question": "CompliBot is offline! What do I do?",
-        "answer": "If one of the bots ever goes offline without previous notice from the developers, please ping __one__ of the online developers (<@473860522710794250>, <@360249987927638016>, or <@173336582265241601>) and alert them of the issue.",
+        "answer": "If one of the bots ever goes offline without previous notice from the developers, please ping __one__ of the online developers (<@360249987927638016> or <@173336582265241601>) and alert them of the issue.",
         "keywords": ["bot offline", "bot dead", "bot down"],
         "categories": ["issues"],
         "discord": true

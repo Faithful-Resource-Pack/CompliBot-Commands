@@ -32,7 +32,7 @@
             "not_found": "¡No se encontró ninguna imagen!",
             "suggestion": "Asegúrate de que has subido una imagen, has respondido a una imagen válida, has usado una URL con una imagen válida o estás en el canal correcto."
         },
-        "command": "¡Uno de mis desarrolladores cometió un error al crear este comando! No te preocupes, el error no es tuyo. Por favor, contacta con <@360249987927638016>, <@473860522710794250>, o <@173336582265241601> (en inglés) si esto sigue ocurriendo.",
+        "command": "¡Uno de mis desarrolladores cometió un error al crear este comando! No te preocupes, el error no es tuyo. Por favor, contacta con <@360249987927638016> o <@173336582265241601> (en inglés) si esto sigue ocurriendo.",
         "polls_removed": "Las encuestas de CompliBot se han hecho redundantes por la función nativa de Discord y por lo tanto han sido eliminadas.",
         "permission": {
             "notice": "¡No tienes permiso para hacer eso!",
