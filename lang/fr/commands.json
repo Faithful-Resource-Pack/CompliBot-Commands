@@ -1,0 +1,55 @@
+{
+    "translation_credits": [
+        "HARYAMC_"
+    ],
+    "command": {
+        "animate": {
+            "invalid_text": {
+                "title": "Vos règles MCMETA sont invalides !",
+                "description": "Les erreurs courantes incluent les noms de clés de propriétés entre guillemets doubles ou le mauvais placement d'un caractère."
+            },
+            "invalid_file": {
+                "title": "Fichier MCMETA invalide !",
+                "description": "Aucune propriété `animation` n'a été trouvée dans le fichier. Veuillez vérifier que vous avez téléchargé le bon fichier."
+            }
+        },
+        "about": {
+            "missing_profile": {
+                "title": "%USER% n'a aucune de contributions !",
+                "description": "Aucun profil de base de données n'a été trouvé pour cet utilisateur.",
+                "register": "Enregistrez-vous sur https://webapp.faithfulpack.net pour obtenir des informations et des crédits de contribution précis."
+            }
+        },
+        "coin": {
+            "reflip": {
+                "title": "Pièce re-retournée !",
+                "description": "Si vous n'obtenez pas le résultat que vous voulez, essayez à nouveau..."
+            }
+        },
+        "botban": {
+            "unbannable": {
+                "title": "Cet utilisateur ne peut pas être bot banni !",
+                "description": "Vous ne pouvez pas bannir avec le bot vous-même, un développeur ou quelqu'un avec les permissions d'administrateur."
+            }
+        },
+        "embed": {
+            "not_enough_arguments": "Pas assez d'informations ont été fournies !",
+            "need_more_info": "Vous devez avoir une description ou un titre pour un embed."
+        },
+        "stats": {
+            "not_found": "La commande `%COMMAND%` n'existe pas!"
+        },
+        "info": {
+            "title": "Bonjour, je suis CompliBot. J'ai été fait pour le serveur Discord \"Faithful\".",
+            "subtitle": "Et je pense que je me suis plutôt bien passé.",
+            "features": {
+                "title": "Fonctions",
+                "description": "- Interaction de texture en temps réel à l'aide de `/texture`, `/compare`, et `/cycle`.\n- Vérifiez le progrès du pack de ressources avec `/missing` ou vérifiez vos contributions avec `/about`.\n- Utilitaires de manipulation d'images tels que `/magnify`, `/tile`, `/palette`, et `/animate`."
+            },
+            "developing": {
+                "title": "Développement en cours",
+                "description": "Je suis entièrement open source (écrit en TypeScript et Discord.js) et je peux être cloné dans mon dépôt GitHub [here](https://github.com/fidful-resource-pack/complibot).\n\nSi vous êtes intéressé à développer, contactez <@!473860522710794250>, <@!360249987927638016>, ou <@!1733582265241601> pour plus d'informations."
+            }
+        }
+    }
+}
