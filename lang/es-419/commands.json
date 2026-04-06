@@ -13,13 +13,6 @@
                 "description": "No se encontró la propiedad `animation` en el archivo. Por favor, comprueba que has cargado el archivo correcto."
             }
         },
-        "about": {
-            "missing_profile": {
-                "title": "¡%USER% no tiene contribuciones!",
-                "description": "No se ha encontrado ningún perfil de base de datos para este usuario.",
-                "register": "Regístrese en https://webapp.faithfulpack.net para obtener información precisa sobre contribuciones y créditos."
-            }
-        },
         "coin": {
             "reflip": {
                 "title": "¡Moneda volteada!",

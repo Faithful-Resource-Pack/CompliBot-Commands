@@ -13,13 +13,6 @@
                 "description": "Aucune propriété `animation` n'a été trouvée dans le fichier. Veuillez vérifier que vous avez téléchargé le bon fichier."
             }
         },
-        "about": {
-            "missing_profile": {
-                "title": "%USER% n'a aucune de contributions !",
-                "description": "Aucun profil de base de données n'a été trouvé pour cet utilisateur.",
-                "register": "Enregistrez-vous sur https://webapp.faithfulpack.net pour obtenir des informations et des crédits de contribution précis."
-            }
-        },
         "coin": {
             "reflip": {
                 "title": "Pièce re-retournée !",

@@ -13,13 +13,6 @@
                 "description": "V souboru nebyl nalezen žádný objekt s názvem `animation`. Zkontroluj prosím, zda jsi nahrál(a) správný soubor."
             }
         },
-        "about": {
-            "missing_profile": {
-                "title": "%USER% nemá žádné příspěvky!",
-                "description": "Pro tohoto uživatele nebyl nalezen žádný databázový profil.",
-                "register": "Zaregistrujte se na https://webapp.faithfulpack.net pro získání přesných informací o příspěvcích a kreditech."
-            }
-        },
         "coin": {
             "reflip": {
                 "title": "Mince byla znovu hozena!",

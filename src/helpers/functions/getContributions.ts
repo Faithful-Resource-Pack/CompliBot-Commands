@@ -45,19 +45,14 @@ export default async function getContributions(
 	pack: string | null,
 	current: boolean,
 	sort: string,
-): Promise<ContributionResult | undefined> {
-	let contributionData: Contribution[] = [];
-	try {
-		contributionData = Object.values(
-			(
-				await axios.get<Contribution[]>(
-					`${client.tokens.apiUrl}contributions/${current ? "current" : "raw"}`,
-				)
-			).data,
-		);
-	} catch {
-		return;
-	}
+): Promise<ContributionResult> {
+	const contributionData = Object.values(
+		(
+			await axios.get<Contribution[]>(
+				`${client.tokens.apiUrl}contributions/${current ? "current" : "raw"}`,
+			)
+		).data,
+	);
 
 	const withPack = pack ? contributionData.filter((c) => c.pack === pack) : contributionData;
 	const withUser = withPack.filter((contrib) => contrib.authors.includes(user.id));

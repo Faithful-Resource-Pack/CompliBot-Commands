@@ -13,13 +13,6 @@
                 "description": "Nie znaleziono właściwości `animation` w pliku. Sprawdź, czy przesłałeś poprawny plik."
             }
         },
-        "about": {
-            "missing_profile": {
-                "title": "%USER% nie ma kontrybucji!",
-                "description": "Nie jest znaleziony profil baza danych dla tęgo osobę.",
-                "register": "Zarejestrować na https://webapp.faithfulpack.net żeby dostać dokładne kontrybucji informacje I kredyty."
-            }
-        },
         "coin": {
             "reflip": {
                 "title": "Moneta znowu rzucona!",

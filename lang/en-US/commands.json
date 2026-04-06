@@ -13,13 +13,6 @@
                 "description": "No `animation` property was found on the file. Please check that you uploaded the correct file."
             }
         },
-        "about": {
-            "missing_profile": {
-                "title": "%USER% has no contributions!",
-                "description": "No database profile was found for this user.",
-                "register": "Register at https://webapp.faithfulpack.net to get accurate contribution information and credits."
-            }
-        },
         "coin": {
             "reflip": {
                 "title": "Coin re-flipped!",

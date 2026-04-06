@@ -13,13 +13,6 @@
                 "description": "Nici o proprietate `animation` nu a fost găsită în fișier. Vă rugăm să verificați dacă ați încărcat fișierul corect."
             }
         },
-        "about": {
-            "missing_profile": {
-                "title": "%USER% nu are contribuții!",
-                "description": "Nu a fost găsit nici un profil pe baza de date pentru acest utilizator.",
-                "register": "Înregistrați-vă la https://webapp.faithfulpack.net pentru a obține informații și credite cu contribuții exacte."
-            }
-        },
         "coin": {
             "reflip": {
                 "title": "Moneda a fost aruncată din nou!",

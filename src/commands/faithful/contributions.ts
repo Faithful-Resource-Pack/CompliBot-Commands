@@ -4,7 +4,6 @@ import { SlashCommandBuilder, AttachmentBuilder } from "discord.js";
 import axios from "axios";
 import formatPack from "@utility/formatPack";
 import type { Pack } from "@interfaces/database";
-import { colors } from "@utility/colors";
 import getContributions from "@functions/getContributions";
 import addDeleteButton from "@utility/addDeleteButton";
 
@@ -58,25 +57,6 @@ export const command: SlashCommand = {
 		const current = interaction.options.getBoolean("current", false) ?? true;
 
 		const response = await getContributions(interaction.client, user, pack, current, sort);
-		if (!response) {
-			return interaction.ephemeralReply({
-				embeds: [
-					new EmbedBuilder()
-						.setTitle(
-							interaction
-								.strings()
-								.command.about.missing_profile.title.replace("%USER%", user.displayName),
-						)
-						.setDescription(
-							// only tell user to register if they actually can register
-							interaction.strings().command.about.missing_profile[
-								user.id === interaction.user.id ? "register" : "description"
-							],
-						)
-						.setColor(colors.red),
-				],
-			});
-		}
 
 		const embed = new EmbedBuilder().setTimestamp();
 		const files: AttachmentBuilder[] = [];
