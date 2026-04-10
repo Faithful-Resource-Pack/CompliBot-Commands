@@ -20,12 +20,11 @@ interface SetOptions {
  * @returns json file
  */
 export function getData(options: GetOptions) {
-	let data = {};
 	const folder = resolve(__dirname, options.relativePath);
 	const file = resolve(folder, options.filename);
 
 	try {
-		data = JSON.parse(readFileSync(file).toString());
+		return JSON.parse(readFileSync(file).toString());
 	} catch {
 		// file/folder isn't valid
 		if (!existsSync(folder)) mkdirSync(folder, { recursive: true });
@@ -34,7 +33,6 @@ export function getData(options: GetOptions) {
 
 		return getData(options); // check another time
 	}
-	return data;
 }
 
 /**
