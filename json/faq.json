@@ -1,18 +1,18 @@
 [
     {
         "question": "What is Faithful? How did it come to be?",
-        "answer": "Faithful is a project spanning several Minecraft resource packs bearing the same name. The aim of Faithful is to provide a higher-resolution experience while still maintaining the look and feel of the vanilla textures.\nFaithful was originally started by Vattic in 2010, and since then he has given the current Faithful administration the authority to maintain and update the pack officially.",
+        "answer": "Faithful is a collection of Minecraft resource packs that recreate its textures in higher resolutions while staying true to their original look and feel.\nThe first project, Faithful 32x, was originally started by Minecraft Forum user Vattic in 2010, and over the years, it grew in popularity and has since amassed a large network of volunteer artists and developers. Today, Faithful is an entirely open-sourced project led primarily by volunteer managers, and spans several projects across multiple resolutions and styles.",
         "keywords": ["faithful", "about"],
         "categories": ["history"]
     },
     {
         "question": "What were the Compliance and Emulated Vattic projects?",
-        "answer": "Faithful was initially called Compliance, prior to when we had received approval from Vattic to continue Faithful under his brand. In addition, Classic Faithful was an entirely separate project called Emulated Vattic Textures (EM for short), but merged with Faithful and adopted the Classic Faithful name during the Faithful rebrand.\nEssentially, Faithful and Compliance are one and the same, and Classic Faithful and Emulated Vattic are also one and the same.",
+        "answer": "Faithful was briefly known as Compliance between late 2020 and early 2022 due to the current team starting as a breakaway project from the old fraudulent Faithful leadership, which maintained and monetized the pack from 2016–2020 without permission. After the situation was brought to light, Compliance re-took the Faithful name and rebranded, alongside the related Emulated Vattic project which joined Faithful to become Classic Faithful.\nEssentially, Faithful and Compliance are the same project, and Emulated Vattic and Classic Faithful are also the same project.",
         "keywords": ["compliance", "emulated vattic", "em", "rebrand"],
         "categories": ["history"]
     },
     {
-        "question": "Who is Kraineff, who is Vattic, and why are there two Faithfuls?",
+        "question": "Who is Kraineff, who is Vattic, and why were there two Faithfuls?",
         "answer": "Vattic, the original creator of Faithful 32x32, left the project in 2016 following real-life difficulties. An artist named Kraineff (formerly xMrVizzy) soon took over, claiming Vattic gave him ownership.\nIn November 2020, Kraineff's history of poor management culminated in an exodus of Faithful contributors, who formed their own community-run project called Compliance. Soon after, these contributors gained contact with Vattic, confirming that Kraineff had falsely claimed ownership and moreover had been profiting off a stolen name for years. With Vattic's blessing, Compliance rebranded to Faithful despite Kraineff refusing to give up the name, thus leading to both projects sharing the same name.\nFor more details, watch AntVenom's video [here](https://www.youtube.com/watch?v=kgZYBTlwaVs).",
         "keywords": ["kraineff", "vattic", "vizzy", "xmrvizzy"],
         "categories": ["history"]
