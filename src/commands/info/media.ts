@@ -18,9 +18,9 @@ export const command: SlashCommand = {
 					{ name: "Faithful 32x", value: "faithful_32x" },
 					{ name: "Faithful 64x", value: "faithful_64x" },
 					{ name: "Classic Faithful 32x", value: "classic_faithful_32x" },
+					// TODO: add cf64 when listings are added
 					{ name: "Classic Faithful 32x Jappa", value: "classic_faithful_32x_jappa" },
 					{ name: "Classic Faithful 64x Jappa", value: "classic_faithful_64x_jappa" },
-					// TODO: add cf64pa when listings are added
 					{ name: "All", value: "all" },
 				),
 		),
@@ -39,20 +39,16 @@ export const command: SlashCommand = {
 			return interaction.channel.send({
 				embeds: Object.entries(media).map(
 					([key, mediaInfo]) =>
-						new EmbedBuilder()
-							.setTitle(mediaInfo.title)
-							.setDescription(mediaInfo.description)
-							.setColor(colors[key as keyof typeof colors] ?? colors.brand)
-							.setThumbnail(images[key == "default" ? "main" : key]), // "default" is already used
+						EmbedBuilder.from(mediaInfo)
+							.setColor(colors[key] ?? colors.brand)
+							.setThumbnail(images[key === "default" ? "main" : key]), // "default" is already used
 				),
 			});
 		}
 
-		const embed = new EmbedBuilder()
-			.setTitle(media[key].title)
-			.setDescription(media[key].description)
-			.setColor(colors[key as keyof typeof colors] ?? colors.brand)
-			.setThumbnail(images[key == "default" ? "main" : key]);
+		const embed = EmbedBuilder.from(media[key])
+			.setColor(colors[key] ?? colors.brand)
+			.setThumbnail(images[key === "default" ? "main" : key]);
 
 		return interaction.reply({ embeds: [embed], components: addDeleteButton() });
 	},
