@@ -89,10 +89,13 @@ async function ephemeralReply(this: AnyInteraction, options: InteractionReplyOpt
 	return this.followUp({ ...options, flags: MessageFlags.Ephemeral });
 }
 
-function complete(this: AnyInteraction) {
-	return this.reply({ content: "** **", withResponse: true })
-		.then(({ resource }) => resource.message.delete())
-		.catch(() => null);
+async function complete(this: AnyInteraction) {
+	const reply = this.deferred
+		? await this.editReply({ content: "** **" })
+		: await this.reply({ content: "** **", withResponse: true }).then(
+				({ resource }) => resource.message,
+			);
+	return reply.delete().catch(() => null);
 }
 
 // adding them here adds them everywhere (thank you runtime prototypal inheritance)

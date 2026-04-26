@@ -2,10 +2,15 @@ import type { SlashCommand } from "@interfaces/interactions";
 import { MessageFlags, SlashCommandBuilder } from "discord.js";
 import { EmbedBuilder } from "@client";
 import { colors } from "@utility/colors";
-import faqStrings from "@json/faq.json";
 import axios from "axios";
 import embedSeries from "@functions/embedSeries";
 import addDeleteButton from "@utility/addDeleteButton";
+
+interface FAQ {
+	question: string;
+	answer: string;
+	keywords: string[];
+}
 
 export const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -15,7 +20,13 @@ export const command: SlashCommand = {
 			option.setName("keyword").setDescription("The specific FAQ entry to view.").setRequired(true),
 		),
 	async execute(interaction) {
+		await interaction.deferReply();
+
 		const choice = interaction.options.getString("keyword", true).toLocaleLowerCase().trim();
+
+		const faqStrings = await axios
+			.get<FAQ[]>("https://faithfulpack.net/faq.json")
+			.then((res) => res.data);
 
 		if (choice == "all") {
 			if (!interaction.hasPermission("manager")) return;
@@ -36,7 +47,7 @@ export const command: SlashCommand = {
 		const faqChoice = faqStrings.find((faq) => faq.keywords.includes(choice));
 
 		if (!faqChoice)
-			return interaction.reply({
+			return interaction.ephemeralReply({
 				embeds: [
 					new EmbedBuilder()
 						.setTitle(interaction.strings().error.invalid_choice.title)
@@ -58,6 +69,6 @@ export const command: SlashCommand = {
 			.setThumbnail(question)
 			.setFooter({ text: `Keywords: ${faqChoice.keywords.join(" • ")}` });
 
-		interaction.reply({ embeds: [faqEmbed], components: addDeleteButton() });
+		interaction.editReply({ embeds: [faqEmbed], components: addDeleteButton() });
 	},
 };
