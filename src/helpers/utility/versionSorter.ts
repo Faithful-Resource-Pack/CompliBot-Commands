@@ -4,24 +4,27 @@
  * @author TheRolf
  */
 export default function versionSorter(a: string, b: string) {
-	const aSplit = a.split(".").map((s) => parseInt(s, 10));
-	const bSplit = b.split(".").map((s) => parseInt(s, 10));
+	const aStrings = a.split(".");
+	const aNumbers = aStrings.map((part) => Number(part));
+	const bStrings = b.split(".");
+	const bNumbers = bStrings.map((part) => Number(part));
 
-	if (aSplit.includes(NaN) || bSplit.includes(NaN)) {
-		return String(a).localeCompare(String(b)); // compare as strings
+	// non-numbered versions go above everything else
+	if (aNumbers.every((a) => isNaN(a)) || bNumbers.every((b) => isNaN(b))) {
+		return a.localeCompare(b);
 	}
 
-	const upper = Math.min(aSplit.length, bSplit.length);
-	let result = 0;
-	for (let i = 0; i < upper && result === 0; ++i) {
-		// each number in version
-		if (aSplit[i] === bSplit[i]) result = 0;
-		else result = aSplit[i] < bSplit[i] ? -1 : 1;
+	// compare only the safely accessible parts (1.17 vs 1.18.2 ignores the .2)
+	const upper = Math.min(aNumbers.length, bNumbers.length);
+
+	// compare each part by priority and immediately return if we find a difference
+	for (let i = 0; i < upper; ++i) {
+		const result = aNumbers[i] - bNumbers[i];
+		// any version with a letter in it (e.g. b1.7.3) goes below everything else
+		if (isNaN(result)) return bStrings[i].localeCompare(aStrings[i]);
+		if (result !== 0) return result;
 	}
 
-	if (result !== 0) return result;
-
-	if (aSplit.length === bSplit.length) return 0;
-	// longer length wins
-	return aSplit.length < bSplit.length ? -1 : 1;
+	// each part in the safe boundary is the same, try for differing length (1.17 vs 1.17.1)
+	return aNumbers.length - bNumbers.length;
 }
