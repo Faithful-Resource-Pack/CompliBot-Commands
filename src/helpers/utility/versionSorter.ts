@@ -1,7 +1,7 @@
 /**
  * Sorts a given collection of Minecraft versions
  * @example [].sort(versionSorter)
- * @author TheRolf
+ * @author TheRolf, Evorp
  */
 export default function versionSorter(a: string, b: string) {
 	const aStrings = a.split(".");
