@@ -182,7 +182,7 @@ export default async function compareTexture(
 	// put on default page for pack set
 	const galleryPack = display.includes("PA") ? "progart" : "default";
 	embed.setURL(
-		`https://webapp.faithfulpack.net/gallery/${result.uses[0].edition}/${galleryPack}/${version}/all/?show=${id}`,
+		`https://studio.faithfulpack.net/gallery/${result.uses[0].edition}/${galleryPack}/${version}/all/?show=${id}`,
 	);
 
 	if (version !== "latest") embed.data.title += ` (${version})`;

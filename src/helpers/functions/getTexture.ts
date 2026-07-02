@@ -34,7 +34,7 @@ export async function getTexture(
 	version = "latest",
 ) {
 	const apiUrl = interaction.client.tokens.apiUrl;
-	const galleryURL = `https://webapp.faithfulpack.net/gallery/${texture.uses[0].edition}/${pack}/${version}/all/?show=${texture.id}`;
+	const galleryURL = `https://studio.faithfulpack.net/gallery/${texture.uses[0].edition}/${pack}/${version}/all/?show=${texture.id}`;
 	const isAnimated = texture.paths.some((p) => p.mcmeta === true);
 
 	const [textureURL, packData] = await Promise.all([

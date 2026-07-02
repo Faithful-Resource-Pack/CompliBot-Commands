@@ -69,7 +69,7 @@ export const media: Record<string, APIEmbed> = {
 				name: "Information",
 				value: `
 [Website](https://faithfulpack.net/)
-[Web App](https://webapp.faithfulpack.net)
+[Studio](https://studio.faithfulpack.net)
 [About Us](https://faithfulpack.net/about)
 [License](https://faithfulpack.net/license)
 [Status](https://status.faithfulpack.net/)`,
@@ -91,7 +91,7 @@ export const media: Record<string, APIEmbed> = {
 [Twitter](https://twitter.com/faithfulpack/)
 [Bluesky](https://bsky.app/profile/faithfulpack.net)
 [Translations](https://translate.faithfulpack.net)
-[Texture Gallery](https://webapp.faithfulpack.net/gallery)
+[Texture Gallery](https://studio.faithfulpack.net/gallery)
 [Faithful Docs](https://docs.faithfulpack.net/)`,
 				inline: true,
 			},

@@ -75,7 +75,7 @@ export async function cycleTexture(
 
 	const embed = new EmbedBuilder()
 		.setTitle(`[#${result.id}] ${result.name}`)
-		.setURL(`https://webapp.faithfulpack.net/gallery?show=${id}`)
+		.setURL(`https://studio.faithfulpack.net/gallery?show=${id}`)
 		.addFields(addPathsToEmbed(result))
 		.setFooter({ text: display });
 
