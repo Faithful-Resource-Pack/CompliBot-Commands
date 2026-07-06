@@ -140,7 +140,7 @@
         "entity/llama/llama_spit.png",
         "entity/phantom/phantom_eyes.png",
         "gui/sprites/widget/preedit.png.mcmeta",
-        "palettes/trim/"
+        "palettes/"
     ],
     "bedrock": [
         "_mers.tga",
