@@ -139,7 +139,8 @@
         "entity/end_portal/end_portal.png",
         "entity/llama/llama_spit.png",
         "entity/phantom/phantom_eyes.png",
-        "gui/sprites/widget/preedit.png.mcmeta"
+        "gui/sprites/widget/preedit.png.mcmeta",
+        "palettes/trim/"
     ],
     "bedrock": [
         "_mers.tga",
