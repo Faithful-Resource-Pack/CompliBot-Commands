@@ -25,7 +25,7 @@ export const command: SlashCommand = {
 		const choice = interaction.options.getString("keyword", true).toLocaleLowerCase().trim();
 
 		const faqStrings = await axios
-			.get<FAQ[]>("https://faithfulpack.net/faq.json")
+			.get<FAQ[]>("https://faithfulpack.net/data/faq.json")
 			.then((res) => res.data);
 
 		if (choice == "all") {
