@@ -28,15 +28,15 @@ export default {
 			}
 			// regular command
 			else await command.execute(interaction);
-		} catch (err) {
+		} catch (err: unknown) {
 			handleError(client, err, "Slash Command Error");
 
 			const options = {
 				embeds: [
 					new EmbedBuilder()
-						.setTitle(interaction.strings().error.generic)
+						.setTitle(interaction.strings(true).error.generic)
 						.setDescription(
-							`${interaction.strings().error.command}\nError for the developers:\n\`\`\`${err}\`\`\``,
+							`${interaction.strings(true).error.command}\nError for the developers:\n\`\`\`${err}\`\`\``,
 						)
 						.setColor(colors.red),
 				],
