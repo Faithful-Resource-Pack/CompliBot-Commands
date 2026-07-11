@@ -21,11 +21,11 @@ export const command: SlashCommand = {
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName("command")
-				.setDescription("Returns usage for all commands.")
+				.setDescription("Get usage for all commands.")
 				.addStringOption((option) =>
 					option
 						.setName("command")
-						.setDescription("Returns usage for a specific command.")
+						.setDescription("Get usage for a specific command.")
 						.setRequired(false),
 				),
 		),
@@ -46,7 +46,7 @@ export const command: SlashCommand = {
 					{ name: "Prefix", value: interaction.client.tokens.prefix, inline: true },
 					{
 						name: "Uptime",
-						value: `<t:${Math.round((new Date().getTime() - client.uptime) / 1000)}:R>`,
+						value: `Since <t:${Math.round((new Date().getTime() - client.uptime) / 1000)}:R>`,
 						inline: true,
 					},
 					{ name: "Server Count", value: client.guilds.cache.size.toString(), inline: true },
@@ -97,8 +97,8 @@ export const command: SlashCommand = {
 				(a, b) => b[1] - a[1],
 			);
 
-			const formatted = Buffer.from(data.map(([key, value]) => `${key}: ${value}`).join("\n"));
-			const file = new AttachmentBuilder(formatted, { name: "stats-command.txt" });
+			const formatted = Buffer.from(data.map(([key, value]) => `/${key}: ${value}`).join("\n"));
+			const file = new AttachmentBuilder(formatted, { name: "stats-all-commands.txt" });
 
 			const total = Array.from(interaction.client.commandsProcessed.values()).reduce(
 				(acc, cur) => cur + acc,

@@ -29,8 +29,7 @@ export interface SlashCommand {
 export type SlashCommandExecute = (interaction: ChatInputCommandInteraction) => Promise<any>;
 
 export type SyncSlashCommandBuilder =
-	| SlashCommandSubcommandsOnlyBuilder
-	| SlashCommandOptionsOnlyBuilder;
+	SlashCommandSubcommandsOnlyBuilder | SlashCommandOptionsOnlyBuilder;
 
 /** Used for generating dynamic properties (e.g. /missing version list) */
 export type AsyncSlashCommandBuilder = (client: Client) => Promise<SyncSlashCommandBuilder>;
