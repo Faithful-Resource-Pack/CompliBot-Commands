@@ -1,8 +1,7 @@
-import type { BotBans, SlashCommand, SlashCommandExecute } from "@interfaces/interactions";
+import type { BotBans, SlashCommand } from "@interfaces/interactions";
 import { EmbedBuilder } from "@client";
 import {
 	AttachmentBuilder,
-	Collection,
 	MessageFlags,
 	PermissionFlagsBits,
 	SlashCommandBuilder,
@@ -52,8 +51,8 @@ export const command: SlashCommand = {
 		)
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
 		.setDMPermission(false),
-	execute: new Collection<string, SlashCommandExecute>()
-		.set("edit", async (interaction) => {
+	execute: {
+		async edit(interaction) {
 			const isAdding = interaction.options.getString("action", true) == "add";
 
 			await interaction.deferReply({ flags: MessageFlags.Ephemeral });
@@ -90,8 +89,8 @@ export const command: SlashCommand = {
 					),
 				],
 			});
-		})
-		.set("view", async (interaction) => {
+		},
+		async view(interaction) {
 			if (!interaction.hasPermission("dev")) return;
 
 			await interaction.deferReply({ flags: MessageFlags.Ephemeral });
@@ -127,5 +126,6 @@ export const command: SlashCommand = {
 					});
 				}
 			}
-		}),
+		},
+	},
 };

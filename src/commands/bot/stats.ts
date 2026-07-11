@@ -1,7 +1,6 @@
-import type { SlashCommand, SlashCommandExecute } from "@interfaces/interactions";
+import type { SlashCommand } from "@interfaces/interactions";
 import {
 	SlashCommandBuilder,
-	Collection,
 	version as djsVersion,
 	MessageFlags,
 	AttachmentBuilder,
@@ -29,8 +28,8 @@ export const command: SlashCommand = {
 						.setRequired(false),
 				),
 		),
-	execute: new Collection<string, SlashCommandExecute>()
-		.set("bot", async (interaction) => {
+	execute: {
+		async bot(interaction) {
 			// easier to get extended properties
 			const { client } = interaction;
 			const memberCount = client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0);
@@ -66,8 +65,8 @@ export const command: SlashCommand = {
 					iconURL: heart,
 				});
 			interaction.reply({ embeds: [embed], components: addDeleteButton() });
-		})
-		.set("command", async (interaction) => {
+		},
+		async command(interaction) {
 			const command = interaction.options.getString("command");
 			if (command) {
 				const total = interaction.client.commandsProcessed.get(command);
@@ -111,5 +110,6 @@ export const command: SlashCommand = {
 				],
 				files: [file],
 			});
-		}),
+		},
+	},
 };

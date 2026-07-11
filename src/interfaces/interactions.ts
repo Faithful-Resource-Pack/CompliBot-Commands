@@ -1,6 +1,5 @@
 import {
 	SlashCommandSubcommandsOnlyBuilder,
-	Collection,
 	CacheType,
 	SlashCommandOptionsOnlyBuilder,
 	AutocompleteInteraction,
@@ -22,7 +21,7 @@ export type AnyInteraction<Cached extends CacheType = CacheType> =
 export interface SlashCommand {
 	servers?: string[];
 	data: SyncSlashCommandBuilder | AsyncSlashCommandBuilder;
-	execute: Collection<string, SlashCommandExecute> | SlashCommandExecute;
+	execute: Record<string, SlashCommandExecute> | SlashCommandExecute;
 	autocomplete?: (interaction: AutocompleteInteraction) => Promise<any>;
 }
 

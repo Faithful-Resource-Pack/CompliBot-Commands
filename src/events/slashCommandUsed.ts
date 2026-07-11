@@ -1,4 +1,3 @@
-import { Collection } from "discord.js";
 import type { Event } from "@interfaces/events";
 import { ChatInputCommandInteraction, EmbedBuilder } from "@client";
 import { handleError } from "@functions/handleError";
@@ -20,14 +19,10 @@ export default {
 
 		// ! await required for try catch support
 		try {
-			// try subcommand
-			if (command.execute instanceof Collection) {
-				const subcommandName = interaction.options.getSubcommand();
-				const subcommand = command.execute.get(subcommandName);
-				await subcommand?.(interaction);
-			}
-			// regular command
-			else await command.execute(interaction);
+			if (typeof command.execute === "function") return await command.execute(interaction);
+			const subcommandName = interaction.options.getSubcommand();
+			const subcommand = command.execute[subcommandName];
+			return await subcommand?.(interaction);
 		} catch (err: unknown) {
 			handleError(client, err, "Slash Command Error");
 
