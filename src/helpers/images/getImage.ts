@@ -1,9 +1,10 @@
 import { Image } from "@napi-rs/canvas";
 import { Readable } from "stream";
 import { Message, ChatInputCommandInteraction } from "@client";
-import { Interaction, MessageType } from "discord.js";
+import { ComponentType, Interaction, MessageType } from "discord.js";
 import { warnUser } from "@helpers/warnUser";
 import type { AnyInteraction } from "@interfaces/interactions";
+import { AnyV2Component } from "@interfaces/components";
 
 // remove url metadata to use url itself (discord adds for authentication)
 export const removeMetadata = (url: string) => url.split("?")[0];
@@ -12,6 +13,25 @@ export const isImage = (url?: string) => url && /(png|jpg|jpeg|webp)$/g.test(rem
 
 // taken from @napi-rs/canvas.loadImage;
 export type ImageSource = string | URL | Buffer | ArrayBufferLike | Uint8Array | Image | Readable;
+
+/**
+ * Crawl recursively through components to find a media gallery
+ * @author Evorp
+ * @param component Component to search through
+ * @returns untreated URL (may have metadata)
+ */
+export function getImageFromComponentTree(component: AnyV2Component): string {
+	if (component.type === ComponentType.MediaGallery) {
+		const found = component.items.find((f) => isImage(f.media.url));
+		if (found !== undefined) return found.media.url;
+	}
+	if (!("components" in component)) return null;
+	for (const child of component.components) {
+		const url = getImageFromComponentTree(child);
+		if (isImage(url)) return url;
+	}
+	return "";
+}
 
 /**
  * Get image URL from a given message if possible
@@ -37,8 +57,14 @@ export async function getImageFromMessage(message: Message) {
 		}
 	}
 
+	// slightly hacky component v2 compatibility
+	if (message.components.length) {
+		url = message.components.map((comp) => getImageFromComponentTree(comp)).find((a) => isImage(a));
+		if (isImage(url)) return url;
+	}
+
 	// search for image urls
-	url = message.content?.split(" ").find((i) => i.startsWith("http"));
+	url = message.content?.split(/ /g).find((i) => i.startsWith("http"));
 	// check if url points to valid image
 	if (isImage(url)) return url;
 
