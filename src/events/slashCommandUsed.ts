@@ -19,6 +19,8 @@ export default defineEvent({
 		client.commandsProcessed.set(interaction.commandName, count + 1);
 		client.commandsProcessed.save();
 
+		if (client.verbose) console.log(`${info}Slash command used: /${interaction.commandName}`);
+
 		// ! await required for try catch support
 		try {
 			if (typeof command.execute === "function") return await command.execute(interaction);
