@@ -5,10 +5,10 @@ import {
 	SlashCommandBuilder,
 } from "discord.js";
 import { EmbedBuilder } from "@client";
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("status")
 		.setDescription("Changes the bot's status.")
@@ -64,4 +64,4 @@ export const command: SlashCommand = {
 			components: addDeleteButton(),
 		});
 	},
-};
+});

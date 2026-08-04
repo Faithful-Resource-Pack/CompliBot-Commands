@@ -1,10 +1,10 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder } from "discord.js";
 import { mcColorsOptions, multiplyToAttachment } from "@images/multiply";
 import getImage, { imageNotFound } from "@images/getImage";
 import { imageButtons } from "@utility/buttons";
 import addDeleteButton from "@utility/addDeleteButton";
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("tint")
 		.setDescription(`Tint a grayscale image to a Minecraft color`)
@@ -30,4 +30,4 @@ export const command: SlashCommand = {
 
 		await interaction.editReply({ files: [file], components: addDeleteButton([imageButtons]) });
 	},
-};
+});

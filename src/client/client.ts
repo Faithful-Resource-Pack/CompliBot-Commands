@@ -244,7 +244,7 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 			walkSync(paths.commands)
 				.filter((file) => file.endsWith(".ts"))
 				.map(async (file) => {
-					const command: SlashCommand = await import(file).then(({ command }) => command);
+					const command: SlashCommand = await import(file).then(({ default: command }) => command);
 					const data =
 						command.data instanceof Function
 							? await command.data(this) // for dynamic data (e.g. /missing)

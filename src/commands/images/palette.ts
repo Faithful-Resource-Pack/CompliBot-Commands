@@ -1,11 +1,11 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder } from "discord.js";
 import { paletteToAttachment } from "@images/palette";
 import getImage, { imageNotFound } from "@images/getImage";
 import { imageTooBig } from "@helpers/warnUser";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("palette")
 		.setDescription("Get the colour palette of an image.")
@@ -26,4 +26,4 @@ export const command: SlashCommand = {
 			components: addDeleteButton(),
 		});
 	},
-};
+});

@@ -1,8 +1,8 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import addDeleteButton from "@utility/addDeleteButton";
 import { SlashCommandBuilder } from "discord.js";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("license")
 		.setDescription("Shows the license for the Faithful Resource Pack."),
@@ -12,4 +12,4 @@ export const command: SlashCommand = {
 			components: addDeleteButton(),
 		});
 	},
-};
+});

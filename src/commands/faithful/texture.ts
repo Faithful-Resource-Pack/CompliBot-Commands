@@ -1,4 +1,4 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import type { Pack } from "@interfaces/database";
 import { SlashCommandBuilder } from "discord.js";
 import { getTexture } from "@functions/getTexture";
@@ -7,7 +7,7 @@ import { textureChoiceEmbed } from "@helpers/choiceEmbed";
 import axios from "axios";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	async data(client) {
 		const packs = await axios
 			.get<Pack[]>(`${client.tokens.apiUrl}packs/raw`)
@@ -73,4 +73,4 @@ export const command: SlashCommand = {
 			version,
 		);
 	},
-};
+});

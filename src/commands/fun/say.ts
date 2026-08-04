@@ -1,7 +1,7 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("say")
 		.setDescription("Say something with the bot")
@@ -21,4 +21,4 @@ export const command: SlashCommand = {
 			content: interaction.options.getString("message", true),
 		});
 	},
-};
+});

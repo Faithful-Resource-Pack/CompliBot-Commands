@@ -1,4 +1,4 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import {
 	SlashCommandBuilder,
 	version as djsVersion,
@@ -10,7 +10,7 @@ import axios from "axios";
 import { colors } from "@utility/colors";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("stats")
 		.setDescription("Gets statistics about the bot or commands.")
@@ -112,4 +112,4 @@ export const command: SlashCommand = {
 			});
 		},
 	},
-};
+});

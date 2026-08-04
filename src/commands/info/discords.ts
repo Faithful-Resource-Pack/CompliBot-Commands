@@ -1,11 +1,11 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder } from "discord.js";
 import axios from "axios";
 import { FaithfulGuild } from "@client";
 import { toTitleCase } from "@utility/methods";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	async data(client) {
 		const guilds = (
 			await axios.get<Record<string, FaithfulGuild>>(
@@ -41,4 +41,4 @@ export const command: SlashCommand = {
 		}
 		return interaction.reply({ content, components: addDeleteButton() });
 	},
-};
+});

@@ -1,8 +1,8 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
 import { constructLogFile } from "@functions/handleError";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("logs")
 		.setDescription("Get logs of the bot.")
@@ -16,4 +16,4 @@ export const command: SlashCommand = {
 			.editReply({ files: [constructLogFile(interaction.client)] })
 			.catch(console.error);
 	},
-};
+});

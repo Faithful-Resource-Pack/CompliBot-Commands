@@ -1,9 +1,9 @@
 import { ThreadChannel } from "discord.js";
-import type { Event } from "@interfaces/events";
+import { defineEvent } from "@interfaces/events";
 
-export default {
+export default defineEvent({
 	name: "threadCreate",
 	async execute(_client, thread: ThreadChannel) {
 		if (thread.joinable) await thread.join().catch(console.error);
 	},
-} as Event;
+});

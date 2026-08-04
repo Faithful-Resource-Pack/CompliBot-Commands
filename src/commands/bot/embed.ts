@@ -1,4 +1,4 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { EmbedBuilder } from "@client";
 import {
 	ColorResolvable,
@@ -8,7 +8,7 @@ import {
 } from "discord.js";
 import { colors } from "@utility/colors";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("embed")
 		.setDescription(`Create a one-time custom embed.`)
@@ -85,4 +85,4 @@ export const command: SlashCommand = {
 
 		return interaction.channel.send({ embeds: [embed] });
 	},
-};
+});

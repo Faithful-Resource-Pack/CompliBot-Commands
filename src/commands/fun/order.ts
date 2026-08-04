@@ -1,4 +1,4 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import addDeleteButton from "@utility/addDeleteButton";
 import { SlashCommandBuilder, AttachmentBuilder } from "discord.js";
 
@@ -32,7 +32,7 @@ const options: OrderOptions = {
 	popcorn: { url: "https://c.tenor.com/yinQBUPPd_IAAAAC/michael-jackson-popcorn.gif" },
 };
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("order")
 		.setDescription("Get something special")
@@ -60,4 +60,4 @@ export const command: SlashCommand = {
 			components: addDeleteButton(),
 		});
 	},
-};
+});

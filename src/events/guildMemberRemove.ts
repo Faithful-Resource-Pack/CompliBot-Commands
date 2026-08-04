@@ -1,10 +1,10 @@
-import type { Event } from "@interfaces/events";
+import { defineEvent } from "@interfaces/events";
 import { GuildMember } from "discord.js";
 import memberLog from "@functions/memberLog";
 
-export default {
+export default defineEvent({
 	name: "guildMemberRemove",
 	async execute(client, member: GuildMember) {
 		memberLog(client, member.guild.id);
 	},
-} as Event;
+});

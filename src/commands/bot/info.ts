@@ -1,9 +1,9 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { MessageFlags, SlashCommandBuilder } from "discord.js";
 import { EmbedBuilder } from "@client";
 import axios from "axios";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder().setName("info").setDescription("General info about CompliBot."),
 	async execute(interaction) {
 		const image = (
@@ -30,4 +30,4 @@ export const command: SlashCommand = {
 
 		interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
 	},
-};
+});

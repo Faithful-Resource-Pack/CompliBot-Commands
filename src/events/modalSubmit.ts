@@ -1,6 +1,6 @@
-import type { Event } from "@interfaces/events";
+import { defineEvent } from "@interfaces/events";
 
-export default {
+export default defineEvent({
 	name: "modalSubmit",
 	async execute(client, interaction) {
 		client.storeAction("modalSubmit", interaction);
@@ -8,4 +8,4 @@ export default {
 		const modal = client.modals.get(interaction.customId);
 		if (modal) return modal.execute(client, interaction);
 	},
-} as Event;
+});

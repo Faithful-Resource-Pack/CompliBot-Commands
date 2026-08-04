@@ -1,4 +1,4 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder } from "discord.js";
 import compareTexture from "@functions/compareTexture";
 import parseTextureName from "@functions/parseTextureName";
@@ -6,7 +6,7 @@ import { textureChoiceEmbed } from "@helpers/choiceEmbed";
 import { imageTooBig } from "@helpers/warnUser";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("compare")
 		.setDescription("Compare a given texture.")
@@ -67,4 +67,4 @@ export const command: SlashCommand = {
 		// multiple results
 		return textureChoiceEmbed(interaction, "compareSelect", results, display, version);
 	},
-};
+});

@@ -1,8 +1,8 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import addDeleteButton from "@utility/addDeleteButton";
 import { SlashCommandBuilder } from "discord.js";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("guidelines")
 		.setDescription("Shows various Faithful texturing guidelines.")
@@ -29,4 +29,4 @@ export const command: SlashCommand = {
 
 		return interaction.reply({ content: guidelines[pack], components: addDeleteButton() });
 	},
-};
+});

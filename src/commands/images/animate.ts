@@ -1,4 +1,4 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder } from "discord.js";
 import { EmbedBuilder } from "@client";
 import getImage, { imageNotFound } from "@images/getImage";
@@ -10,7 +10,7 @@ import axios from "axios";
 import { MCMETA } from "@interfaces/database";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("animate")
 		.setDescription("Animate a vertical tilesheet with standard MCMETA rules.")
@@ -108,4 +108,4 @@ export const command: SlashCommand = {
 		const file = await animateToAttachment(magnified, mcmeta);
 		await interaction.editReply({ files: [file], components: addDeleteButton() });
 	},
-};
+});

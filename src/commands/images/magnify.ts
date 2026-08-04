@@ -1,11 +1,11 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder } from "discord.js";
 import { magnifyToAttachment } from "@images/magnify";
 import getImage, { imageNotFound } from "@images/getImage";
 import { magnifyButtons } from "@utility/buttons";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("magnify")
 		.setDescription("Magnify an image.")
@@ -38,4 +38,4 @@ export const command: SlashCommand = {
 
 		await interaction.editReply({ files: [file], components: addDeleteButton([magnifyButtons]) });
 	},
-};
+});

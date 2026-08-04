@@ -1,4 +1,4 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { EmbedBuilder } from "@client";
 import { SlashCommandBuilder, AttachmentBuilder } from "discord.js";
 import axios from "axios";
@@ -7,7 +7,7 @@ import type { Pack } from "@interfaces/database";
 import getContributions from "@functions/getContributions";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	async data(client) {
 		const packs = (await axios.get<Pack[]>(`${client.tokens.apiUrl}packs/search?type=submission`))
 			.data;
@@ -79,4 +79,4 @@ export const command: SlashCommand = {
 
 		await interaction.editReply({ embeds: [embed], files, components: addDeleteButton() });
 	},
-};
+});

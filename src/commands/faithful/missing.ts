@@ -1,4 +1,4 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import type { Pack } from "@interfaces/database";
 import { EmbedBuilder } from "@client";
 import { SlashCommandBuilder, AttachmentBuilder } from "discord.js";
@@ -8,7 +8,7 @@ import formatPack from "@utility/formatPack";
 import { toTitleCase } from "@utility/methods";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	async data(client) {
 		const packs = await axios
 			.get<Pack[]>(`${client.tokens.apiUrl}packs/search?type=submission`)
@@ -138,4 +138,4 @@ export const command: SlashCommand = {
 
 		return interaction.editReply({ embeds: [resultEmbed], files }).catch(() => {});
 	},
-};
+});

@@ -1,7 +1,7 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } from "discord.js";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("restart")
 		.setDescription("Restarts the bot.")
@@ -13,4 +13,4 @@ export const command: SlashCommand = {
 		await interaction.reply({ content: "Restarting…", flags: MessageFlags.Ephemeral });
 		await interaction.client.restart(interaction);
 	},
-};
+});

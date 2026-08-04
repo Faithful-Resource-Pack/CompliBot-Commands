@@ -1,4 +1,4 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder } from "discord.js";
 import { media } from "@utility/infoembed";
 import { EmbedBuilder } from "@client";
@@ -6,7 +6,7 @@ import axios from "axios";
 import { colors } from "@utility/colors";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("media")
 		.setDescription("Displays all listings for the given resource pack or generally useful links.")
@@ -52,4 +52,4 @@ export const command: SlashCommand = {
 
 		return interaction.reply({ embeds: [embed], components: addDeleteButton() });
 	},
-};
+});

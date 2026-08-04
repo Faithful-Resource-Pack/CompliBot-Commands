@@ -1,8 +1,8 @@
-import type { Event } from "@interfaces/events";
+import { defineEvent } from "@interfaces/events";
 import type { AnyInteraction, BotBans } from "@interfaces/interactions";
 import { MessageFlags } from "discord.js";
 
-export default {
+export default defineEvent({
 	name: "interactionCreate",
 	async execute(client, interaction: AnyInteraction) {
 		if (!interaction.inGuild()) return;
@@ -23,4 +23,4 @@ export default {
 		if (interaction.isStringSelectMenu()) return client.emit("selectMenuUsed", interaction);
 		if (interaction.isModalSubmit()) return client.emit("modalSubmit", interaction);
 	},
-} as Event;
+});

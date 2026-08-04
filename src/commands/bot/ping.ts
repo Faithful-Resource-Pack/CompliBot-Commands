@@ -1,11 +1,11 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder } from "discord.js";
 import { EmbedBuilder } from "@client";
 import { ping } from "@json/quotes.json";
 import { choice } from "@utility/methods";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder().setName("ping").setDescription("Check the bot and API latency."),
 	async execute(interaction) {
 		const quote = choice(ping);
@@ -27,4 +27,4 @@ export const command: SlashCommand = {
 			return interaction.editReply({ embeds: [embed], components: addDeleteButton() });
 		});
 	},
-};
+});

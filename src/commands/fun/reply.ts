@@ -1,9 +1,9 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } from "discord.js";
 import { EmbedBuilder, Message } from "@client";
 import { colors } from "@utility/colors";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("reply")
 		.setDescription("Say something with the bot")
@@ -42,4 +42,4 @@ export const command: SlashCommand = {
 
 		msg.reply({ content: interaction.options.getString("message", true) });
 	},
-};
+});

@@ -1,11 +1,11 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { ActionRowBuilder, ButtonBuilder, SlashCommandBuilder } from "discord.js";
 import { EmbedBuilder } from "@client";
 import { colors } from "@utility/colors";
 import { reflip } from "@utility/buttons";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("coin")
 		.setDescription("Flip a coin. Will it be heads? Will it be tails? Who knows?"),
@@ -26,4 +26,4 @@ export const command: SlashCommand = {
 			components: addDeleteButton([new ActionRowBuilder<ButtonBuilder>().addComponents(reflip)]),
 		});
 	},
-};
+});

@@ -1,10 +1,10 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
 import { EmbedBuilder } from "@client";
 import { colors } from "@utility/colors";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("shutdown")
 		.setDescription("Shuts down the bot.")
@@ -32,4 +32,4 @@ export const command: SlashCommand = {
 		});
 		return process.exit();
 	},
-};
+});

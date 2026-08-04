@@ -1,4 +1,4 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import {
 	ActionRowBuilder,
 	SlashCommandBuilder,
@@ -55,7 +55,7 @@ export const feedbackFormat: Record<FeedbackType, TextInputBuilder[]> = {
 	],
 };
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("feedback")
 		.setDescription("Submits bot feedback to the developers.")
@@ -82,4 +82,4 @@ export const command: SlashCommand = {
 
 		await interaction.showModal(modal);
 	},
-};
+});

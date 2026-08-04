@@ -1,8 +1,8 @@
 import { AutocompleteInteraction } from "discord.js";
-import type { Event } from "@interfaces/events";
+import { defineEvent } from "@interfaces/events";
 import versionSorter from "@utility/versionSorter";
 
-export default {
+export default defineEvent({
 	name: "autocomplete",
 	async execute(client, interaction: AutocompleteInteraction) {
 		const focusedOption = interaction.options.getFocused(true);
@@ -24,4 +24,4 @@ export default {
 		const command = client.commands.get(interaction.commandName);
 		if (command) return command.autocomplete?.(interaction);
 	},
-} as Event;
+});

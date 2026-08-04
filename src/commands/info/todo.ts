@@ -1,8 +1,8 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import addDeleteButton from "@utility/addDeleteButton";
 import { SlashCommandBuilder } from "discord.js";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("todo")
 		.setDescription("Shows various project to-do lists.")
@@ -37,4 +37,4 @@ export const command: SlashCommand = {
 
 		interaction.reply({ content, components: addDeleteButton() });
 	},
-};
+});

@@ -1,4 +1,4 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder } from "discord.js";
 import { EmbedBuilder } from "@client";
 import { colors } from "@utility/colors";
@@ -7,7 +7,7 @@ import axios from "axios";
 import embedSeries from "@functions/embedSeries";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("rule")
 		.setDescription("Show the Faithful server rules.")
@@ -107,4 +107,4 @@ export const command: SlashCommand = {
 			components: addDeleteButton(),
 		});
 	},
-};
+});

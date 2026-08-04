@@ -1,10 +1,10 @@
-import type { Event } from "@interfaces/events";
+import { defineEvent } from "@interfaces/events";
 import { ButtonInteraction, EmbedBuilder } from "@client";
 import { info } from "@helpers/logger";
 import { colors } from "@utility/colors";
 import { MessageFlags } from "discord.js";
 
-export default {
+export default defineEvent({
 	name: "buttonUsed",
 	async execute(client, interaction: ButtonInteraction) {
 		client.storeAction("button", interaction);
@@ -26,4 +26,4 @@ export default {
 		const button = client.buttons.get(interaction.customId);
 		if (button) return button.execute(client, interaction);
 	},
-} as Event;
+});

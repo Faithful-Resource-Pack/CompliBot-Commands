@@ -1,9 +1,9 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } from "discord.js";
 import { Client, EmbedBuilder } from "@client";
 import { inspect } from "util";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	servers: ["dev"],
 	data: new SlashCommandBuilder()
 		.setName("eval")
@@ -54,4 +54,4 @@ export const command: SlashCommand = {
 			],
 		});
 	},
-};
+});

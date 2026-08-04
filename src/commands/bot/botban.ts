@@ -1,4 +1,4 @@
-import type { BotBans, SlashCommand } from "@interfaces/interactions";
+import { type BotBans, defineCommand } from "@interfaces/interactions";
 import { EmbedBuilder } from "@client";
 import {
 	AttachmentBuilder,
@@ -10,7 +10,7 @@ import { readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 import { colors } from "@utility/colors";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("botban")
 		.setDescription("Manage the ban list (devs naughty list :D).")
@@ -128,4 +128,4 @@ export const command: SlashCommand = {
 			}
 		},
 	},
-};
+});

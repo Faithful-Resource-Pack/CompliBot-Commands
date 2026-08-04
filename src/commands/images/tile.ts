@@ -1,4 +1,4 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder } from "discord.js";
 import { tileToAttachment, TileShape, TileRandom } from "@images/tile";
 import getImage, { imageNotFound } from "@images/getImage";
@@ -6,7 +6,7 @@ import { tileButtons } from "@utility/buttons";
 import { imageTooBig } from "@helpers/warnUser";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("tile")
 		.setDescription("Tile an image")
@@ -55,4 +55,4 @@ export const command: SlashCommand = {
 
 		await interaction.editReply({ files: [file], components: addDeleteButton([tileButtons]) });
 	},
-};
+});

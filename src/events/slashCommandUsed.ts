@@ -1,10 +1,10 @@
-import type { Event } from "@interfaces/events";
+import { defineEvent } from "@interfaces/events";
 import { ChatInputCommandInteraction, EmbedBuilder } from "@client";
 import { handleError } from "@functions/handleError";
 import { colors } from "@utility/colors";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export default {
+export default defineEvent({
 	name: "slashCommandUsed",
 	async execute(client, interaction: ChatInputCommandInteraction) {
 		client.storeAction("slashCommand", interaction);
@@ -41,4 +41,4 @@ export default {
 			return interaction.deferred ? interaction.followUp(options) : interaction.reply(options);
 		}
 	},
-} as Event;
+});

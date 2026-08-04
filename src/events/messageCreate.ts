@@ -1,4 +1,4 @@
-import type { Event } from "@interfaces/events";
+import { defineEvent } from "@interfaces/events";
 import { Message, EmbedBuilder } from "@client";
 import type { Submission } from "@interfaces/database";
 import axios from "axios";
@@ -6,7 +6,7 @@ import { randint } from "@utility/methods";
 import prefixCommandHandler from "@helpers/prefixCommandHandler";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export default {
+export default defineEvent({
 	name: "messageCreate",
 	async execute(client, message: Message<true>) {
 		// duplicate message for logger (ask @Juknum)
@@ -77,4 +77,4 @@ export default {
 
 		if (/\bforgor\b/.test(message.content.toLocaleLowerCase())) await message.react("💀");
 	},
-} as Event;
+});

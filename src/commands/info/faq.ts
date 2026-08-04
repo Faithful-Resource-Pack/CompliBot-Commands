@@ -1,4 +1,4 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { MessageFlags, SlashCommandBuilder } from "discord.js";
 import { EmbedBuilder } from "@client";
 import { colors } from "@utility/colors";
@@ -12,7 +12,7 @@ interface FAQ {
 	keywords: string[];
 }
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("faq")
 		.setDescription("Show a specific FAQ entry.")
@@ -71,4 +71,4 @@ export const command: SlashCommand = {
 
 		interaction.editReply({ embeds: [faqEmbed], components: addDeleteButton() });
 	},
-};
+});

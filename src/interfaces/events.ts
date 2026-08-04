@@ -10,8 +10,10 @@ interface AllEvents extends ClientEvents {
 }
 
 export interface Event {
-	name: keyof AllEvents;
-	execute: EventExecute;
+	readonly name: keyof AllEvents;
+	readonly execute: EventExecute;
 }
 
-export type EventExecute = (client: Client<true>, ...args: any[]) => Promise<any>;
+export type EventExecute = (client: Client<true>, ...args: any[]) => void;
+
+export const defineEvent = (data: Event) => data;

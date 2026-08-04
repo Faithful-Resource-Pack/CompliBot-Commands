@@ -1,11 +1,11 @@
-import type { SlashCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { SlashCommandBuilder } from "discord.js";
 import { cycleTexture } from "@functions/cycleTexture";
 import parseTextureName from "@functions/parseTextureName";
 import { textureChoiceEmbed } from "@helpers/choiceEmbed";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export const command: SlashCommand = {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("cycle")
 		.setDescription("Cycle through each resolution of a given texture as a GIF.")
@@ -68,4 +68,4 @@ export const command: SlashCommand = {
 			framerate.toString(), // storing multiple things in value
 		);
 	},
-};
+});
