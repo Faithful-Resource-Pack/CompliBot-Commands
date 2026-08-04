@@ -237,27 +237,23 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 	 * @author Nick, Juknum
 	 */
 	public async loadSlashCommands() {
-		const commandsArr: {
-			servers?: string[];
-			command: RESTPostAPIApplicationCommandsJSONBody;
-		}[] = [];
+		const commandPaths = walkSync(paths.commands).filter((file) => file.endsWith(".ts"));
 
-		// optimization
-		await Promise.all(
-			walkSync(paths.commands)
-				.filter((file) => file.endsWith(".ts"))
-				.map(async (file) => {
-					const command: SlashCommand = await import(file).then(({ default: command }) => command);
-					const data =
-						command.data instanceof Function
-							? await command.data(this) // for dynamic data (e.g. /missing)
-							: command.data;
-					this.commands.set(data.name, command);
-					commandsArr.push({
-						servers: command.servers,
-						command: data.toJSON(),
-					});
-				}),
+		// run import/data loading concurrently since they don't block
+		const commands = await Promise.all(
+			commandPaths.map(async (file) => {
+				const command: SlashCommand = await import(file).then(({ default: cmd }) => cmd);
+
+				// handle dynamic data (e.g. /missing)
+				const data = typeof command.data === "function" ? await command.data(this) : command.data;
+				this.commands.set(data.name, command);
+
+				return {
+					// lock all commands to dev server
+					servers: this.tokens.dev ? ["dev"] : command.servers,
+					command: data.toJSON(),
+				};
+			}),
 		);
 
 		const rest = new REST({ version: "10" }).setToken(this.tokens.token);
@@ -265,44 +261,34 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 			await axios.get<Record<string, FaithfulGuild>>(`${this.tokens.apiUrl}settings/discord.guilds`)
 		).data;
 
-		// lock all commands to dev server
-		if (this.tokens.dev)
-			commandsArr.forEach((el) => {
-				el.servers = ["dev"];
-			});
-
-		const guilds = commandsArr.reduce<Record<string, RESTPostAPIApplicationCommandsJSONBody[]>>(
-			(acc, cmd) => {
-				if (!cmd.servers) cmd.servers = ["global"];
-				for (const server of cmd.servers) {
+		const groupedCommands = commands.reduce(
+			(acc, { servers = ["global"], command }) => {
+				for (const server of servers) {
 					acc[server] ||= [];
-					acc[server].push(cmd.command);
+					acc[server].push(command);
 				}
 				return acc;
 			},
-			{ global: [] },
+			{ global: [] } as Record<string, RESTPostAPIApplicationCommandsJSONBody[]>,
 		);
 
 		await Promise.all(
-			Object.entries(allGuilds)
-				// if the client isn't in the guild, skip it
-				.filter(([, { id }]) => this.guilds.cache.get(id))
-				.map(([name, { id }]) => {
-					// add guild-specific commands (e.g. /eval)
-					rest
-						.put(Routes.applicationGuildCommands(this.user.id, id), {
-							body: guilds[name],
-						})
-						.then(() =>
-							console.log(`${success}Successfully added slash commands to server: ${name}`),
-						);
-				}),
+			Object.entries(allGuilds).map(async ([name, server]) => {
+				// skip servers the bot isn't in
+				if (!this.guilds.cache.get(server.id)) return;
+
+				// for commands like /eval, or all commands in dev mode
+				await rest.put(Routes.applicationGuildCommands(this.user.id, server.id), {
+					body: groupedCommands[name],
+				});
+				console.log(`${success}Added guild-specific slash commands to: ${name}`);
+			}),
 		);
 
 		// we add global commands to all guilds (only if not in dev mode)
 		if (!this.tokens.dev) {
-			await rest.put(Routes.applicationCommands(this.user.id), { body: guilds.global });
-			console.log(`${success}Successfully added global slash commands`);
+			await rest.put(Routes.applicationCommands(this.user.id), { body: groupedCommands.global });
+			console.log(`${success}Added global slash commands`);
 		}
 	}
 
