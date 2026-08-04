@@ -1,5 +1,5 @@
 import { StringSelectMenuInteraction, EmbedBuilder } from "@client";
-import type { Component } from "@interfaces/components";
+import { defineComponent } from "@interfaces/components";
 import { info } from "@helpers/logger";
 import { MessageFlags } from "discord.js";
 import compareTexture from "@functions/compareTexture";
@@ -8,7 +8,7 @@ import { colors } from "@utility/colors";
 import { unencodeChoice } from "@helpers/choiceEmbed";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export default {
+export default defineComponent<StringSelectMenuInteraction>({
 	id: "compareSelect",
 	async execute(client, interaction) {
 		if (client.verbose) console.log(`${info}Texture selected!`);
@@ -45,4 +45,4 @@ export default {
 
 		message.edit({ ...editOptions, components: addDeleteButton(editOptions.components) });
 	},
-} as Component<StringSelectMenuInteraction>;
+});

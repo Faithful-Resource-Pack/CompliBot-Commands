@@ -1,4 +1,4 @@
-import type { Component } from "@interfaces/components";
+import { defineComponent } from "@interfaces/components";
 import { info } from "@helpers/logger";
 import { ButtonInteraction, EmbedBuilder } from "@client";
 import { magnifyToAttachment } from "@images/magnify";
@@ -6,7 +6,7 @@ import { magnifyButtons } from "@utility/buttons";
 import getImage, { imageNotFound } from "@images/getImage";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export default {
+export default defineComponent<ButtonInteraction>({
 	id: "magnify",
 	async execute(client, interaction) {
 		if (client.verbose) console.log(`${info}Image was magnified!`);
@@ -27,4 +27,4 @@ export default {
 			components: addDeleteButton([magnifyButtons], true),
 		});
 	},
-} as Component<ButtonInteraction>;
+});

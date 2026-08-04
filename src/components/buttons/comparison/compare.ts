@@ -1,11 +1,11 @@
-import type { Component } from "@interfaces/components";
+import { defineComponent } from "@interfaces/components";
 import { info } from "@helpers/logger";
 import { ButtonInteraction } from "@client";
 import compareTexture from "@functions/compareTexture";
 import { imageTooBig } from "@helpers/warnUser";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export default {
+export default defineComponent<ButtonInteraction>({
 	id: "compare",
 	async execute(client, interaction) {
 		if (client.verbose) console.log(`${info}Image was compared!`);
@@ -39,4 +39,4 @@ export default {
 			components: addDeleteButton(messageOptions.components, true),
 		});
 	},
-} as Component<ButtonInteraction>;
+});

@@ -1,4 +1,4 @@
-import type { Component } from "@interfaces/components";
+import { defineComponent } from "@interfaces/components";
 import { info } from "@helpers/logger";
 import { ButtonInteraction, EmbedBuilder } from "@client";
 import { tileToAttachment } from "@images/tile";
@@ -7,7 +7,7 @@ import getImage, { imageNotFound } from "@images/getImage";
 import { imageTooBig } from "@helpers/warnUser";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export default {
+export default defineComponent<ButtonInteraction>({
 	id: "tile",
 	async execute(client, interaction) {
 		if (client.verbose) console.log(`${info}Image was tiled!`);
@@ -30,4 +30,4 @@ export default {
 			components: addDeleteButton([tileButtons], true),
 		});
 	},
-} as Component<ButtonInteraction>;
+});

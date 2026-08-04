@@ -1,5 +1,5 @@
 import { StringSelectMenuInteraction, EmbedBuilder } from "@client";
-import type { Component } from "@interfaces/components";
+import { defineComponent } from "@interfaces/components";
 import { info } from "@helpers/logger";
 import { getTexture } from "@functions/getTexture";
 import axios from "axios";
@@ -9,7 +9,7 @@ import { MessageFlags } from "discord.js";
 import type { Texture } from "@interfaces/database";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export default {
+export default defineComponent<StringSelectMenuInteraction>({
 	id: "textureSelect",
 	async execute(client, interaction) {
 		if (client.verbose) console.log(`${info}Texture selected!`);
@@ -46,4 +46,4 @@ export default {
 		if (!editOptions.files) return interaction.ephemeralReply(editOptions);
 		return message.edit({ ...editOptions, components: addDeleteButton(editOptions.components) });
 	},
-} as Component<StringSelectMenuInteraction>;
+});

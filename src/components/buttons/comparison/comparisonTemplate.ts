@@ -1,4 +1,4 @@
-import type { Component } from "@interfaces/components";
+import { defineComponent } from "@interfaces/components";
 import { info } from "@helpers/logger";
 import { ButtonInteraction, EmbedBuilder } from "@client";
 import { magnifyToAttachment } from "@images/magnify";
@@ -8,7 +8,7 @@ import { Image, loadImage } from "@napi-rs/canvas";
 import stitch from "@helpers/images/stitch";
 import { MessageFlags } from "discord.js";
 
-export default {
+export default defineComponent<ButtonInteraction>({
 	id: "comparisonTemplate",
 	async execute(client, interaction) {
 		if (client.verbose) console.log(`${info}Comparison template requested!`);
@@ -38,4 +38,4 @@ export default {
 			files: [magnified],
 		});
 	},
-} as Component<ButtonInteraction>;
+});

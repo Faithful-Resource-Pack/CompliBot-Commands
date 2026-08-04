@@ -12,3 +12,5 @@ export type ComponentExecute<T> = (client: Client, interaction: T) => Promise<an
 
 // why is this not provided by default
 export type AnyV2Component = TopLevelComponent | ComponentInContainer | MessageActionRowComponent;
+
+export const defineComponent = <T extends AnyInteraction>(data: Component<T>) => data;

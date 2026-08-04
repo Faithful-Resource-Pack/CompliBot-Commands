@@ -10,24 +10,27 @@ import {
 } from "discord.js";
 import {
 	Message,
-	StringSelectMenuInteraction,
 	ButtonInteraction,
+	StringSelectMenuInteraction,
 	ModalSubmitInteraction,
 } from "@client";
+
+import axios from "axios";
+import chalk from "chalk";
+
 import type { Tokens } from "@interfaces/tokens";
-import type { Component } from "@interfaces/components";
 import type { AnyInteraction, SlashCommand } from "@interfaces/interactions";
+import type { Component } from "@interfaces/components";
 import type { Event } from "@interfaces/events";
+
 import { EmittingCollection } from "@helpers/emittingCollection";
 import { setData, getData } from "@utility/handleJSON";
 import { handleError } from "@functions/handleError";
 import { err, info, success } from "@helpers/logger";
-
-import { join } from "path";
-import chalk from "chalk";
-import startClient from "@index";
 import walkSync from "@helpers/walkSync";
-import axios from "axios";
+import { join } from "path";
+
+import startClient from "@index";
 
 // not in a config file because dynamic data
 export const paths = {

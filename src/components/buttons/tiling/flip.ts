@@ -1,4 +1,4 @@
-import type { Component } from "@interfaces/components";
+import { defineComponent } from "@interfaces/components";
 import { info } from "@helpers/logger";
 import { ButtonInteraction, EmbedBuilder } from "@client";
 import { tileToAttachment, untile } from "@images/tile";
@@ -8,7 +8,7 @@ import { imageTooBig } from "@helpers/warnUser";
 import { ActionRowBuilder, ButtonBuilder } from "discord.js";
 import addDeleteButton from "@utility/addDeleteButton";
 
-export default {
+export default defineComponent<ButtonInteraction>({
 	id: "flip",
 	async execute(client, interaction) {
 		if (client.verbose) console.log(`${info}Image was flipped!`);
@@ -35,4 +35,4 @@ export default {
 			),
 		});
 	},
-} as Component<ButtonInteraction>;
+});

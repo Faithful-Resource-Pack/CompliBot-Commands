@@ -1,10 +1,10 @@
 import { info } from "@helpers/logger";
 import { ButtonInteraction, EmbedBuilder } from "@client";
-import type { Component } from "@interfaces/components";
+import { defineComponent } from "@interfaces/components";
 import { colors } from "@utility/colors";
 import { MessageFlags } from "discord.js";
 
-export default {
+export default defineComponent<ButtonInteraction>({
 	id: "deleteMessage",
 	async execute(client, interaction) {
 		if (client.verbose) console.log(`${info}Message deleted!`);
@@ -44,4 +44,4 @@ export default {
 			});
 		}
 	},
-} as Component<ButtonInteraction>;
+});

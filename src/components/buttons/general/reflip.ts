@@ -1,10 +1,10 @@
-import type { Component } from "@interfaces/components";
+import { defineComponent } from "@interfaces/components";
 import { ButtonInteraction, EmbedBuilder } from "@client";
 import { colors } from "@utility/colors";
 import { info } from "@helpers/logger";
 import { MessageFlags } from "discord.js";
 
-export default {
+export default defineComponent<ButtonInteraction>({
 	id: "reflip",
 	async execute(client, interaction) {
 		if (client.verbose) console.log(`${info}Coin re-flipped!`);
@@ -47,4 +47,4 @@ export default {
 			flags: MessageFlags.Ephemeral,
 		});
 	},
-} as Component<ButtonInteraction>;
+});

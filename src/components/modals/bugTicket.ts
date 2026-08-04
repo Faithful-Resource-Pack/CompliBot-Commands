@@ -1,9 +1,9 @@
-import type { Component } from "@interfaces/components";
+import { defineComponent } from "@interfaces/components";
 import { info } from "@helpers/logger";
 import { EmbedBuilder, ModalSubmitInteraction } from "@client";
 import sendFeedback from "@functions/feedback";
 
-export default {
+export default defineComponent<ModalSubmitInteraction>({
 	id: "bugTicket",
 	async execute(client, interaction) {
 		if (client.verbose) console.log(`${info}Bug report submitted!`);
@@ -30,4 +30,4 @@ export default {
 
 		return sendFeedback(interaction, title, description);
 	},
-} as Component<ModalSubmitInteraction>;
+});

@@ -4,7 +4,7 @@ import { resolve } from "path";
 interface GetOptions {
 	relativePath: string;
 	filename: string;
-	default_value?: "{}";
+	defaultValue?: "{}";
 }
 
 interface SetOptions {
@@ -29,7 +29,7 @@ export function getData(options: GetOptions) {
 		// file/folder isn't valid
 		if (!existsSync(folder)) mkdirSync(folder, { recursive: true });
 
-		writeFileSync(file, options.default_value || "{}");
+		writeFileSync(file, options.defaultValue || "{}");
 
 		return getData(options); // check another time
 	}
