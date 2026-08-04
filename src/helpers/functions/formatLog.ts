@@ -1,4 +1,4 @@
-import { Log } from "@client";
+import { ActionLog } from "@client";
 
 /**
  * Format the log type into a human-readable format
@@ -6,7 +6,7 @@ import { Log } from "@client";
  * @param log log to format
  * @returns formatted log type
  */
-export function formatLogType(log: Log) {
+export function formatLogType(log: ActionLog) {
 	switch (log.type) {
 		case "slashCommand": {
 			return `${log.type} [/${log.data.commandName}]`;
@@ -58,7 +58,7 @@ export function formatLogURL(data: any) {
  * @param log Log to format the content of
  * @returns Found log content
  */
-export function formatLogContent(log: Log) {
+export function formatLogContent(log: ActionLog) {
 	if (log.data.content !== undefined) {
 		if (log.data.content === "") return "Empty";
 		return log.data.content;

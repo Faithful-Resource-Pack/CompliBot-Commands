@@ -51,7 +51,7 @@ export const errors = [
 	{ displayName: "Uncaught Exception", error: "uncaughtException" },
 ];
 
-export type LogAction =
+export type LogType =
 	| "message"
 	| "slashCommand"
 	| "button"
@@ -62,8 +62,8 @@ export type LogAction =
 
 export type LogData = Message | Guild | AnyInteraction;
 
-export type Log = {
-	type: LogAction;
+export type ActionLog = {
+	type: LogType;
 	data: any; // technically LogData but TS union type validation is painful
 };
 
@@ -83,7 +83,7 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 	public firstStart = true; // used for prettier restarting in dev mode
 	public readonly tokens: Tokens;
 
-	public readonly logs: Log[] = [];
+	public readonly logs: ActionLog[] = [];
 	private readonly maxLogs = 50;
 
 	public readonly menus = new Collection<string, Component<StringSelectMenuInteraction>>();
@@ -356,7 +356,7 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 	 * @param type
 	 * @param data
 	 */
-	public storeAction(type: LogAction, data: LogData) {
+	public storeAction(type: LogType, data: LogData) {
 		// remove from start (oldest messages) on overflow
 		if (this.logs.length >= this.maxLogs) this.logs.shift();
 		this.logs.push({ type, data });
