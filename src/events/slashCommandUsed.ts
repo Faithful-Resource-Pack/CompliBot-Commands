@@ -2,6 +2,7 @@ import { defineEvent } from "@interfaces/events";
 import { ChatInputCommandInteraction, EmbedBuilder } from "@client";
 import { handleError } from "@functions/handleError";
 import { colors } from "@utility/colors";
+import { info } from "@helpers/logger";
 import addDeleteButton from "@utility/addDeleteButton";
 
 export default defineEvent({
@@ -14,8 +15,9 @@ export default defineEvent({
 		if (!command) return;
 
 		// increment command usage
-		const count = (client.commandsProcessed.get(interaction.commandName) || 0) + 1;
-		client.commandsProcessed.set(interaction.commandName, count);
+		const count = client.commandsProcessed.get(interaction.commandName) || 0;
+		client.commandsProcessed.set(interaction.commandName, count + 1);
+		client.commandsProcessed.save();
 
 		// ! await required for try catch support
 		try {

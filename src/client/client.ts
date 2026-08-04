@@ -23,8 +23,7 @@ import type { AnyInteraction, SlashCommand } from "@interfaces/interactions";
 import type { Component } from "@interfaces/components";
 import type { Event } from "@interfaces/events";
 
-import { EmittingCollection } from "@helpers/emittingCollection";
-import { setData, getData } from "@utility/handleJSON";
+import SavableCollection from "@helpers/savableCollection";
 import { handleError } from "@functions/handleError";
 import { err, info, success } from "@helpers/logger";
 import walkSync from "@helpers/walkSync";
@@ -79,9 +78,9 @@ export interface FaithfulGuild {
  * @template Ready so interfaces don't complain about overriding classes incorrectly
  */
 export class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
-	public verbose = false;
 	public firstStart = true; // used for prettier restarting in dev mode
 	public readonly tokens: Tokens;
+	public readonly verbose: boolean;
 
 	public readonly logs: ActionLog[] = [];
 	private readonly maxLogs = 50;
@@ -91,13 +90,17 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 	public readonly modals = new Collection<string, Component<ModalSubmitInteraction>>();
 	public readonly commands = new Collection<string, SlashCommand>();
 
-	public commandsProcessed = new EmittingCollection<string, number>();
+	public readonly commandsProcessed = new SavableCollection<number>(
+		join(paths.json, paths.commandsProcessed),
+	);
 	public versions: string[] = [];
 
 	constructor(data: ClientOptions & { tokens: Tokens }, firstStart = true) {
 		super(data);
-		this.verbose = data.tokens.verbose;
 		this.tokens = data.tokens;
+
+		// handy shorthand
+		this.verbose = data.tokens.verbose;
 		this.firstStart = firstStart;
 	}
 
@@ -120,7 +123,6 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 
 				this.loadEvents();
 				this.loadComponents();
-				this.loadCollections();
 				this.loadVersions();
 			});
 
@@ -163,56 +165,6 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 		console.log(darkColor`                                  888`);
 		console.log(darkColor`                                  888              ` + chalk.white.bold(`           ${new Date().toDateString()}`));
 		console.log(darkColor`                                  888              ` + chalk.gray.italic(this.tokens.maintenance === false ? " ~ Made lovingly with pain\n" : "    Maintenance mode!\n"));
-	}
-
-	/**
-	 * Convenience method to load all emitting collections at once
-	 * @author Juknum
-	 */
-	private loadCollections() {
-		if (this.verbose) console.log(`${info}Loading collection data...`);
-		this.loadCollection(this.commandsProcessed, paths.commandsProcessed, paths.json);
-		return this;
-	}
-
-	/**
-	 * Read and load data from a JSON file into emitting collection with events
-	 * @author Nick, Juknum
-	 * @param collection collection to load into
-	 * @param filename file to load data from
-	 * @param relativePath path to load data from
-	 */
-	private loadCollection<V>(
-		collection: EmittingCollection<string, V>,
-		filename: string,
-		relativePath: string,
-	) {
-		const obj: Record<string, V> = getData({ filename, relativePath });
-		Object.entries(obj).forEach(([k, v]) => collection.set(k, v));
-
-		collection.events.on("dataSet", () =>
-			this.saveEmittingCollection(collection, filename, relativePath),
-		);
-
-		collection.events.on("dataDeleted", () =>
-			this.saveEmittingCollection(collection, filename, relativePath),
-		);
-	}
-
-	/**
-	 * Save an emitting collection into a JSON file
-	 * @author Nick, Juknum
-	 * @param collection collection to save
-	 * @param filename where to save it
-	 * @param relativePath folder to save it
-	 */
-	private saveEmittingCollection<V>(
-		collection: EmittingCollection<string, V>,
-		filename: string,
-		relativePath: string,
-	) {
-		const data = Object.fromEntries(collection);
-		setData({ filename, relativePath, data: JSON.parse(JSON.stringify(data)) });
 	}
 
 	/**
