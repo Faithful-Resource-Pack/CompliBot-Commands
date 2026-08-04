@@ -35,7 +35,7 @@ export default defineCommand({
 			const memberCount = client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0);
 
 			const commandCount =
-				Array.from(client.commandsProcessed.values()).reduce((acc, cur) => acc + cur, 0) + 1;
+				Array.from(client.commandStats.values()).reduce((acc, cur) => acc + cur, 0) + 1;
 			const heart = (await axios.get<string>(`${client.tokens.apiUrl}settings/images.heart`)).data;
 
 			const embed = new EmbedBuilder()
@@ -69,7 +69,7 @@ export default defineCommand({
 		async command(interaction) {
 			const command = interaction.options.getString("command");
 			if (command) {
-				const total = interaction.client.commandsProcessed.get(command);
+				const total = interaction.client.commandStats.get(command);
 				// command doesn't exist
 				if (total === undefined)
 					return interaction.reply({
@@ -92,14 +92,14 @@ export default defineCommand({
 			}
 
 			//sorts commands by usage: [4, 3, 2, 1]
-			const data = Array.from(interaction.client.commandsProcessed.entries()).sort(
+			const data = Array.from(interaction.client.commandStats.entries()).sort(
 				(a, b) => b[1] - a[1],
 			);
 
 			const formatted = Buffer.from(data.map(([key, value]) => `/${key}: ${value}`).join("\n"));
 			const file = new AttachmentBuilder(formatted, { name: "stats-all-commands.txt" });
 
-			const total = Array.from(interaction.client.commandsProcessed.values()).reduce(
+			const total = Array.from(interaction.client.commandStats.values()).reduce(
 				(acc, cur) => cur + acc,
 				0,
 			);

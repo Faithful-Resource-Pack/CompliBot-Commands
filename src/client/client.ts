@@ -41,7 +41,7 @@ export const paths = {
 		menus: join(__dirname, "..", "components", "menus"),
 		modals: join(__dirname, "..", "components", "modals"),
 	},
-	commandsProcessed: "commandsProcessed.json",
+	stats: "commandsProcessed.json",
 } as const;
 
 export const errors = [
@@ -90,9 +90,7 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 	public readonly modals = new Collection<string, Component<ModalSubmitInteraction>>();
 	public readonly commands = new Collection<string, SlashCommand>();
 
-	public readonly commandsProcessed = new SavableCollection<number>(
-		join(paths.json, paths.commandsProcessed),
-	);
+	public readonly commandStats = new SavableCollection<number>(join(paths.json, paths.stats));
 	public versions: string[] = [];
 
 	constructor(data: ClientOptions & { tokens: Tokens }, firstStart = true) {

@@ -15,9 +15,9 @@ export default defineEvent({
 		if (!command) return;
 
 		// increment command usage
-		const count = client.commandsProcessed.get(interaction.commandName) || 0;
-		client.commandsProcessed.set(interaction.commandName, count + 1);
-		client.commandsProcessed.save();
+		const count = client.commandStats.get(interaction.commandName) || 0;
+		client.commandStats.set(interaction.commandName, count + 1);
+		client.commandStats.save();
 
 		if (client.verbose) console.log(`${info}Slash command used: /${interaction.commandName}`);
 
