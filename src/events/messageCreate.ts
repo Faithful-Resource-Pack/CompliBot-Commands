@@ -1,7 +1,6 @@
 import { defineEvent } from "@interfaces/events";
 import { Message, EmbedBuilder } from "@client";
 import { randint } from "@utility/methods";
-import prefixCommandHandler from "@helpers/prefixCommandHandler";
 import addDeleteButton from "@utility/addDeleteButton";
 
 export default defineEvent({
@@ -12,7 +11,8 @@ export default defineEvent({
 
 		if (message.author.bot) return;
 
-		if (message.content.startsWith(client.tokens.prefix)) return prefixCommandHandler(message);
+		if (message.content.startsWith(client.tokens.prefix))
+			return client.emit("prefixCommandUsed", message);
 
 		/**
 		 * easter eggs

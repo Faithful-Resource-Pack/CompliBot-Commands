@@ -17,7 +17,6 @@ export default defineEvent({
 		// increment command usage
 		const count = client.commandStats.get(interaction.commandName) || 0;
 		client.commandStats.set(interaction.commandName, count + 1);
-		client.commandStats.save();
 
 		if (client.verbose) console.log(`${info}Slash command used: /${interaction.commandName}`);
 
@@ -43,6 +42,9 @@ export default defineEvent({
 			};
 
 			return interaction.deferred ? interaction.followUp(options) : interaction.reply(options);
+		} finally {
+			// since this has to be synchronous don't block the command from running
+			client.commandStats.save();
 		}
 	},
 });

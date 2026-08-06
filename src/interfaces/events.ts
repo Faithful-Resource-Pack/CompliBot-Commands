@@ -2,6 +2,7 @@ import { Client } from "@client";
 import { ClientEvents } from "discord.js";
 
 interface AllEvents extends ClientEvents {
+	prefixCommandUsed: string;
 	slashCommandUsed: string;
 	buttonUsed: string;
 	selectMenuUsed: string;
