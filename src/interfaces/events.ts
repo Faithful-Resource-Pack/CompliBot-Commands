@@ -1,31 +1,25 @@
-import { Client, Message } from "@client";
-import {
-	AutocompleteInteraction,
-	ButtonInteraction,
-	ChatInputCommandInteraction,
-	ClientEvents,
-	ModalSubmitInteraction,
-	OmitPartialGroupDMChannel,
-	StringSelectMenuInteraction,
-} from "discord.js";
+import { Client } from "@client";
+import { ClientEvents, OmitPartialGroupDMChannel } from "discord.js";
 
-interface AllEvents extends ClientEvents {
-	prefixCommandUsed: [message: OmitPartialGroupDMChannel<Message>];
-	slashCommandUsed: [interaction: ChatInputCommandInteraction];
-	buttonUsed: [interaction: ButtonInteraction];
-	selectMenuUsed: [interaction: StringSelectMenuInteraction];
-	modalSubmit: [interaction: ModalSubmitInteraction];
-	autocomplete: [interaction: AutocompleteInteraction];
+declare module "discord.js" {
+	interface ClientEvents {
+		prefixCommandUsed: [message: OmitPartialGroupDMChannel<Message>];
+		slashCommandUsed: [interaction: ChatInputCommandInteraction];
+		buttonUsed: [interaction: ButtonInteraction];
+		selectMenuUsed: [interaction: StringSelectMenuInteraction];
+		modalSubmit: [interaction: ModalSubmitInteraction];
+		autocomplete: [interaction: AutocompleteInteraction];
+	}
 }
 
-export interface Event<E extends keyof AllEvents> {
+export interface Event<E extends keyof ClientEvents> {
 	readonly name: E;
 	readonly execute: EventExecute<E>;
 }
 
-export type EventExecute<E extends keyof AllEvents> = (
+export type EventExecute<E extends keyof ClientEvents> = (
 	client: Client<true>,
-	...args: AllEvents[E]
+	...args: ClientEvents[E]
 ) => void;
 
-export const defineEvent = <E extends keyof AllEvents>(data: Event<E>) => data;
+export const defineEvent = <E extends keyof ClientEvents>(data: Event<E>) => data;
