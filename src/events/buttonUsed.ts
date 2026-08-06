@@ -1,12 +1,12 @@
 import { defineEvent } from "@interfaces/events";
-import { ButtonInteraction, EmbedBuilder } from "@client";
+import { EmbedBuilder } from "@client";
 import { info } from "@helpers/logger";
 import { colors } from "@utility/colors";
 import { MessageFlags } from "discord.js";
 
 export default defineEvent({
 	name: "buttonUsed",
-	async execute(client, interaction: ButtonInteraction) {
+	async execute(client, interaction) {
 		client.storeAction("button", interaction);
 
 		if (client.verbose) console.log(`${info}Button used!`);

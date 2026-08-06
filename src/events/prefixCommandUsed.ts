@@ -1,5 +1,4 @@
 import { defineEvent } from "@interfaces/events";
-import { Message } from "@client";
 
 import getImage, { imageNotFound } from "@images/getImage";
 import { imageTooBig } from "@helpers/warnUser";
@@ -14,7 +13,7 @@ import addDeleteButton from "@utility/addDeleteButton";
 
 export default defineEvent({
 	name: "prefixCommandUsed",
-	async execute(client, message: Message<true>) {
+	async execute(client, message) {
 		const args = message.content.split(" ");
 
 		const command = args.shift()?.slice(client.tokens.prefix.length);

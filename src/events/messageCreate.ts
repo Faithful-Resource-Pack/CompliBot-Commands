@@ -1,11 +1,11 @@
 import { defineEvent } from "@interfaces/events";
-import { Message, EmbedBuilder } from "@client";
+import { EmbedBuilder } from "@client";
 import { randint } from "@utility/methods";
 import addDeleteButton from "@utility/addDeleteButton";
 
 export default defineEvent({
 	name: "messageCreate",
-	async execute(client, message: Message<true>) {
+	async execute(client, message) {
 		// duplicate message for logger (ask @Juknum)
 		client.storeAction("message", structuredClone(message));
 

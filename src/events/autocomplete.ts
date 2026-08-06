@@ -1,10 +1,9 @@
-import { AutocompleteInteraction } from "discord.js";
 import { defineEvent } from "@interfaces/events";
 import versionSorter from "@utility/versionSorter";
 
 export default defineEvent({
 	name: "autocomplete",
-	async execute(client, interaction: AutocompleteInteraction) {
+	async execute(client, interaction) {
 		const focusedOption = interaction.options.getFocused(true);
 
 		// several commands have a version field and this reduces code duplication

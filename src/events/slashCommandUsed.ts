@@ -1,5 +1,5 @@
 import { defineEvent } from "@interfaces/events";
-import { ChatInputCommandInteraction, EmbedBuilder } from "@client";
+import { EmbedBuilder } from "@client";
 import { handleError } from "@functions/handleError";
 import { colors } from "@utility/colors";
 import { info } from "@helpers/logger";
@@ -7,7 +7,7 @@ import addDeleteButton from "@utility/addDeleteButton";
 
 export default defineEvent({
 	name: "slashCommandUsed",
-	async execute(client, interaction: ChatInputCommandInteraction) {
+	async execute(client, interaction) {
 		client.storeAction("slashCommand", interaction);
 
 		const command = client.commands.get(interaction.commandName);

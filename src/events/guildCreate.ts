@@ -1,11 +1,10 @@
-import { Guild } from "discord.js";
 import { EmbedBuilder } from "@client";
 import { defineEvent } from "@interfaces/events";
 import { info } from "@helpers/logger";
 
 export default defineEvent({
 	name: "guildCreate",
-	async execute(client, guild: Guild) {
+	async execute(client, guild) {
 		client.storeAction("guildJoined", guild);
 		client.loadSlashCommands();
 

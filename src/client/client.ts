@@ -111,7 +111,7 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 
 		// login client
 		this.login(this.tokens.token)
-			.catch((e) => {
+			.catch((e: unknown) => {
 				// Allows for showing different errors like missing privileged gateway intents, this caused me so much pain >:(
 				console.log(`${err}${e}`);
 				process.exit(1);
@@ -126,7 +126,7 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 
 		// all error types
 		errors.forEach(({ error, displayName }) =>
-			process.on(error, (reason) => {
+			process.on(error, (reason: unknown) => {
 				if (reason) handleError(this, reason, displayName);
 			}),
 		);
@@ -258,9 +258,9 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 		if (this.verbose) console.log(`${info}Loading event handlers...`);
 		const events = walkSync(paths.events).filter((file) => file.endsWith(".ts"));
 		for (const file of events) {
-			const event: Event = require(file).default;
+			const event: Event<any> = require(file).default;
 			// bind is just for adding ExtendedClient as the first argument always
-			this.on(event.name as string, event.execute.bind(null, this));
+			this.on(event.name, event.execute.bind(null, this));
 		}
 	}
 

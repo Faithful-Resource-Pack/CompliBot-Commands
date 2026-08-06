@@ -1,15 +1,15 @@
 import { defineEvent } from "@interfaces/events";
-import type { AnyInteraction, BotBans } from "@interfaces/interactions";
+import type { BotBans } from "@interfaces/interactions";
 import { MessageFlags } from "discord.js";
 
 export default defineEvent({
 	name: "interactionCreate",
-	async execute(client, interaction: AnyInteraction) {
+	async execute(client, interaction) {
 		if (!interaction.inGuild()) return;
 
 		const banlist = await import("@json/botbans.json").then<BotBans>((res) => res.default);
-		if (banlist.ids.includes(interaction.user.id)) {
-			// all interactions have the string() and reply() methods
+		// all interactions except autocomplete have the string() and reply() methods
+		if (banlist.ids.includes(interaction.user.id) && !interaction.isAutocomplete()) {
 			return interaction.reply({
 				content: interaction.strings().error.botbanned,
 				flags: MessageFlags.Ephemeral,
