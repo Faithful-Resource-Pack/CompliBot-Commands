@@ -1,7 +1,5 @@
 import { defineEvent } from "@interfaces/events";
 import { Message, EmbedBuilder } from "@client";
-import type { Submission } from "@interfaces/database";
-import axios from "axios";
 import { randint } from "@utility/methods";
 import prefixCommandHandler from "@helpers/prefixCommandHandler";
 import addDeleteButton from "@utility/addDeleteButton";
@@ -13,17 +11,6 @@ export default defineEvent({
 		client.storeAction("message", structuredClone(message));
 
 		if (message.author.bot) return;
-
-		let packs: Record<string, Submission>;
-		try {
-			packs = (
-				await axios.get<Record<string, Submission>>(`${client.tokens.apiUrl}submissions/raw`)
-			).data;
-			// returns early if you're in a submission channel
-			if (Object.values(packs).some((pack) => pack.channels.submit === message.channel.id)) return;
-		} catch {
-			// api error, ignore
-		}
 
 		if (message.content.startsWith(client.tokens.prefix)) return prefixCommandHandler(message);
 
