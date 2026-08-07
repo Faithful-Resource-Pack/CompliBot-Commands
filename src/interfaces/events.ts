@@ -1,5 +1,5 @@
 import { Client } from "@client";
-import { ClientEvents, OmitPartialGroupDMChannel } from "discord.js";
+import { ClientEvents } from "discord.js";
 
 declare module "discord.js" {
 	interface ClientEvents {

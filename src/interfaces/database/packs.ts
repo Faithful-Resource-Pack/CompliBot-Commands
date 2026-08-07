@@ -1,10 +1,5 @@
 import { MinecraftEdition } from "./textures";
 
-export interface PackGitHub {
-	repo: string;
-	org: string;
-}
-
 export interface Pack {
 	id: string;
 	name: string;
@@ -14,16 +9,7 @@ export interface Pack {
 	github: Record<MinecraftEdition, PackGitHub>;
 }
 
-export interface Submission {
-	id: string;
-	reference: string | null;
-	channels: SubmissionChannels;
-	time_to_results: number;
-	contributor_role?: string;
-}
-
-// just the channels
-export interface SubmissionChannels {
-	submit: string;
-	results: string;
+export interface PackGitHub {
+	org: string;
+	repo: string;
 }
