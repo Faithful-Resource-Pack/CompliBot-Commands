@@ -27,6 +27,7 @@ export default defineEvent({
 		if (client.verbose)
 			console.log(`${info}Prefix command used: ${client.tokens.prefix}${command}`);
 
+		let stat: string;
 		try {
 			const url = await getImage(message);
 			if (!url) return imageNotFound(message);
@@ -35,34 +36,39 @@ export default defineEvent({
 			switch (command) {
 				case "m":
 				case "z": {
-					const count = client.commandStats.get("magnify") || 0;
-					client.commandStats.set("magnify", count + 1);
-					message.reply({
+					await message.reply({
 						files: [await magnifyToAttachment(url)],
 						components: addDeleteButton([magnifyButtons]),
 					});
+					stat = "magnify";
 					break;
 				}
 				case "t": {
-					const count = client.commandStats.get("tile") || 0;
-					client.commandStats.set("tile", count + 1);
 					const file = await tileToAttachment(url, { magnify: true });
 					if (!file) return imageTooBig(message);
-					message.reply({ files: [file], components: addDeleteButton([tileButtons]) });
+					await message.reply({ files: [file], components: addDeleteButton([tileButtons]) });
+					stat = "tile";
 					break;
 				}
 				case "p": {
-					const count = client.commandStats.get("palette") || 0;
-					client.commandStats.set("palette", count + 1);
 					const [attachment, embed] = await paletteToAttachment(url);
 					if (!attachment || !embed) return imageTooBig(message);
-					message.reply({ files: [attachment], embeds: [embed], components: addDeleteButton() });
+					await message.reply({
+						files: [attachment],
+						embeds: [embed],
+						components: addDeleteButton(),
+					});
+					stat = "palette";
 					break;
 				}
 			}
 		} finally {
 			// only commit once everything is done (this is synchronous and can slow things down)
-			client.commandStats.save();
+			if (stat) {
+				const count = client.commandStats.get(stat) || 0;
+				client.commandStats.set(stat, count + 1);
+				client.commandStats.save();
+			}
 		}
 	},
 });

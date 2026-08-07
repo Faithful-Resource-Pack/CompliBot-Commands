@@ -14,10 +14,6 @@ export default defineEvent({
 		// command doesn't exist
 		if (!command) return;
 
-		// increment command usage
-		const count = client.commandStats.get(interaction.commandName) || 0;
-		client.commandStats.set(interaction.commandName, count + 1);
-
 		if (client.verbose) console.log(`${info}Slash command used: /${interaction.commandName}`);
 
 		// ! await required for try catch support
@@ -44,6 +40,9 @@ export default defineEvent({
 			return interaction.deferred ? interaction.followUp(options) : interaction.reply(options);
 		} finally {
 			// since this has to be synchronous don't block the command from running
+			// increment command usage
+			const count = client.commandStats.get(interaction.commandName) || 0;
+			client.commandStats.set(interaction.commandName, count + 1);
 			client.commandStats.save();
 		}
 	},
