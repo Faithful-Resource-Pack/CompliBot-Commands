@@ -15,16 +15,6 @@ export default class SavableCollection<V> extends Collection<string, V> {
 		Object.entries<V>(getData(this.path)).forEach(([k, v]) => this.set(k, v));
 	}
 
-	public set(key: string, value: V) {
-		super.set(key, value);
-		return this;
-	}
-
-	public delete(key: string) {
-		const success = super.delete(key);
-		return success;
-	}
-
 	/**
 	 * Save the collection to the JSON file
 	 */

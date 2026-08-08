@@ -40,7 +40,6 @@ export default defineEvent({
 			return interaction.deferred ? interaction.followUp(options) : interaction.reply(options);
 		} finally {
 			// since this has to be synchronous don't block the command from running
-			// increment command usage
 			const count = client.commandStats.get(interaction.commandName) || 0;
 			client.commandStats.set(interaction.commandName, count + 1);
 			client.commandStats.save();

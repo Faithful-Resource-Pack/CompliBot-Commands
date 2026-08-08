@@ -38,9 +38,9 @@ export const emojis = {
  * @param id emoji id
  * @returns usable string
  */
-export function parseID(id: string) {
+export function getEmoji(id: string) {
 	// <:name:id>
 	return `<:${Object.keys(emojis).find((key) => emojis[key] === id)}:${id}>`;
 }
 
-export type EmojiTypes = keyof typeof emojis;
+export type AvailableEmoji = keyof typeof emojis;
