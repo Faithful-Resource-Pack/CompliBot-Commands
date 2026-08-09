@@ -110,7 +110,7 @@ export async function palette(origin: ImageSource) {
 
 	// add field at top
 	embed.spliceFields(0, 0, {
-		name: "List of colors:",
+		name: "List of colors",
 		value: paletteUrls.join(" - "),
 		inline: false,
 	});
