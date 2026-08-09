@@ -18,22 +18,28 @@ export type AnyInteraction<Cached extends CacheType = CacheType> =
 	| ModalSubmitInteraction<Cached>
 	| StringSelectMenuInteraction<Cached>;
 
-export type SyncSlashCommandBuilder =
-	SlashCommandSubcommandsOnlyBuilder | SlashCommandOptionsOnlyBuilder;
+export type SyncOrAsyncType<T> = T | ((client: Client) => Promise<T>);
 
-/** Used for generating dynamic properties (e.g. /missing version list) */
-export type AsyncSlashCommandBuilder = (client: Client) => Promise<SyncSlashCommandBuilder>;
-
-export type SlashCommandExecute = (interaction: ChatInputCommandInteraction) => void;
-
-export interface SlashCommand {
+export interface BaseSlashCommand {
 	readonly servers?: string[];
-	readonly data: SyncSlashCommandBuilder | AsyncSlashCommandBuilder;
-	readonly execute: Record<string, SlashCommandExecute> | SlashCommandExecute;
 	readonly autocomplete?: (interaction: AutocompleteInteraction) => Promise<any>;
 }
 
-export const defineCommand = (data: SlashCommand) => data;
+// use two different interfaces so the types within them always agree (no function execute when subcommands)
+export interface SlashCommand extends BaseSlashCommand {
+	readonly data: SyncOrAsyncType<SlashCommandOptionsOnlyBuilder>;
+	readonly execute: SlashCommandExecute;
+}
+export interface SlashSubcommand extends BaseSlashCommand {
+	readonly data: SyncOrAsyncType<SlashCommandSubcommandsOnlyBuilder>;
+	readonly execute: Record<string, SlashCommandExecute>;
+}
+
+export type SlashCommandExecute = (interaction: ChatInputCommandInteraction) => void;
+
+export const defineCommand = <IsSubCommand extends boolean>(
+	data: IsSubCommand extends true ? SlashSubcommand : SlashCommand,
+) => data;
 
 // couldn't think of a better place to put this :P
 export type BotBans = { ids: string[] };

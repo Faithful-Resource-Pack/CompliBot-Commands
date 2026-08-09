@@ -19,7 +19,7 @@ import axios from "axios";
 import chalk from "chalk";
 
 import type { Tokens } from "@interfaces/tokens";
-import type { AnyInteraction, SlashCommand } from "@interfaces/interactions";
+import type { AnyInteraction, SlashCommand, SlashSubcommand } from "@interfaces/interactions";
 import type { Component } from "@interfaces/components";
 import type { Event } from "@interfaces/events";
 
@@ -88,7 +88,7 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 	public readonly menus = new Collection<string, Component<StringSelectMenuInteraction>>();
 	public readonly buttons = new Collection<string, Component<ButtonInteraction>>();
 	public readonly modals = new Collection<string, Component<ModalSubmitInteraction>>();
-	public readonly commands = new Collection<string, SlashCommand>();
+	public readonly commands = new Collection<string, SlashCommand | SlashSubcommand>();
 
 	public readonly commandStats = new SavableCollection<number>(join(paths.json, paths.stats));
 	public versions: string[] = [];
