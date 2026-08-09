@@ -50,7 +50,11 @@ declare module "discord.js" {
 	}
 }
 
-function hasPermission(type: PermissionType, warnUser = true): boolean {
+function hasPermission(
+	this: AnyInteraction<"cached">,
+	type: PermissionType,
+	warnUser = true,
+): boolean {
 	const hasManager = this.member.permissions.has(PermissionFlagsBits.Administrator);
 	const hasModerator = this.member.permissions.has(PermissionFlagsBits.ManageMessages);
 	const hasDev = this.client.tokens.developers.includes(this.member.id);

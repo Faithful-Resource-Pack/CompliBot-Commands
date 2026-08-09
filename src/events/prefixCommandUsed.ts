@@ -10,10 +10,24 @@ import { magnifyButtons, tileButtons } from "@utility/buttons";
 
 import { info } from "@helpers/logger";
 import addDeleteButton from "@utility/addDeleteButton";
+import { EmbedBuilder } from "@client";
+import { colors } from "@utility/colors";
 
 export default defineEvent({
 	name: "prefixCommandUsed",
 	async execute(client, message) {
+		// todo: is this even helpful? it still adds a message to the chat so maybe DM the user instead?
+		if (client.botbans.has(message.author.id)) {
+			return message.reply({
+				embeds: [
+					new EmbedBuilder()
+						.setTitle(message.strings(true).error.generic)
+						.setDescription(message.strings(true).error.botbanned)
+						.setColor(colors.red),
+				],
+			});
+		}
+
 		const args = message.content.split(" ");
 
 		const command = args.shift()?.slice(client.tokens.prefix.length);

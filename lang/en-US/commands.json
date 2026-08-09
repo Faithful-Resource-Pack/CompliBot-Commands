@@ -23,6 +23,10 @@
             "unbannable": {
                 "title": "This user cannot be botbanned!",
                 "description": "You cannot botban yourself, a developer, or someone with administrator permissions."
+            },
+            "not_yet_banned": {
+                "title": "This user isn't botbanned!",
+                "description": "You can only remove a user from the botban list if they were already added."
             }
         },
         "embed": {

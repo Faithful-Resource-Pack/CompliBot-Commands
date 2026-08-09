@@ -42,6 +42,7 @@ export const paths = {
 		modals: join(__dirname, "..", "components", "modals"),
 	},
 	stats: "commandsProcessed.json",
+	botbans: "botbans.json",
 } as const;
 
 export const errors = [
@@ -91,6 +92,7 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 	public readonly commands = new Collection<string, SlashCommand | SlashSubcommand>();
 
 	public readonly commandStats = new SavableCollection<number>(join(paths.json, paths.stats));
+	public readonly botbans = new SavableCollection<true>(join(paths.json, paths.botbans));
 	public versions: string[] = [];
 
 	constructor(data: ClientOptions & { tokens: Tokens }, firstStart = true) {

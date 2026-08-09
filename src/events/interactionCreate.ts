@@ -1,5 +1,6 @@
+import { EmbedBuilder } from "@client";
 import { defineEvent } from "@interfaces/events";
-import type { BotBans } from "@interfaces/interactions";
+import { colors } from "@utility/colors";
 import { MessageFlags } from "discord.js";
 
 export default defineEvent({
@@ -7,11 +8,15 @@ export default defineEvent({
 	async execute(client, interaction) {
 		if (!interaction.inGuild()) return;
 
-		const banlist = await import("@json/botbans.json").then<BotBans>((res) => res.default);
 		// all interactions except autocomplete have the string() and reply() methods
-		if (banlist.ids.includes(interaction.user.id) && !interaction.isAutocomplete()) {
+		if (client.botbans.has(interaction.user.id) && !interaction.isAutocomplete()) {
 			return interaction.reply({
-				content: interaction.strings().error.botbanned,
+				embeds: [
+					new EmbedBuilder()
+						.setTitle(interaction.strings().error.generic)
+						.setDescription(interaction.strings().error.botbanned)
+						.setColor(colors.red),
+				],
 				flags: MessageFlags.Ephemeral,
 			});
 		}

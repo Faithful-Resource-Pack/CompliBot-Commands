@@ -1,70 +1,58 @@
-import { type BotBans, defineCommand } from "@interfaces/interactions";
+import { defineCommand } from "@interfaces/interactions";
 import { EmbedBuilder } from "@client";
-import {
-	AttachmentBuilder,
-	MessageFlags,
-	PermissionFlagsBits,
-	SlashCommandBuilder,
-} from "discord.js";
-import { readFileSync, writeFileSync } from "fs";
-import { join } from "path";
+import { AttachmentBuilder, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 import { colors } from "@utility/colors";
 
 export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("botban")
-		.setDescription("Manage the ban list (devs naughty list :D).")
+		.setDescription("Manage the botban list (devs' naughty list >:D).")
 		.addSubcommand((view) =>
 			view
 				.setName("view")
-				.setDescription("View the botban list")
+				.setDescription("View the botban list.")
 				.addStringOption((option) =>
 					option
 						.setName("format")
 						.setDescription("The format the ban list should be displayed in (default is text).")
-						.setRequired(false)
 						.addChoices(
 							{ name: "JSON", value: "json" },
 							{ name: "Embed", value: "embed" },
 							{ name: "Text", value: "text" },
 							{ name: "Mentions", value: "mentions" },
-						),
+						)
+						.setRequired(false),
 				),
 		)
 		.addSubcommand((edit) =>
 			edit
-				.setName("edit")
-				.setDescription("Change the banlist")
+				.setName("add")
+				.setDescription("Add a member to the botban list.")
 				.addUserOption((option) =>
-					option
-						.setName("subject")
-						.setDescription("The user to edit the permissions of.")
-						.setRequired(true),
-				)
-				.addStringOption((option) =>
-					option
-						.setName("action")
-						.setDescription("What to do with this user")
-						.addChoices({ name: "Add", value: "add" }, { name: "Remove", value: "remove" })
-						.setRequired(true),
+					option.setName("user").setDescription("The user to add.").setRequired(true),
+				),
+		)
+		.addSubcommand((edit) =>
+			edit
+				.setName("remove")
+				.setDescription("Remove a member from the botban list.")
+				.addUserOption((option) =>
+					option.setName("user").setDescription("The user to remove.").setRequired(true),
 				),
 		)
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
 		.setDMPermission(false),
 	execute: {
-		async edit(interaction) {
-			const isAdding = interaction.options.getString("action", true) == "add";
-
-			await interaction.deferReply({ flags: MessageFlags.Ephemeral });
-			const banlist: BotBans = require("@json/botbans.json");
-			const victim = interaction.options.getUser("subject", true);
+		async add(interaction) {
+			// tbh I'd be amazed if this takes more than 3 seconds but it's technically I/O bound for writing
+			await interaction.deferReply();
+			const user = interaction.options.getUser("user", true);
 
 			if (
-				interaction.client.tokens.developers.includes(victim.id) ||
-				interaction.hasPermission("moderator", false) ||
-				victim.id == interaction.client.user.id // self
+				interaction.client.tokens.developers.includes(user.id) ||
+				user.id === interaction.client.user.id // self
 			)
-				return interaction.editReply({
+				return interaction.ephemeralReply({
 					embeds: [
 						new EmbedBuilder()
 							.setTitle(interaction.strings().command.botban.unbannable.title)
@@ -73,56 +61,86 @@ export default defineCommand({
 					],
 				});
 
-			writeFileSync(
-				join(process.cwd(), "json", "botbans.json"),
-				JSON.stringify(
-					isAdding
-						? banlist.ids.concat([victim.id])
-						: banlist.ids.filter((id: string) => id != victim.id),
-				),
-			);
+			interaction.client.botbans.set(user.id, true);
+			interaction.client.botbans.save();
 
 			interaction.editReply({
 				embeds: [
-					new EmbedBuilder().setDescription(
-						`<@${victim.id}> has been ${isAdding ? "botbanned" : "un-botbanned"}.`,
-					),
+					new EmbedBuilder()
+						.setTitle("Member botbanned")
+						.setDescription(`<@${user.id}> has been botbanned!`),
+				],
+			});
+		},
+		async remove(interaction) {
+			await interaction.deferReply();
+
+			const user = interaction.options.getUser("user", true);
+
+			if (!interaction.client.botbans.has(user.id))
+				return interaction.ephemeralReply({
+					embeds: [
+						new EmbedBuilder()
+							.setTitle(interaction.strings().command.botban.not_yet_banned.title)
+							.setDescription(interaction.strings().command.botban.not_yet_banned.description)
+							.setColor(colors.red),
+					],
+				});
+
+			interaction.client.botbans.delete(user.id);
+			interaction.client.botbans.save();
+
+			interaction.editReply({
+				embeds: [
+					new EmbedBuilder()
+						.setTitle("Member un-botbanned")
+						.setDescription(`<@${user.id}> has been removed from the botban list!`),
 				],
 			});
 		},
 		async view(interaction) {
 			if (!interaction.hasPermission("dev")) return;
 
-			await interaction.deferReply({ flags: MessageFlags.Ephemeral });
-			const buffer = readFileSync(join(process.cwd(), "json", "botbans.json"), {
-				encoding: "utf8",
-			});
-			const ids: string[] = JSON.parse(buffer).ids;
-			const txtBuff = Buffer.from(`Botbanned IDs:\n\n${ids.join("\n")}`, "utf-8");
+			// no need to defer since the collection is already preloaded when the bot starts
+			const ids = Array.from(interaction.client.botbans.keys());
 
 			// curly brackets used to fix scoping issues
 			switch (interaction.options.getString("format")) {
 				case "json": {
-					return interaction.editReply({
-						files: [new AttachmentBuilder(buffer, { name: "bans.json" })],
+					return interaction.reply({
+						files: [
+							new AttachmentBuilder(Buffer.from(JSON.stringify(ids, null, 4)), {
+								name: "botbans.json",
+							}),
+						],
 					});
 				}
 				case "embed": {
 					const embed = new EmbedBuilder()
-						.setTitle("Botbanned IDs:")
-						.setDescription(ids.join("\n"));
-					return interaction.editReply({ embeds: [embed] });
+						.setTitle("Botbanned IDs")
+						.setDescription(ids.join("\n") || "No users are currently botbanned!");
+					return interaction.reply({ embeds: [embed] });
 				}
 				case "mentions": {
 					const pingEmbed = new EmbedBuilder()
-						.setTitle("Botbanned Users:")
-						.setDescription(ids.map((id) => `<@${id}>`).join("\n"));
-					return interaction.editReply({ embeds: [pingEmbed] });
+						.setTitle("Botbanned Users")
+						.setDescription(
+							ids.map((id) => `<@${id}>`).join("\n") || "No users are currently botbanned!",
+						);
+					return interaction.reply({ embeds: [pingEmbed] });
 				}
 				default: {
-					// also text
-					interaction.editReply({
-						files: [new AttachmentBuilder(txtBuff, { name: "bans.txt" })],
+					interaction.reply({
+						files: [
+							new AttachmentBuilder(
+								Buffer.from(
+									`Botbanned IDs:\n${ids.join("\n") || "No users are currently botbanned!"}`,
+								),
+								{
+									name: "bans.txt",
+								},
+							),
+						],
 					});
 				}
 			}

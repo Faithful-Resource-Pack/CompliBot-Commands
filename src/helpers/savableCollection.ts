@@ -19,7 +19,7 @@ export default class SavableCollection<V> extends Collection<string, V> {
 	 * Save the collection to the JSON file
 	 */
 	public save() {
-		setData(this.path, JSON.stringify(Object.fromEntries(this)));
+		return setData(this.path, JSON.stringify(Object.fromEntries(this)));
 	}
 }
 

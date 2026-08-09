@@ -5,7 +5,7 @@
     "error": {
         "placeholder": "This feature has not been implemented yet!",
         "generic": "Action Failed",
-        "botbanned": "You cannot use the bot as you have been bot banned!",
+        "botbanned": "You cannot use the bot while botbanned!",
         "message": {
             "deleted": "This message has already been deleted!",
             "invalid": {

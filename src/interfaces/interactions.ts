@@ -40,6 +40,3 @@ export type SlashCommandExecute = (interaction: ChatInputCommandInteraction) => 
 export const defineCommand = <IsSubCommand extends boolean>(
 	data: IsSubCommand extends true ? SlashSubcommand : SlashCommand,
 ) => data;
-
-// couldn't think of a better place to put this :P
-export type BotBans = { ids: string[] };
