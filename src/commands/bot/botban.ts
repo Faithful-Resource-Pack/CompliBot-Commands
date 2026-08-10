@@ -7,8 +7,8 @@ export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("botban")
 		.setDescription("Manage the botban list (devs' naughty list >:D).")
-		.addSubcommand((view) =>
-			view
+		.addSubcommand((subcommand) =>
+			subcommand
 				.setName("view")
 				.setDescription("View the botban list.")
 				.addStringOption((option) =>
@@ -24,16 +24,16 @@ export default defineCommand({
 						.setRequired(false),
 				),
 		)
-		.addSubcommand((edit) =>
-			edit
+		.addSubcommand((subcommand) =>
+			subcommand
 				.setName("add")
 				.setDescription("Add a member to the botban list.")
 				.addUserOption((option) =>
 					option.setName("user").setDescription("The user to add.").setRequired(true),
 				),
 		)
-		.addSubcommand((edit) =>
-			edit
+		.addSubcommand((subcommand) =>
+			subcommand
 				.setName("remove")
 				.setDescription("Remove a member from the botban list.")
 				.addUserOption((option) =>

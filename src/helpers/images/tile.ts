@@ -3,11 +3,15 @@ import { AttachmentBuilder } from "discord.js";
 import { ImageSource } from "@images/getImage";
 import { magnifyToAttachment } from "@images/magnify";
 
+const TILE_SIZE = 3;
+
 export type TileShape = "grid" | "vertical" | "horizontal" | "plus";
-export type TileRandom = "flip" | "rotation";
+export type TileRandom = "none" | "flip" | "rotation";
+
 export interface TileOptions {
 	shape?: TileShape;
 	random?: TileRandom;
+	// only used with tileToAttachment (subclass would be overkill)
 	magnify?: boolean;
 }
 
@@ -20,16 +24,15 @@ export interface TileOptions {
  */
 export async function tile(
 	origin: ImageSource,
-	options: TileOptions = {},
+	{ shape = "grid", random = "none" }: TileOptions,
 ): Promise<Buffer | undefined> {
 	const input = await loadImage(origin);
 
 	// 1048576px is the same size as a magnified image
-	if (input.width * input.height * 3 > 1048576) return;
+	if (input.width * input.height * TILE_SIZE > 1048576) return;
 
-	const canvas = createCanvas(input.width * 3, input.height * 3);
+	const canvas = createCanvas(input.width * TILE_SIZE, input.height * TILE_SIZE);
 	const ctx = canvas.getContext("2d");
-
 	ctx.imageSmoothingEnabled = false;
 
 	const drawRotatedImage = (
@@ -59,54 +62,72 @@ export async function tile(
 		ctx.restore();
 	};
 
-	if (options.random == "rotation") {
-		// grid to get all possible rotation states matched with each other
-		// specific configuration originally by Pomi108
-		const angles = [
-			[0, 180, 0],
-			[90, 0, 270],
-			[0, 0, 0],
-		];
+	switch (random) {
+		case "rotation": {
+			// grid to get all possible rotation states matched with each other
+			// specific configuration originally by Pomi108
+			const angles = [
+				[0, 180, 0],
+				[90, 0, 270],
+				[0, 0, 0],
+			];
 
-		for (let x = 0; x < 3; ++x) {
-			for (let y = 0; y < 3; ++y) {
-				drawRotatedImage(
-					input,
-					x * input.width + input.width / 2, // middle of tile
-					y * input.height + input.height / 2,
-					1,
-					angles[y][x],
-				);
+			for (let x = 0; x < TILE_SIZE; ++x) {
+				for (let y = 0; y < TILE_SIZE; ++y) {
+					drawRotatedImage(
+						input,
+						x * input.width + input.width / 2, // middle of tile
+						y * input.height + input.height / 2,
+						1,
+						angles[y][x],
+					);
+				}
+			}
+			break;
+		}
+		// flipped and regular use same base code
+		default: {
+			for (let x = 0; x < TILE_SIZE; ++x) {
+				for (let y = 0; y < TILE_SIZE; ++y) {
+					if (random === "flip" && Math.random() < 0.5)
+						drawMirroredImage(x * input.width, y * input.height);
+					else ctx.drawImage(input, x * input.width, y * input.height);
+				}
 			}
 		}
 	}
 
-	// base grid
-	else {
-		for (let x = 0; x < 3; ++x) {
-			for (let y = 0; y < 3; ++y) {
-				if (options.random == "flip" && Math.random() < 0.5)
-					drawMirroredImage(x * input.width, y * input.height);
-				else ctx.drawImage(input, x * input.width, y * input.height);
-			}
+	switch (shape) {
+		case "horizontal": {
+			// top row
+			ctx.clearRect(0, 0, input.width * TILE_SIZE, input.height);
+			// bottom row
+			ctx.clearRect(0, input.height * (TILE_SIZE - 1), input.width * TILE_SIZE, input.height);
+			break;
 		}
-	}
-
-	switch (options.shape) {
-		case "plus":
-			ctx.clearRect(0, 0, input.width, input.height); // top left
-			ctx.clearRect(input.width * 2, 0, input.width, input.height); // top right
-			ctx.clearRect(input.width * 2, input.height * 2, input.width, input.height); // bottom right
-			ctx.clearRect(0, input.height * 2, input.width, input.height); // bottom left
+		case "vertical": {
+			// left side
+			ctx.clearRect(0, 0, input.width, input.height * TILE_SIZE);
+			// right side
+			ctx.clearRect(input.width * (TILE_SIZE - 1), 0, input.width, input.height * TILE_SIZE);
 			break;
-		case "horizontal":
-			ctx.clearRect(0, 0, input.width * 3, input.height); // top row
-			ctx.clearRect(0, input.height * 2, input.width * 3, input.height); // bottom row
+		}
+		case "plus": {
+			// top left
+			ctx.clearRect(0, 0, input.width, input.height);
+			// top right
+			ctx.clearRect(input.width * (TILE_SIZE - 1), 0, input.width, input.height);
+			// bottom right
+			ctx.clearRect(
+				input.width * (TILE_SIZE - 1),
+				input.height * (TILE_SIZE - 1),
+				input.width,
+				input.height,
+			);
+			// bottom left
+			ctx.clearRect(0, input.height * (TILE_SIZE - 1), input.width, input.height);
 			break;
-		case "vertical":
-			ctx.clearRect(0, 0, input.width, input.height * 3); // left side
-			ctx.clearRect(input.width * 2, 0, input.width, input.height * 3); // right side
-			break;
+		}
 	}
 
 	return canvas.toBuffer("image/png");
@@ -158,6 +179,6 @@ export async function tileToAttachment(
 	const buf = await tile(origin, options);
 	// image too big so we returned early
 	if (!buf) return;
-	if (options?.magnify) return magnifyToAttachment(buf);
+	if (options.magnify) return magnifyToAttachment(buf);
 	return new AttachmentBuilder(buf, { name });
 }

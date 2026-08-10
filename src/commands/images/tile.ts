@@ -17,7 +17,9 @@ export default defineCommand({
 				.setRequired(false)
 				.addChoices(
 					{ name: "rotation", value: "rotation" },
-					{ name: "flip", value: "flip" }, // only horizontal because mc doesn't use vertical flipping
+					// only horizontal because mc doesn't use vertical flipping
+					{ name: "flip", value: "flip" },
+					{ name: "none", value: "none" },
 				),
 		)
 		.addStringOption((option) =>

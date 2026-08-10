@@ -4,6 +4,8 @@ import { readFileSync, existsSync, mkdirSync, writeFileSync } from "fs";
 import { dirname } from "path";
 
 /**
+ * Collection that can be synced to a JSON file seamlessly
+ * @template V has to be a string key because otherwise it isn't JSON-safe
  * @author Juknum
  */
 export default class SavableCollection<V> extends Collection<string, V> {
