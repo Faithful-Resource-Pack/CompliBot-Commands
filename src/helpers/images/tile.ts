@@ -173,7 +173,7 @@ export async function untile(origin: ImageSource, gridSize = 3): Promise<Buffer>
  */
 export async function tileToAttachment(
 	origin: ImageSource,
-	options?: TileOptions,
+	options: TileOptions = { magnify: false },
 	name = "tiled.png",
 ) {
 	const buf = await tile(origin, options);
