@@ -2,7 +2,7 @@ import { Image, createCanvas, loadImage } from "@napi-rs/canvas";
 import { AttachmentBuilder } from "discord.js";
 import GIFEncoder from "@images/GIFEncoder";
 import { Client, EmbedBuilder } from "@client";
-import { addPathsToEmbed } from "@functions/getTexture";
+import { createPathFields } from "@functions/getTexture";
 import axios from "axios";
 import type { Texture } from "@interfaces/database";
 import { parseDisplay } from "./compareTexture";
@@ -76,7 +76,7 @@ export async function cycleTexture(
 	const embed = new EmbedBuilder()
 		.setTitle(`[#${result.id}] ${result.name}`)
 		.setURL(`https://studio.faithfulpack.net/gallery?show=${id}`)
-		.addFields(addPathsToEmbed(result))
+		.addFields(createPathFields(result))
 		.setFooter({ text: display });
 
 	const images: Image[] = [];

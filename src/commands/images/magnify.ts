@@ -14,6 +14,8 @@ export default defineCommand({
 		)
 		.addNumberOption((num) =>
 			num
+				.setName("factor")
+				.setDescription("The scale factor the image should be enlarged by.")
 				.addChoices(
 					{ name: "0.25x", value: 0.25 },
 					{ name: "0.5x", value: 0.5 },
@@ -23,8 +25,6 @@ export default defineCommand({
 					{ name: "16x", value: 16 },
 					{ name: "32x", value: 32 },
 				)
-				.setName("factor")
-				.setDescription("The scale factor the image should be enlarged by.")
 				.setRequired(false),
 		),
 	async execute(interaction) {

@@ -104,7 +104,7 @@ export async function getTexture(
 	}
 
 	// add path fields at bottom
-	embed.addFields(addPathsToEmbed(texture));
+	embed.addFields(createPathFields(texture));
 
 	if (isAnimated) {
 		const { magnified, factor } = await magnify(image, { isAnimation: true });
@@ -191,7 +191,7 @@ export async function formatTextureAuthors(
  * @param texture texture to get paths and uses from
  * @returns usable embed field data
  */
-export function addPathsToEmbed(texture: GalleryTexture | Texture): APIEmbedField[] {
+export function createPathFields(texture: GalleryTexture | Texture): APIEmbedField[] {
 	const groupedPaths = texture.uses.reduce<Partial<Record<MinecraftEdition, string[]>>>(
 		(acc, use) => {
 			const paths = texture.paths

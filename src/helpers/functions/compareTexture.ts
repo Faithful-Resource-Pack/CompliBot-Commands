@@ -2,7 +2,7 @@ import stitch from "@images/stitch";
 import { magnify, magnifyToAttachment } from "@images/magnify";
 import { Image, loadImage, createCanvas, Canvas } from "@napi-rs/canvas";
 import { Client, EmbedBuilder } from "@client";
-import { addPathsToEmbed } from "@functions/getTexture";
+import { createPathFields } from "@functions/getTexture";
 import type { GalleryTexture, MCMETA } from "@interfaces/database";
 import axios from "axios";
 import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder } from "discord.js";
@@ -176,7 +176,7 @@ export default async function compareTexture(
 	const embed = new EmbedBuilder()
 		.setImage(`attachment://${filename}`)
 		.setTitle(`[#${result.texture.id}] ${result.texture.name}`)
-		.addFields(addPathsToEmbed(result))
+		.addFields(createPathFields(result))
 		.setFooter({ text: `Displaying: ${display ?? "All"}` });
 
 	// put on default page for pack set

@@ -3,7 +3,7 @@ import { AttachmentBuilder } from "discord.js";
 import { ImageSource } from "@images/getImage";
 import { magnifyToAttachment } from "@images/magnify";
 
-const TILE_SIZE = 3;
+export const DEFAULT_GRID_SIZE = 3;
 
 export type TileShape = "grid" | "vertical" | "horizontal" | "plus";
 export type TileRandom = "none" | "flip" | "rotation";
@@ -11,6 +11,7 @@ export type TileRandom = "none" | "flip" | "rotation";
 export interface TileOptions {
 	shape?: TileShape;
 	random?: TileRandom;
+	gridSize?: number;
 	// only used with tileToAttachment (subclass would be overkill)
 	magnify?: boolean;
 }
@@ -24,14 +25,14 @@ export interface TileOptions {
  */
 export async function tile(
 	origin: ImageSource,
-	{ shape = "grid", random = "none" }: TileOptions,
+	{ shape = "grid", random = "none", gridSize = DEFAULT_GRID_SIZE }: TileOptions,
 ): Promise<Buffer | undefined> {
 	const input = await loadImage(origin);
 
 	// 1048576px is the same size as a magnified image
-	if (input.width * input.height * TILE_SIZE > 1048576) return;
+	if (input.width * input.height * gridSize > 1048576) return;
 
-	const canvas = createCanvas(input.width * TILE_SIZE, input.height * TILE_SIZE);
+	const canvas = createCanvas(input.width * gridSize, input.height * gridSize);
 	const ctx = canvas.getContext("2d");
 	ctx.imageSmoothingEnabled = false;
 
@@ -72,14 +73,16 @@ export async function tile(
 				[0, 0, 0],
 			];
 
-			for (let x = 0; x < TILE_SIZE; ++x) {
-				for (let y = 0; y < TILE_SIZE; ++y) {
+			for (let x = 0; x < gridSize; ++x) {
+				for (let y = 0; y < gridSize; ++y) {
 					drawRotatedImage(
 						input,
-						x * input.width + input.width / 2, // middle of tile
+						// middle of tile
+						x * input.width + input.width / 2,
 						y * input.height + input.height / 2,
 						1,
-						angles[y][x],
+						// loop back if there's too many
+						angles[y % angles.length][x % angles.length],
 					);
 				}
 			}
@@ -87,8 +90,8 @@ export async function tile(
 		}
 		// flipped and regular use same base code
 		default: {
-			for (let x = 0; x < TILE_SIZE; ++x) {
-				for (let y = 0; y < TILE_SIZE; ++y) {
+			for (let x = 0; x < gridSize; ++x) {
+				for (let y = 0; y < gridSize; ++y) {
 					if (random === "flip" && Math.random() < 0.5)
 						drawMirroredImage(x * input.width, y * input.height);
 					else ctx.drawImage(input, x * input.width, y * input.height);
@@ -100,32 +103,32 @@ export async function tile(
 	switch (shape) {
 		case "horizontal": {
 			// top row
-			ctx.clearRect(0, 0, input.width * TILE_SIZE, input.height);
+			ctx.clearRect(0, 0, input.width * gridSize, input.height);
 			// bottom row
-			ctx.clearRect(0, input.height * (TILE_SIZE - 1), input.width * TILE_SIZE, input.height);
+			ctx.clearRect(0, input.height * (gridSize - 1), input.width * gridSize, input.height);
 			break;
 		}
 		case "vertical": {
 			// left side
-			ctx.clearRect(0, 0, input.width, input.height * TILE_SIZE);
+			ctx.clearRect(0, 0, input.width, input.height * gridSize);
 			// right side
-			ctx.clearRect(input.width * (TILE_SIZE - 1), 0, input.width, input.height * TILE_SIZE);
+			ctx.clearRect(input.width * (gridSize - 1), 0, input.width, input.height * gridSize);
 			break;
 		}
 		case "plus": {
 			// top left
 			ctx.clearRect(0, 0, input.width, input.height);
 			// top right
-			ctx.clearRect(input.width * (TILE_SIZE - 1), 0, input.width, input.height);
+			ctx.clearRect(input.width * (gridSize - 1), 0, input.width, input.height);
 			// bottom right
 			ctx.clearRect(
-				input.width * (TILE_SIZE - 1),
-				input.height * (TILE_SIZE - 1),
+				input.width * (gridSize - 1),
+				input.height * (gridSize - 1),
 				input.width,
 				input.height,
 			);
 			// bottom left
-			ctx.clearRect(0, input.height * (TILE_SIZE - 1), input.width, input.height);
+			ctx.clearRect(0, input.height * (gridSize - 1), input.width, input.height);
 			break;
 		}
 	}
@@ -140,7 +143,7 @@ export async function tile(
  * @param gridSize size of grid
  * @returns original image as buffer
  */
-export async function untile(origin: ImageSource, gridSize = 3): Promise<Buffer> {
+export async function untile(origin: ImageSource, gridSize = DEFAULT_GRID_SIZE): Promise<Buffer> {
 	const input = await loadImage(origin);
 
 	const canvas = createCanvas(input.width / gridSize, input.height / gridSize);

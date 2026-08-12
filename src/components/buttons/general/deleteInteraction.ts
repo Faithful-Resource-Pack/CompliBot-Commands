@@ -7,7 +7,7 @@ import { MessageFlags } from "discord.js";
 export default defineComponent<ButtonInteraction>({
 	id: "deleteInteraction",
 	async execute(client, interaction) {
-		if (client.verbose) console.log(`${info}Interaction Message deleted!`);
+		if (client.verbose) console.log(`${info}Interaction message deleted!`);
 
 		const messageInteraction = interaction.message.interactionMetadata;
 		const message = interaction.message;
