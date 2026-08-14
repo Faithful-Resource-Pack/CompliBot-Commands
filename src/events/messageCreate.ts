@@ -19,11 +19,11 @@ export default defineEvent({
 		 */
 		switch (message.content.toLocaleLowerCase()) {
 			case "engineer gaming":
-				return message.react("👷").catch(() => {});
+				return message.react("👷");
 			case "f":
-				return message.react("🇫").catch(() => {});
+				return message.react("🇫");
 			case "fr":
-				return message.react("🇫🇷").catch(() => {});
+				return message.react("🇫🇷");
 			case "band":
 			case "banding":
 				return Promise.all(
@@ -32,8 +32,8 @@ export default defineEvent({
 					),
 				);
 			case "monke":
-				await message.react("🎷").catch(() => {});
-				await message.react("🐒").catch(() => {});
+				await message.react("🎷");
+				await message.react("🐒");
 				break;
 			case "hello there":
 				message.reply({
