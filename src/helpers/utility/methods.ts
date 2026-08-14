@@ -13,7 +13,7 @@ export const isObject = (item: unknown) =>
  * @param sources what to add
  * @returns merged sources
  */
-export function mergeDeep(target: any, ...sources: any[]) {
+export function mergeDeep<T = unknown>(target: T, ...sources: T[]) {
 	if (!sources.length) return target;
 	const source = sources.shift();
 
@@ -41,5 +41,3 @@ export const randint = (start: number, stop: number) =>
 	Math.floor(start + Math.random() * (stop - start + 1));
 /** pick a random item out of an array */
 export const choice = <T>(arr: T[]): T => arr[randint(0, arr.length - 1)];
-/** return a randomly shuffled version of a provided array */
-export const shuffle = <T>(arr: T[]): T[] => arr.sort(() => randint(-1, 1));
