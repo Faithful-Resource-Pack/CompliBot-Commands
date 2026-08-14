@@ -7,7 +7,7 @@ export default defineEvent({
 	name: "messageCreate",
 	async execute(client, message) {
 		// duplicate message for logger (ask @Juknum)
-		client.storeAction("message", structuredClone(message));
+		client.appendLog("message", structuredClone(message));
 
 		if (message.author.bot) return;
 

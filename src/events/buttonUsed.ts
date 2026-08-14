@@ -7,7 +7,7 @@ import { MessageFlags } from "discord.js";
 export default defineEvent({
 	name: "buttonUsed",
 	async execute(client, interaction) {
-		client.storeAction("button", interaction);
+		client.appendLog("button", interaction);
 
 		if (client.verbose) console.log(`${info}Button used!`);
 

@@ -8,7 +8,7 @@ import addDeleteButton from "@utility/addDeleteButton";
 export default defineEvent({
 	name: "slashCommandUsed",
 	async execute(client, interaction) {
-		client.storeAction("slashCommand", interaction);
+		client.appendLog("slashCommand", interaction);
 
 		const command = client.commands.get(interaction.commandName);
 		// command doesn't exist

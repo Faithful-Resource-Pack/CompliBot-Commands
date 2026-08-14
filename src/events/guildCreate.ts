@@ -5,7 +5,7 @@ import { info } from "@helpers/logger";
 export default defineEvent({
 	name: "guildCreate",
 	async execute(client, guild) {
-		client.storeAction("guildJoined", guild);
+		client.appendLog("guildJoined", guild);
 		client.loadSlashCommands();
 
 		const embed = new EmbedBuilder()
