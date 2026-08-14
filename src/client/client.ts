@@ -30,6 +30,7 @@ import walkSync from "@helpers/walkSync";
 import { join } from "path";
 
 import startClient from "@index";
+import updateMemberLog from "@functions/updateMemberLog";
 
 // not in a config file because dynamic data
 export const paths = {
@@ -120,10 +121,11 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 			})
 			.then(() => {
 				this.loadSlashCommands();
-
 				this.loadEvents();
 				this.loadComponents();
+
 				this.loadVersions();
+				this.loadMemberLogs();
 			});
 
 		// all error types
@@ -303,12 +305,28 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 	}
 
 	/**
-	 * Store any kind of action the bot does
-	 * @author Juknum
-	 * @param type
-	 * @param data
+	 * Set up member log update scheduler
+	 * @author Evorp
 	 */
-	public storeAction(type: LogType, data: LogData) {
+	private async loadMemberLogs() {
+		const guilds = (
+			await axios.get<Record<string, FaithfulGuild>>(`${this.tokens.apiUrl}settings/discord.guilds`)
+		).data;
+
+		setInterval(() => {
+			if (this.verbose)
+				console.log(`${info}Updating member count for ${Object.keys(guilds).join(", ")}`);
+			for (const guild of Object.values(guilds)) updateMemberLog(this, guild);
+		}, 600000);
+	}
+
+	/**
+	 * Append a logger action
+	 * @author Juknum
+	 * @param type Type of log
+	 * @param data Log data
+	 */
+	public appendLog(type: LogType, data: LogData) {
 		// remove from start (oldest messages) on overflow
 		if (this.logs.length >= this.maxLogs) this.logs.shift();
 		this.logs.push({ type, data });
