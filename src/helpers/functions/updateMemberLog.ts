@@ -12,11 +12,11 @@ export default async function updateMemberLog(client: Client, server: FaithfulGu
 	// server doesn't have channel for member logging
 	if (!server.member_log) return;
 
+	const guild = await client.guilds.fetch({ guild: server.id, force: true });
 	const channel = client.channels.cache.get(server.member_log);
-	const guild = client.guilds.cache.get(server.id);
 
-	if (!channel || !guild) return;
-	const count = guild.approximateMemberCount;
+	if (!guild || !channel) return;
+	const count = guild.memberCount || guild.approximateMemberCount;
 
 	// you can add different patterns depending on the channel type
 	switch (channel.type) {
