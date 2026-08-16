@@ -8,7 +8,7 @@ export interface Component<T extends AnyInteraction = AnyInteraction> {
 	execute: ComponentExecute<T>;
 }
 
-export type ComponentExecute<T> = (client: Client, interaction: T) => Promise<any>;
+export type ComponentExecute<T> = (client: Client, interaction: T) => void;
 
 // why is this not provided by default
 export type AnyV2Component = TopLevelComponent | ComponentInContainer | MessageActionRowComponent;

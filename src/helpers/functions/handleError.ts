@@ -28,45 +28,46 @@ export const constructLogFile = (
 	const template = logTemplate.match(new RegExp(/%templateStart%([\s\S]*?)%templateEnd/))?.[1]; // get message template
 
 	const sentence = choice(randomSentences);
-	const logText =
-		logTemplate
-			.replace("%date%", new Date().toUTCString())
-			.replace("%stack%", reason.stack || JSON.stringify(reason))
-			.replace("%actionCount%", String(client.logs.length))
-			.replace("%randomSentence%", sentence)
-			.replace("%randomSentenceUnderline%", "-".repeat(sentence.length))
-			.split("%templateStart%")[0] +
-		// reduceRight does reduce and reverse at once
-		client.logs.reduceRight(
-			(acc, log, index) =>
-				acc +
-				template
-					?.replace("%templateIndex%", String(index + 1))
-					.replace("%templateType%", formatLogType(log))
-					.replace(
-						"%templateCreatedTimestamp%",
-						`${log.data.createdTimestamp} | ${new Date(
-							log.data.createdTimestamp,
-						).toLocaleDateString("en-UK", {
-							timeZone: "UTC",
-						})} ${new Date(log.data.createdTimestamp).toLocaleTimeString("en-US", {
-							timeZone: "UTC",
-						})} (UTC)`,
-					)
-					.replace("%templateURL%", formatLogURL(log.data))
-					.replace("%templateContent%", formatLogContent(log))
-					.replace(
-						"%templateEmbeds%",
-						log.data.embeds?.length > 0 ? `${JSON.stringify(log.data.embeds)}` : "None",
-					)
-					.replace(
-						"%templateComponents%",
-						log.data.components?.length > 0 ? `${JSON.stringify(log.data.components)}` : "None",
-					),
-			"", // start from empty string
-		);
+	const header = logTemplate
+		.replace("%date%", new Date().toUTCString())
+		.replace("%stack%", reason.stack || JSON.stringify(reason))
+		.replace("%actionCount%", String(client.logs.length))
+		.replace("%randomSentence%", sentence)
+		.replace("%randomSentenceUnderline%", "-".repeat(sentence.length))
+		.split("%templateStart%")[0];
 
-	return new AttachmentBuilder(Buffer.from(logText, "utf8"), { name: "stack.log" });
+	// reduceRight does reduce and reverse at once
+	const logs = client.logs.reduceRight(
+		(acc, log, index) =>
+			acc +
+			template
+				?.replace("%templateIndex%", String(index + 1))
+				.replace("%templateType%", formatLogType(log))
+				.replace(
+					"%templateCreatedTimestamp%",
+					`${log.data.createdTimestamp} | ${new Date(log.data.createdTimestamp).toLocaleDateString(
+						"en-UK",
+						{
+							timeZone: "UTC",
+						},
+					)} ${new Date(log.data.createdTimestamp).toLocaleTimeString("en-US", {
+						timeZone: "UTC",
+					})} (UTC)`,
+				)
+				.replace("%templateURL%", formatLogURL(log.data))
+				.replace("%templateContent%", formatLogContent(log))
+				.replace(
+					"%templateEmbeds%",
+					"embeds" in log.data ? `${JSON.stringify(log.data.embeds)}` : "None",
+				)
+				.replace(
+					"%templateComponents%",
+					"components" in log.data ? `${JSON.stringify(log.data.components)}` : "None",
+				),
+		"", // start from empty string
+	);
+
+	return new AttachmentBuilder(Buffer.from(header + logs, "utf8"), { name: "stack.log" });
 };
 
 /**

@@ -11,6 +11,7 @@ import {
 } from "discord.js";
 import {
 	Message,
+	ChatInputCommandInteraction,
 	ButtonInteraction,
 	StringSelectMenuInteraction,
 	ModalSubmitInteraction,
@@ -53,20 +54,22 @@ export const errors = [
 	{ displayName: "Uncaught Exception", error: "uncaughtException" },
 ];
 
-export type LogType =
-	| "message"
-	| "slashCommand"
-	| "button"
-	| "selectMenu"
-	| "modalSubmit"
-	| "guildJoined";
-
-export type LogData = Message | Guild | AnyInteraction;
-
-export type ActionLog = {
-	type: LogType;
-	data: any; // technically LogData but TS union type validation is painful
+export type LogTypes = {
+	message: Message;
+	slashCommand: ChatInputCommandInteraction;
+	button: ButtonInteraction;
+	selectMenu: StringSelectMenuInteraction;
+	modalSubmit: ModalSubmitInteraction;
+	guildJoined: Guild;
 };
+
+// idk either https://www.reddit.com/r/typescript/comments/cpqrww/comment/ewr3u2g
+export type LogEntry<T> = T extends keyof LogTypes
+	? {
+			type: T;
+			data: LogTypes[T];
+		}
+	: never;
 
 export interface FaithfulGuild {
 	id: string;
@@ -84,7 +87,7 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 	public readonly tokens: Tokens;
 	public readonly verbose: boolean;
 
-	public readonly logs: ActionLog[] = [];
+	public readonly logs: LogEntry<keyof LogTypes>[] = [];
 	private readonly maxLogs = 50;
 
 	public readonly commands = new Collection<string, SlashCommand | SlashSubcommand>();
@@ -333,9 +336,12 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 	 * @param type Type of log
 	 * @param data Log data
 	 */
-	public appendLog(type: LogType, data: LogData) {
+	public appendLog<T extends keyof LogTypes>(type: T, data: LogTypes[T]) {
 		// remove from start (oldest messages) on overflow
 		if (this.logs.length >= this.maxLogs) this.logs.shift();
-		this.logs.push({ type, data });
+
+		// need to retype manually since type and data aren't properly associated
+		// see https://github.com/microsoft/TypeScript/issues/27808
+		this.logs.push({ type, data } as LogEntry<T>);
 	}
 }

@@ -22,7 +22,7 @@ export type SyncOrAsyncType<T> = T | ((client: Client) => Promise<T>);
 
 export interface BaseSlashCommand {
 	readonly servers?: string[];
-	readonly autocomplete?: (interaction: AutocompleteInteraction) => Promise<any>;
+	readonly autocomplete?: <T>(interaction: AutocompleteInteraction) => Promise<T>;
 }
 
 // use two different interfaces so the types within them always agree (no function execute when subcommands)
