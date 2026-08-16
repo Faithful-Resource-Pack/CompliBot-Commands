@@ -6,8 +6,6 @@ import { MessageFlags } from "discord.js";
 export default defineEvent({
 	name: "interactionCreate",
 	async execute(client, interaction) {
-		if (!interaction.inGuild()) return;
-
 		// all interactions except autocomplete have the string() and reply() methods
 		if (client.botbans.has(interaction.user.id) && !interaction.isAutocomplete()) {
 			return interaction.reply({
