@@ -87,10 +87,10 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 	public readonly logs: ActionLog[] = [];
 	private readonly maxLogs = 50;
 
-	public readonly menus = new Collection<string, Component<StringSelectMenuInteraction>>();
-	public readonly buttons = new Collection<string, Component<ButtonInteraction>>();
-	public readonly modals = new Collection<string, Component<ModalSubmitInteraction>>();
 	public readonly commands = new Collection<string, SlashCommand | SlashSubcommand>();
+	public readonly buttons = new Collection<string, Component<ButtonInteraction>>();
+	public readonly menus = new Collection<string, Component<StringSelectMenuInteraction>>();
+	public readonly modals = new Collection<string, Component<ModalSubmitInteraction>>();
 
 	public readonly commandStats = new SavableCollection<number>(join(paths.json, paths.stats));
 	public readonly botbans = new SavableCollection<true>(join(paths.json, paths.botbans));
@@ -106,16 +106,19 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 	}
 
 	public init(interaction?: AnyInteraction) {
-		// pretty stuff so it doesn't print the logo upon restart
+		// respond to restart interaction
 		if (!this.firstStart) {
-			console.log(`${success}Restarted`);
+			console.log(`${success}Bot restarted!`);
 			if (interaction) interaction.editReply({ content: "Reboot succeeded!" });
-		} else this.asciiArt();
+		}
 
-		// login client
+		this.startupText();
+
+		// don't block on login
 		this.login(this.tokens.token)
 			.catch((e: unknown) => {
-				// Allows for showing different errors like missing privileged gateway intents, this caused me so much pain >:(
+				// for showing different errors like missing privileged gateway intents
+				// this caused me so much pain >:(
 				console.log(`${err}${e}`);
 				process.exit(1);
 			})
@@ -151,7 +154,9 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 	}
 
 	// prettier-ignore
-	private asciiArt() {
+	private startupText() {
+		if (!this.firstStart) return;
+
 		const darkColor = chalk.hex(this.tokens.maintenance === false ? "#0026ff" : "#ff8400");
 		const lightColor = chalk.hex(this.tokens.maintenance === false ? "#0066ff" : "#ffc400");
 
@@ -316,7 +321,9 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 		setInterval(() => {
 			if (this.verbose)
 				console.log(`${info}Updating member count for ${Object.keys(guilds).join(", ")}`);
-			for (const guild of Object.values(guilds)) updateMemberLog(this, guild);
+
+			// promise.all to make sure everything resolves
+			Promise.all(Object.values(guilds).map((guild) => updateMemberLog(this, guild)));
 		}, 600000);
 	}
 

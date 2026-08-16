@@ -21,10 +21,10 @@ export default async function updateMemberLog(client: Client, server: FaithfulGu
 	// you can add different patterns depending on the channel type
 	switch (channel.type) {
 		case ChannelType.GuildText:
-			channel.setName(`members-${count}`);
+			await channel.setName(`members-${count}`);
 			break;
 		case ChannelType.GuildVoice:
-			channel.setName(`Members: ${count}`);
+			await channel.setName(`Members: ${count}`);
 			break;
 	}
 
