@@ -39,4 +39,5 @@ export default function startClient(firstStart = true, interaction?: AnyInteract
 	return client.init(interaction);
 }
 
-startClient();
+// don't start if importing from elsewhere (same as python's __name___ == "__main__")
+if (require.main === module) startClient();
