@@ -7,6 +7,7 @@ import {
 	RESTPostAPIApplicationCommandsJSONBody,
 	Routes,
 	REST,
+	ClientEvents,
 } from "discord.js";
 import {
 	Message,
@@ -58,7 +59,6 @@ export type LogType =
 	| "button"
 	| "selectMenu"
 	| "modalSubmit"
-	| "guildMemberUpdate"
 	| "guildJoined";
 
 export type LogData = Message | Guild | AnyInteraction;
@@ -267,7 +267,7 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 		if (this.verbose) console.log(`${info}Loading event handlers...`);
 		const events = walkSync(paths.events).filter((file) => file.endsWith(".ts"));
 		for (const file of events) {
-			const event: Event<any> = require(file).default;
+			const event: Event<keyof ClientEvents> = require(file).default;
 			// bind is just for adding ExtendedClient as the first argument always
 			this.on(event.name, event.execute.bind(null, this));
 		}

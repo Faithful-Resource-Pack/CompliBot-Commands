@@ -11,11 +11,6 @@ export function formatLogType(log: ActionLog) {
 		case "slashCommand": {
 			return `${log.type} [/${log.data.commandName}]`;
 		}
-		case "guildMemberUpdate": {
-			return `${log.type} | ${log.data.user.username} ${
-				log.data.reason === "added" ? "joined" : "left"
-			} ${log.data.guild.name}`;
-		}
 		case "message": {
 			let userType: string;
 			if (log.data.author) userType = log.data.author.bot ? "BOT" : "USER";
@@ -69,8 +64,6 @@ export function formatLogContent(log: ActionLog) {
 
 	// slash command interaction
 	if (log.data.options) return `Parameters: ${JSON.stringify(log.data.options._hoistedOptions)}`;
-
-	if (log.type === "guildMemberUpdate") return "Not relevant";
 
 	return "Unknown";
 }
