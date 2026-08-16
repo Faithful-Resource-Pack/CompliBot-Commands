@@ -86,6 +86,8 @@ export async function tile(
 					);
 				}
 			}
+			// reset all the rotation stuff so shape cutouts don't break
+			ctx.resetTransform();
 			break;
 		}
 		// flipped and regular use same base code
