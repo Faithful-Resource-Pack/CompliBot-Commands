@@ -18,13 +18,11 @@ export default defineComponent<ButtonInteraction>({
 		const display = message.embeds[0].footer?.text.split(":")[1].trim();
 		const packs = parseDisplay(display);
 
-		const loadedImages: Image[][] = [];
-		for (const packSet of packs) {
-			loadedImages.push([]);
-			for (const pack of packSet) {
-				loadedImages.at(-1).push(await loadImage(formatPack(pack, 64).iconURL));
-			}
-		}
+		const loadedImages = await Promise.all(
+			packs.map((packSet) =>
+				Promise.all(packSet.map((pack) => loadImage(formatPack(pack, 64).iconURL))),
+			),
+		);
 
 		const stitched = await stitch(loadedImages);
 		const magnified = await magnifyToAttachment(stitched);
@@ -33,9 +31,6 @@ export default defineComponent<ButtonInteraction>({
 			.setTitle(interaction.strings().command.compare.comparison_template)
 			.setImage("attachment://magnified.png");
 
-		return interaction.editReply({
-			embeds: [embed],
-			files: [magnified],
-		});
+		return interaction.editReply({ embeds: [embed], files: [magnified] });
 	},
 });
