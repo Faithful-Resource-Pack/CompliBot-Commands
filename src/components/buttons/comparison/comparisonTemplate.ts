@@ -24,7 +24,8 @@ export default defineComponent<ButtonInteraction>({
 			),
 		);
 
-		const stitched = await stitch(loadedImages);
+		// gaps are size of one 16x "pixel" always
+		const stitched = await stitch(loadedImages, 32);
 		const magnified = await magnifyToAttachment(stitched);
 
 		const embed = new EmbedBuilder()
