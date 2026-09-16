@@ -33,6 +33,9 @@
             "not_enough_arguments": "Not enough information was provided!",
             "need_more_info": "You need to have either a description or title for an embed."
         },
+        "compare": {
+            "comparison_template": "Comparison template"
+        },
         "stats": {
             "not_found": "The command `%COMMAND%` doesn't exist!"
         },

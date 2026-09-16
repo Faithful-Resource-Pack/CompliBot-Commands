@@ -30,8 +30,8 @@ export default defineComponent<ButtonInteraction>({
 		const magnified = await magnifyToAttachment(stitched);
 
 		const embed = new EmbedBuilder()
-			.setImage("attachment://magnified.png")
-			.setTitle(`Comparison Template`);
+			.setTitle(interaction.strings().command.compare.comparison_template)
+			.setImage("attachment://magnified.png");
 
 		return interaction.editReply({
 			embeds: [embed],

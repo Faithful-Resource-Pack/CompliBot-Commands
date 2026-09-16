@@ -2,6 +2,8 @@ import commands from "@lang/en-US/commands.json";
 import errors from "@lang/en-US/errors.json";
 import { mergeDeep } from "@utility/methods";
 import { AnyInteraction } from "@interfaces/interactions";
+import { readFileSync } from "fs";
+import { join } from "path";
 
 export const JSONFiles = ["commands", "errors"];
 export const baseTranslations = { ...commands, ...errors };
@@ -20,8 +22,10 @@ export function strings(this: AnyInteraction, forceEnglish = false): AllStrings 
 	return JSONFiles.reduce((acc, json) => {
 		let out: AllStrings;
 		try {
-			// prevent errors if language isn't done
-			out = mergeDeep({}, acc, require(`@lang/${this.locale}/${json}.json`));
+			const path = join(process.cwd(), "lang", this.locale, `${json}.json`);
+			const cur = JSON.parse(readFileSync(path, { encoding: "utf8" }));
+			// fallback to english if no translation provided
+			out = mergeDeep({}, acc, cur);
 		} catch {
 			out = acc;
 		}

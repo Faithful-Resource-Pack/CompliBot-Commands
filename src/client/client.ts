@@ -77,6 +77,9 @@ export interface FaithfulGuild {
 	member_log?: string;
 }
 
+// 10 minutes
+const MEMBER_LOG_UPDATE_INTERVAL = 600000;
+
 /**
  * Extend client class to add message component collections, tokens, and slash commands directly
  * @author Nick, Evorp, Juknum
@@ -119,19 +122,21 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 
 		// don't block on login
 		this.login(this.tokens.token)
+			.then(() =>
+				Promise.all([
+					this.loadSlashCommands(),
+					this.loadEvents(),
+					this.loadComponents(),
+
+					this.loadVersions(),
+					this.loadMemberLogs(),
+				]),
+			)
 			.catch((e: unknown) => {
 				// for showing different errors like missing privileged gateway intents
 				// this caused me so much pain >:(
 				console.log(`${err}${e}`);
 				process.exit(1);
-			})
-			.then(() => {
-				this.loadSlashCommands();
-				this.loadEvents();
-				this.loadComponents();
-
-				this.loadVersions();
-				this.loadMemberLogs();
 			});
 
 		// all error types
@@ -182,7 +187,7 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 	 * @author Nick
 	 */
 	public async deleteGlobalSlashCommands() {
-		console.log(`${success}deleting slash commands`);
+		console.log(`${info}Deleting slash commands...`);
 
 		const rest = new REST({ version: "10" }).setToken(this.tokens.token);
 		const commands = (await rest.get(Routes.applicationCommands(this.user.id))) as any[];
@@ -191,7 +196,7 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 				rest.delete(`${Routes.applicationCommands(this.user.id)}/${command.id}`),
 			),
 		);
-		console.log(`${success}Delete complete`);
+		console.log(`${success}Slash commands deleted`);
 	}
 
 	/**
@@ -199,12 +204,14 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 	 * @author Nick, Juknum
 	 */
 	public async loadSlashCommands() {
+		console.log(`${info}Loading slash commands...`);
+
 		const commandPaths = walkSync(paths.commands).filter((file) => file.endsWith(".ts"));
 
 		// run import/data loading concurrently since they don't block
 		const commands = await Promise.all(
 			commandPaths.map(async (file) => {
-				const command: SlashCommand = await import(file).then(({ default: cmd }) => cmd);
+				const command = await import(file).then<SlashCommand>(({ default: cmd }) => cmd);
 
 				// handle dynamic data (e.g. /missing)
 				const data = typeof command.data === "function" ? await command.data(this) : command.data;
@@ -256,9 +263,10 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 
 	/**
 	 * Load client events
+	 * - Use async so that walkSync doesn't block
 	 * @author Nick
 	 */
-	private loadEvents() {
+	private async loadEvents() {
 		if (this.tokens.maintenance)
 			return this.on("clientReady", () => {
 				this.user.setPresence({
@@ -269,21 +277,23 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 
 		if (this.verbose) console.log(`${info}Loading event handlers...`);
 		const events = walkSync(paths.events).filter((file) => file.endsWith(".ts"));
-		for (const file of events) {
-			const event: Event<keyof ClientEvents> = require(file).default;
-			// bind is just for adding ExtendedClient as the first argument always
-			this.on(event.name, event.execute.bind(null, this));
-		}
+		return Promise.all(
+			events.map(async (file) => {
+				const event = await import(file).then<Event<keyof ClientEvents>>(({ default: ev }) => ev);
+				// bind client as the first argument for all events
+				this.on(event.name, event.execute.bind(null, this));
+			}),
+		);
 	}
 
 	/**
 	 * Convenience method to load all components at once
 	 * @author Evorp
 	 */
-	private loadComponents() {
-		if (this.verbose) console.log(`${info}Loading Discord components...`);
+	private async loadComponents() {
+		if (this.verbose) console.log(`${info}Loading component handlers...`);
 		for (const [key, path] of Object.entries(paths.components))
-			this[key] = this.loadComponent(this[key], path);
+			this[key] = await this.loadComponent(this[key], path);
 	}
 
 	/**
@@ -292,12 +302,15 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 	 * @param collection collection to load into
 	 * @param path filepath to read and load component data from
 	 */
-	private loadComponent(collection: Collection<string, Component>, path: string) {
+	private async loadComponent(collection: Collection<string, Component>, path: string) {
 		const components = walkSync(path).filter((file) => file.endsWith(".ts"));
-		for (const file of components) {
-			const component: Component = require(file).default;
-			collection.set(component.id, component);
-		}
+
+		await Promise.all(
+			components.map(async (file) => {
+				const component = await import(file).then<Component>(({ default: comp }) => comp);
+				collection.set(component.id, component);
+			}),
+		);
 		return collection;
 	}
 
@@ -327,7 +340,7 @@ export class ExtendedClient<Ready extends boolean = boolean> extends Client<Read
 
 			// promise.all to make sure everything resolves
 			Promise.all(Object.values(guilds).map((guild) => updateMemberLog(this, guild)));
-		}, 600000);
+		}, MEMBER_LOG_UPDATE_INTERVAL);
 	}
 
 	/**
