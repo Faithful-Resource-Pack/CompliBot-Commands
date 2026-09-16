@@ -4,7 +4,7 @@ import { ButtonInteraction, EmbedBuilder } from "@client";
 import { magnifyToAttachment } from "@images/magnify";
 import { parseDisplay } from "@functions/compareTexture";
 import formatPack from "@utility/formatPack";
-import { Image, loadImage } from "@napi-rs/canvas";
+import { loadImage } from "@napi-rs/canvas";
 import stitch from "@helpers/images/stitch";
 import { MessageFlags } from "discord.js";
 
@@ -29,7 +29,17 @@ export default defineComponent<ButtonInteraction>({
 		const magnified = await magnifyToAttachment(stitched);
 
 		const embed = new EmbedBuilder()
-			.setTitle(interaction.strings().command.compare.comparison_template)
+			.setTitle(
+				interaction
+					.strings()
+					.command.compare.comparison_template.replace("%TEXTURE%", message.embeds[0].title),
+			)
+			.setDescription(
+				packs
+					.map((packSet) => `- ${packSet.map((pack) => formatPack(pack).name).join(" | ")}`)
+					.join("\n"),
+			)
+			.setFooter(message.embeds[0].footer)
 			.setImage("attachment://magnified.png");
 
 		return interaction.editReply({ embeds: [embed], files: [magnified] });
