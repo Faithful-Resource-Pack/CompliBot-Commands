@@ -23,11 +23,18 @@
             "unbannable": {
                 "title": "Tomuto uživateli nelze zakázat používání bota!",
                 "description": "Používání bota nemůžeš zakázat sám sobě, vývojáři ani nikomu s oprávněními správce."
+            },
+            "not_yet_banned": {
+                "title": "Tento uživatel nebyl zabanován botem!",
+                "description": "Uživatele můžete ze seznamu uživatelů zabanovaných botem odstranit pouze pokud již byli přidáni."
             }
         },
         "embed": {
             "not_enough_arguments": "Nebyl poskytnut dostatek informací!",
             "need_more_info": "Pro vložení je třeba definovat nadpis nebo popisek."
+        },
+        "compare": {
+            "comparison_template": "Referenční pack pro porovnání textury %TEXTURE%"
         },
         "stats": {
             "not_found": "Příkaz `%COMMAND%` neexistuje!"
