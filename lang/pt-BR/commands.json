@@ -1,7 +1,5 @@
 {
-    "translation_credits": [
-        "Shadow"
-    ],
+    "translation_credits": "Shadow",
     "command": {
         "animate": {
             "invalid_text": {

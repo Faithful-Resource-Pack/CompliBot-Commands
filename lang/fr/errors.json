@@ -1,7 +1,5 @@
 {
-    "translation_credits": [
-        "Endrouze"
-    ],
+    "translation_credits": "Endrouze",
     "error": {
         "placeholder": "Cette fonctionalité n'est pas encore disponible!",
         "botbanned": "Vous ne pouvez pas utiliser le bot car vous avez été banni du bot !",

@@ -1,7 +1,5 @@
 {
-    "translation_credits": [
-        "Pomi108"
-    ],
+    "translation_credits": "Pomi108",
     "error": {
         "placeholder": "Tato funkce zatím nebyla implementována!",
         "generic": "Akce se nezdařila",

@@ -1,7 +1,5 @@
 {
-    "translation_credits": [
-        "Banjoei :3"
-    ],
+    "translation_credits": "Banjoei :3",
     "error": {
         "placeholder": "¡Esta función aún no ha sido implementada!",
         "generic": "Acción Fallida",

@@ -1,7 +1,5 @@
 {
-    "translation_credits": [
-        "@mrcxlinux"
-    ],
+    "translation_credits": "@mrcxlinux",
     "error": {
         "placeholder": "Această funcție nu a fost încă implementată!",
         "generic": "Acțiune eșuată",

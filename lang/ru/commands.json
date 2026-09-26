@@ -1,7 +1,5 @@
 {
-    "translation_credits": [
-        "Kimjomelkin"
-    ],
+    "translation_credits": "Kimjomelkin",
     "command": {
         "animate": {
             "invalid_text": {

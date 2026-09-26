@@ -1,7 +1,5 @@
 {
-    "translation_credits": [
-        "jogurciQ"
-    ],
+    "translation_credits": "jogurciQ",
     "command": {
         "animate": {
             "invalid_text": {

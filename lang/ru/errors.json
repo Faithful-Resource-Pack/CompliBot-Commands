@@ -1,7 +1,5 @@
 {
-    "translation_credits": [
-        "Kimjomelkin"
-    ],
+    "translation_credits": "Kimjomelkin",
     "error": {
         "placeholder": "Эта функция ещё не была реализована!",
         "generic": "Ошибка выполнения",

@@ -1,7 +1,5 @@
 {
-    "translation_credits": [
-        "Banjoei :3"
-    ],
+    "translation_credits": "Banjoei :3",
     "command": {
         "animate": {
             "invalid_text": {

@@ -1,7 +1,5 @@
 {
-    "translation_credits": [
-        "DO NOT TRANSLATE THIS STRING! Instead, delete all the text in it and replace it with your name. This is how you will be credited for your translation."
-    ],
+    "translation_credits": "DO NOT TRANSLATE THIS STRING! Instead, delete all the text in it and replace it with your name. This is how you will be credited for your translation.",
     "error": {
         "placeholder": "This feature has not been implemented yet!",
         "generic": "Action Failed",
