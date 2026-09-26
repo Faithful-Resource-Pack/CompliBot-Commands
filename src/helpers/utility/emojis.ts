@@ -27,9 +27,6 @@ export const emojis = {
 	rotate: "942325479661256754",
 	question_mark: "1181025437560877087",
 	cycle: "918186640571256842",
-	// poll buttons
-	upvote: "918186701975859307",
-	downvote: "918186603007078420",
 } as const;
 
 /**

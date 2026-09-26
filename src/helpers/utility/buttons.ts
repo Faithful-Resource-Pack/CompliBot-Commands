@@ -45,20 +45,6 @@ export const deleteInteraction = new ButtonBuilder()
 	.setEmoji(emojis.delete)
 	.setCustomId("deleteInteraction");
 
-export const pollUpvote = new ButtonBuilder()
-	.setStyle(ButtonStyle.Success)
-	.setEmoji(emojis.upvote)
-	.setCustomId("pollVote__upvote");
-export const pollDownvote = new ButtonBuilder()
-	.setStyle(ButtonStyle.Danger)
-	.setEmoji(emojis.downvote)
-	.setCustomId("pollVote__downvote");
-
-export const pollDelete = new ButtonBuilder()
-	.setStyle(ButtonStyle.Danger)
-	.setEmoji(emojis.delete)
-	.setCustomId("pollDelete");
-
 export const magnifyButtons = new ActionRowBuilder<ButtonBuilder>().addComponents(tile, palette);
 
 export const imageButtons = new ActionRowBuilder<ButtonBuilder>().addComponents(
