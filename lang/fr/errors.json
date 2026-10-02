@@ -1,22 +1,45 @@
 {
-    "translation_credits": "Endrouze",
+    "translation_credits": "Endrouze, Moringouin",
     "error": {
         "placeholder": "Cette fonctionalité n'est pas encore disponible!",
+        "generic": "Échec de l'action",
         "botbanned": "Vous ne pouvez pas utiliser le bot car vous avez été banni du bot !",
         "message": {
-            "deleted": "Ce message a déjà été supprimé !"
+            "deleted": "Ce message a déjà été supprimé !",
+            "invalid": {
+                "title": "ID du message invalide !",
+                "description": "Assurez-vous que le message n'a pas été supprimé et qu'il puisse être retrouvé."
+            },
+            "no_author": "L'auteur·e de ce message n'a pas pu être trouvé·e !"
+        },
+        "texture": {
+            "no_results": {
+                "title": "Aucun résultat trouvé !",
+                "description": "Aucun résultat n'a été trouvé pour %TEXTURENAME%. Avez-vous fait une faute de frappe ?"
+            },
+            "no_image": {
+                "title": "Image introuvable !",
+                "description": "« %TEXTURENAME% » n'a pas été créé pour %PACK% dans la version %VERSION% encore ou est ignoré !"
+            }
+        },
+        "invalid_choice": {
+            "title": "Choix invalide !",
+            "description": "« %CHOICE% » n'est pas un mot-clé valide ! Avez-vous fait une faute de frappe ?"
+        },
+        "image": {
+            "too_big": "Cette image est trop grande !",
+            "too_long": "Cette image est trop longue !",
+            "max_size": "La taille maximale d'une image est de 1024x1024 px.",
+            "max_length": "La longueur maximale pour une feuille de tuiles est de 32 carreaux.",
+            "not_found": "Aucune image n'a été trouvée !",
+            "suggestion": "Assurez-vous d'avoir téléversé une image, d'avoir répondu à une image valide, d'avoir utilisé un URL d'image valide ou d'être dans le bon canal."
         },
         "command": "Un de mes développeurs a fait une erreur en faisant cette commande ! Ne vous inquiétez pas, l'erreur n'est pas de votre côté. Veuillez contacter <@360249987927638016> ou <@173336582265241601> si cela persiste.",
-        "not_found": "%THING% introuvable !",
-        "interaction": {
-            "reserved": "Cette interaction est réservée à %USER%!"
-        },
+        "polls_removed": "La fonctionnalité des sondages de CompliBot n'existe plus depuis qu'elle a été intégrée dans Discord.",
         "permission": {
-            "title": "Vous n'avez pas la permission pour faire cela!",
-            "description": "Seulement %TYPE%s peuvent utiliser cette commande."
-        },
-        "timeout": {
-            "no_type_given": "Le délai d'expiration donné ne spécifie pas quelle longueur il est!\nExemple: `30s`, `1 min`, `10 hours`, `1 day`, `1 week`, `1 month`, `1 year`"
+            "notice": "Vous n'avez pas la permission pour faire cela!",
+            "role_locked": "Seulement %TYPE% peut utiliser ceci.",
+            "user_locked": "Seulement %USER% peut utiliser ceci."
         }
     }
 }
