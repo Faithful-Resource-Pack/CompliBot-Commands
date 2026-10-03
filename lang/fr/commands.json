@@ -19,22 +19,29 @@
         },
         "botban": {
             "unbannable": {
-                "title": "Cet utilisateur ne peut pas être bot banni !",
+                "title": "Cet utilisateur ne peut pas être bot-banni !",
                 "description": "Vous ne pouvez pas bannir avec le bot vous-même, un développeur ou quelqu'un avec les permissions d'administrateur."
+            },
+            "not_yet_banned": {
+                "title": "Cet utilisateur n'est pas bot-banni !",
+                "description": "Vous ne pouvez supprimer un utilisateur de la liste bot-bannissement que s'il a déjà été ajouté."
             }
         },
         "embed": {
             "not_enough_arguments": "Pas assez d'informations ont été fournies !",
             "need_more_info": "Vous devez avoir une description ou un titre pour un embed."
         },
+        "compare": {
+            "comparison_template": "Pack de comparaison référence pour %TEXTURE%"
+        },
         "stats": {
-            "not_found": "La commande `%COMMAND%` n'existe pas!"
+            "not_found": "La commande `%COMMAND%` n'existe pas !"
         },
         "info": {
-            "title": "Bonjour, je suis CompliBot. J'ai été fait pour le serveur Discord \"Faithful\".",
-            "subtitle": "Et je pense que je me suis plutôt bien passé.",
+            "title": "Bonjour, je suis CompliBot. J'ai été fait pour le serveur Discord « Faithful ».",
+            "subtitle": "Et je pense que l'on m'a bien codé.",
             "features": {
-                "title": "Fonctions",
+                "title": "Fonctionnalités",
                 "description": "- Interaction de texture en temps réel à l'aide de `/texture`, `/compare`, et `/cycle`.\n- Vérifiez le progrès du pack de ressources avec `/missing` ou vérifiez vos contributions avec `/about`.\n- Utilitaires de manipulation d'images tels que `/magnify`, `/tile`, `/palette`, et `/animate`."
             },
             "developing": {
