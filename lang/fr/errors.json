@@ -1,7 +1,7 @@
 {
     "translation_credits": "Endrouze, Moringouin",
     "error": {
-        "placeholder": "Cette fonctionalité n'est pas encore disponible!",
+        "placeholder": "Cette fonctionnalité n'est pas encore disponible!",
         "generic": "Échec de l'action",
         "botbanned": "Vous ne pouvez pas utiliser le bot car vous avez été banni du bot !",
         "message": {
