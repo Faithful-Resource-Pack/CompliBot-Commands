@@ -10,7 +10,7 @@
                 "title": "ID du message invalide !",
                 "description": "Assurez-vous que le message n'a pas été supprimé et qu'il puisse être retrouvé."
             },
-            "no_author": "L'auteur·e de ce message n'a pas pu être trouvé·e !"
+            "no_author": "L'auteur de ce message n'a pas pu être trouvé !"
         },
         "texture": {
             "no_results": {
@@ -19,18 +19,18 @@
             },
             "no_image": {
                 "title": "Image introuvable !",
-                "description": "« %TEXTURENAME% » n'a pas été créé pour %PACK% dans la version %VERSION% encore ou est ignoré !"
+                "description": "`%TEXTURENAME%` n'a pas été créé pour %PACK% dans la version %VERSION% encore ou est ignoré !"
             }
         },
         "invalid_choice": {
             "title": "Choix invalide !",
-            "description": "« %CHOICE% » n'est pas un mot-clé valide ! Avez-vous fait une faute de frappe ?"
+            "description": "`%CHOICE%` n'est pas un mot-clé valide ! Avez-vous fait une faute de frappe ?"
         },
         "image": {
             "too_big": "Cette image est trop grande !",
             "too_long": "Cette image est trop longue !",
             "max_size": "La taille maximale d'une image est de 1024x1024 px.",
-            "max_length": "La longueur maximale pour une feuille de tuiles est de 32 carreaux.",
+            "max_length": "La longueur maximale pour une feuille de tuiles est de 32 tuiles.",
             "not_found": "Aucune image n'a été trouvée !",
             "suggestion": "Assurez-vous d'avoir téléversé une image, d'avoir répondu à une image valide, d'avoir utilisé un URL d'image valide ou d'être dans le bon canal."
         },
