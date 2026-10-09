@@ -140,7 +140,9 @@
         "entity/llama/llama_spit.png",
         "entity/phantom/phantom_eyes.png",
         "gui/sprites/widget/preedit.png.mcmeta",
-        "palettes/"
+        "gui/sprites/friends/background_light.png",
+        "gui/sprites/widget/loading.png",
+        "palettes/",
     ],
     "bedrock": [
         "_mers.tga",
