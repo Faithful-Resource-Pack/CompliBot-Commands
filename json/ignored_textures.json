@@ -142,7 +142,7 @@
         "gui/sprites/widget/preedit.png.mcmeta",
         "gui/sprites/friends/background_light.png",
         "gui/sprites/widget/loading.png",
-        "palettes/",
+        "palettes/"
     ],
     "bedrock": [
         "_mers.tga",
