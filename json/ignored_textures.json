@@ -142,6 +142,7 @@
         "gui/sprites/widget/preedit.png.mcmeta",
         "gui/sprites/friends/background_light.png",
         "gui/sprites/widget/loading.png",
+        "gui/sprites/friends/loading.png.mcmeta",
         "palettes/"
     ],
     "bedrock": [
