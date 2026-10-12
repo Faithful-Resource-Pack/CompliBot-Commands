@@ -95,11 +95,7 @@ export default defineCommand({
 
 		for (const response of responses) {
 			const packName = formatPack(pack).name;
-			// filter standard numbered and special versions
-			const missingInfo = /\d/g.test(response.data.version)
-				? `${toTitleCase(response.data.edition)} ${response.data.version}`
-				: toTitleCase(response.data.version);
-			const fieldTitle = `${packName} – ${missingInfo}`;
+			const fieldTitle = `${packName} for version \`${response.data.version}\``;
 
 			// modded messes with the percentage so we don't update VCs if it's enabled
 			if (updateChannels && !checkModded) updateProgressChannel(interaction.client, response.data);
@@ -129,10 +125,8 @@ export default defineCommand({
 				);
 
 			resultEmbed.addFields({
-				name: fieldTitle,
-				value: `${response.data.completion}% complete:\n> ${response.results.length} ${
-					response.results.length == 1 ? "texture" : "textures"
-				} missing of ${response.data.total} total.`,
+				name: fieldTitle + ` is ${response.data.completion}% complete!`,
+				value: `Missing ${response.results.length} of ${response.data.total} textures`,
 			});
 		}
 
