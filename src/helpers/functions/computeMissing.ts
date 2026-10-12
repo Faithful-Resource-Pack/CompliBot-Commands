@@ -15,27 +15,26 @@ import ignoredTextures from "@json/ignored_textures.json";
 // starting from process.cwd()
 export const BASE_REPOS_PATH = "repos";
 
-// the stuff that was computed
-export interface MissingData {
-	edition: MissingEdition;
-	pack: string;
-	version: string;
-	// only created if everything exists
-	completion?: number;
-	total?: number;
-}
-
-// files, context, etc
-export interface MissingResult {
-	data: MissingData;
-	results: string[];
-	diffFile?: Buffer;
-	nonvanillaFile?: Buffer;
-}
-
+// computing missing also performs validation so we need to return the correct data back
+export type MissingData = { edition: MinecraftEdition; version: string };
 export type MissingEdition = MinecraftEdition | "all";
 
-export type PackProgress = Record<string, Record<MinecraftEdition, string>>;
+interface MissingSuccess {
+	stats: {
+		missing: number;
+		total: number;
+		percentage: number;
+	};
+	files: {
+		diff: Buffer;
+		nonvanilla?: Buffer;
+	};
+}
+
+// safe typing so if there's an error the other properties don't get exposed
+type MissingBase = { data: MissingData };
+export type MissingResult<Success extends boolean> = MissingBase &
+	(Success extends true ? MissingSuccess : { error: string });
 
 /**
  * Compute missing results for a given pack and set of editions/versions
@@ -43,7 +42,7 @@ export type PackProgress = Record<string, Record<MinecraftEdition, string>>;
  * @param client Discord client
  * @param pack Pack to compute results for
  * @param edition Edition(s) to compute for
- * @param version Version to compute for
+ * @param rawVersion Version to compute for (may not actually be valid)
  * @param checkModded Whether to check modded textures
  * @param onProgress Callback to run when a step has finished executing
  * @returns Array of results for each edition
@@ -52,43 +51,44 @@ export default async function computeMissing(
 	client: Client,
 	pack: string,
 	edition: MissingEdition,
-	version: string,
+	rawVersion: string,
 	checkModded: boolean,
 	onProgress?: (step: string) => Promise<void>,
-): Promise<MissingResult[]> {
-	const onError = (err: unknown): MissingResult => {
-		let errMessage = (err as Error).message;
+): Promise<MissingResult<boolean>[]> {
+	// if something goes wrong return MissingResult-like data that can be handled by the caller
+	function onError(err: unknown, data: MissingData): MissingResult<false> {
+		let errMessage = (err as Error)?.message;
 		if (!errMessage) {
 			console.error(err);
 			errMessage = `An error occured when running /missing.\n\nInformation: ${err}`;
 		}
+		return { data, error: errMessage };
+	}
 
-		return {
-			results: [errMessage],
-			data: { edition, version, pack },
-		};
-	};
+	const versions = (
+		await axios.get<Record<MinecraftEdition, string[]>>(`${client.tokens.apiUrl}versions/raw`)
+	).data;
 
-	// always use latest bedrock version, easier to format
-	if (edition === "bedrock") version = "latest";
 	if (edition === "all") {
 		const editions = (
-			await axios.get<MinecraftEdition[]>(`${client.tokens.apiUrl}textures/editions`)
+			await axios.get<MinecraftEdition[]>(`${client.tokens.apiUrl}settings/editions`)
 		).data;
 
 		// since missing editions use independent git repos they can safely run in parallel
 		return Promise.all(
-			editions.map((edition) =>
-				computeMissingEdition(client, pack, edition, version, checkModded, onProgress).catch(
-					onError,
-				),
-			),
+			editions.map((edition) => {
+				const version = normalizeVersion(versions[edition], rawVersion);
+				return computeMissingEdition(client, pack, edition, version, checkModded, onProgress).catch(
+					(err: unknown) => onError(err, { edition, version }),
+				);
+			}),
 		);
 	}
 
+	const version = normalizeVersion(versions[edition], rawVersion);
 	return [
 		await computeMissingEdition(client, pack, edition, version, checkModded, onProgress).catch(
-			onError,
+			(err: unknown) => onError(err, { edition, version }),
 		),
 	];
 }
@@ -111,16 +111,12 @@ export async function computeMissingEdition(
 	version: string,
 	checkModded: boolean,
 	onProgress: (step: string) => Promise<void> = async () => {},
-): Promise<MissingResult> {
+): Promise<MissingResult<boolean>> {
 	const packs = (await axios.get<Record<string, Pack>>(`${client.tokens.apiUrl}packs/raw`)).data;
 	if (!packs[pack].github[edition])
-		throw new Error(`${formatPack(pack).name} doesn't support ${toTitleCase(edition)} Edition.`);
-
-	// need to fetch since client.versions doesn't filter by edition
-	const versions = (await axios.get<string[]>(`${client.tokens.apiUrl}versions/edition/${edition}`))
-		.data;
-
-	if (!versions.includes(version)) version = versions[0];
+		throw new Error(
+			`${formatPack(pack).name} doesn't currently support ${toTitleCase(edition)} Edition.`,
+		);
 
 	// same steps are reused for compared repos
 	const [defaultPath, requestPath] = await Promise.all([
@@ -131,16 +127,13 @@ export async function computeMissingEdition(
 	await onProgress("Searching for differences…");
 
 	// ignore modded textures if we aren't checking modded
-	const editionFilter = (
-		checkModded && edition === "java"
-			? ignoredTextures[edition]
-			: [...ignoredTextures.modded, ...ignoredTextures[edition]]
-	).map(normalize);
+	const editionFilter = ignoredTextures[edition];
+	if (checkModded && edition === "java") editionFilter.push(...ignoredTextures.modded);
 
+	// todo: make this async? this can totally be done in parallel
 	const defaultTextures = getAllFiles(defaultPath, editionFilter).map((f) =>
 		f.replace(defaultPath, ""),
 	);
-
 	const requestTextures = getAllFiles(requestPath, editionFilter).map((f) =>
 		f.replace(requestPath, ""),
 	);
@@ -170,19 +163,20 @@ export async function computeMissingEdition(
 		? Buffer.from(formatResults(nonvanillaTextures), "utf8")
 		: undefined;
 
-	const completion = 100 * (1 - diffResult.length / defaultTextures.length);
+	const percentage = 100 * (1 - diffResult.length / defaultTextures.length);
+
 	return {
-		data: {
-			pack,
-			edition,
-			version,
-			// cap to two decimals then shave off unnecessary zeros
-			completion: Number(completion.toFixed(2)),
+		data: { edition, version },
+		stats: {
+			missing: diffResult.length,
 			total: defaultTextures.length,
+			// cap to two decimals then shave off unnecessary zeros
+			percentage: Number(percentage.toFixed(2)),
 		},
-		results: diffResult,
-		diffFile: Buffer.from(formatResults(diffResult), "utf8"),
-		nonvanillaFile,
+		files: {
+			diff: Buffer.from(formatResults(diffResult), "utf8"),
+			nonvanilla: nonvanillaFile,
+		},
 	};
 }
 
@@ -192,31 +186,20 @@ export async function computeMissingEdition(
  * @param client client to get channel with
  * @param results results to format channel with
  */
-export async function updateProgressChannel(client: Client, results: MissingData) {
-	const allProgress = (
-		await axios
-			.get<PackProgress>(`${client.tokens.apiUrl}settings/discord.channels.pack_progress`)
-			// fix for "Error: socket hang up", I know it's stupid but it works somehow
-			.catch(() =>
-				axios.get<PackProgress>(
-					`https://api.faithfulpack.net/v2/settings/discord.channels.pack_progress`,
-				),
-			)
-	).data;
-
-	const packProgress = allProgress[results.pack];
-	if (!packProgress || !packProgress[results.edition]) return;
-
-	const channel = client.channels.cache.get(packProgress[results.edition]);
-	// channel doesn't exist or can't be fetched, return early
-	if (!channel) return;
+export async function updateProgressChannel(
+	client: Client,
+	packProgress: Record<MinecraftEdition, string>,
+	results: MissingResult<true>,
+) {
+	const channel = client.channels.cache.get(packProgress[results.data.edition]);
+	if (!packProgress || !packProgress[results.data.edition] || !channel) return;
 
 	// you can add different patterns depending on the channel type
 	switch (channel.type) {
 		case ChannelType.GuildVoice: {
 			const pattern = /[.\d+]+(?!.*[.\d+])/;
-			if (channel.name.match(pattern)?.[0] === results.completion?.toString()) break;
-			const updatedName = channel.name.replace(pattern, results.completion.toString());
+			if (channel.name.match(pattern)?.[0] === results.stats.percentage.toString()) break;
+			const updatedName = channel.name.replace(pattern, results.stats.percentage.toString());
 			channel.setName(updatedName).catch(console.error);
 			break;
 		}
@@ -235,16 +218,16 @@ export async function syncRepo(
 	onProgress?: (step: string) => Promise<void>,
 ) {
 	const githubInfo: PackGitHub = pack.github[edition];
-	const url = gitToURL(githubInfo);
+	const url = `https://github.com/${githubInfo.org}/${githubInfo.repo}.git`;
 	const cwd = join(process.cwd(), BASE_REPOS_PATH, githubInfo.repo);
 
 	if (!existsSync(cwd)) {
-		await onProgress?.(`Downloading \`${pack.name}\` (${edition}) pack…`);
+		await onProgress?.(`Downloading repository \`${githubInfo.org}/${githubInfo.repo}\`…`);
 		mkdirSync(cwd, { recursive: true });
 		await exec(`git clone ${url} .`, { cwd });
 	}
 
-	await onProgress?.(`Updating ${pack.name} with latest version of \`${version}\` known…`);
+	await onProgress?.(`Updating ${pack.name} to latest \`${version}\` commit…`);
 	await series(
 		["git stash", "git remote update", "git fetch", `git checkout ${version}`, `git pull`],
 		{ cwd },
@@ -272,7 +255,7 @@ export function getAllFiles(dir: string, filter: string[] = []): string[] {
 			ignoredTextures.allowed_extensions.some((ex) => file.endsWith(`.${ex}`)) &&
 			!filter.some((i) => file.includes(i))
 		)
-			fileList.push(normalize(file));
+			fileList.push(file);
 	});
 
 	return fileList;
@@ -293,9 +276,11 @@ export const formatResults = (results: string[]) =>
 		.replace(/^\/textures\//gm, "");
 
 /**
- * Get GitHub git URL from org and repo data
+ * Make sure that a user-provided version is valid
  * @author Evorp
- * @param github git information
- * @returns valid url
+ * @param available available versions for given edition
+ * @param candidate version user provided
+ * @returns valid version
  */
-export const gitToURL = ({ org, repo }: PackGitHub) => `https://github.com/${org}/${repo}.git`;
+export const normalizeVersion = (available: string[], candidate: string) =>
+	available.includes(candidate) ? candidate : available[0];

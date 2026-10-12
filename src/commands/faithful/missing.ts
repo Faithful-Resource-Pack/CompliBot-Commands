@@ -1,11 +1,10 @@
 import { defineCommand } from "@interfaces/interactions";
-import type { Pack } from "@interfaces/database";
+import type { MinecraftEdition, Pack } from "@interfaces/database";
 import { EmbedBuilder } from "@client";
 import { SlashCommandBuilder, AttachmentBuilder } from "discord.js";
 import computeMissing, { updateProgressChannel, MissingEdition } from "@functions/computeMissing";
 import axios from "axios";
 import formatPack from "@utility/formatPack";
-import { toTitleCase } from "@utility/methods";
 import addDeleteButton from "@utility/addDeleteButton";
 
 export default defineCommand({
@@ -57,19 +56,27 @@ export default defineCommand({
 	async execute(interaction) {
 		await interaction.deferReply();
 
-		const edition = interaction.options.getString("edition", true) as MissingEdition;
 		const pack = interaction.options.getString("pack", true);
-		const checkModded = interaction.options.getBoolean("modded", false) ?? false;
+		const edition = interaction.options.getString("edition", true) as MissingEdition;
 		const version = interaction.options.getString("version") ?? "latest";
+		const checkModded = interaction.options.getBoolean("modded", false) ?? false;
 
-		const loading = (
-			await axios.get<string>(`${interaction.client.tokens.apiUrl}settings/images.loading`)
-		).data;
+		const [loadingImage, progressData] = await Promise.all([
+			axios
+				.get<string>(`${interaction.client.tokens.apiUrl}settings/images.loading`)
+				.then((res) => res.data),
+			axios
+				// { pack: { edition: <channel id> } }
+				.get<Record<string, Record<MinecraftEdition, string>>>(
+					`${interaction.client.tokens.apiUrl}settings/discord.channels.pack_progress`,
+				)
+				.then((res) => res.data[pack]),
+		]);
 
 		const loadingEmbed = new EmbedBuilder()
 			.setTitle("Searching for missing textures…")
 			.setDescription("This can take some time, please wait…")
-			.setThumbnail(loading)
+			.setThumbnail(loadingImage)
 			.addFields({ name: "Steps", value: "\u200b" });
 
 		await interaction.editReply({ embeds: [loadingEmbed], components: addDeleteButton() });
@@ -81,7 +88,7 @@ export default defineCommand({
 			edition,
 			version,
 			checkModded,
-			// when in the computing function this function is called when a step is being executed
+			// update embed with new step after each call
 			async (step: string) => {
 				steps.push(step || "No step name provided…");
 				loadingEmbed.spliceFields(0, 1, { name: "Steps", value: steps.join("\n") });
@@ -89,47 +96,49 @@ export default defineCommand({
 			},
 		);
 
-		const files: AttachmentBuilder[] = [];
+		const packName = formatPack(pack).name;
 		const resultEmbed = new EmbedBuilder().setTimestamp();
-		const updateChannels = version === "latest";
+		const files: AttachmentBuilder[] = [];
 
-		for (const response of responses) {
-			const packName = formatPack(pack).name;
-			const fieldTitle = `${packName} for version \`${response.data.version}\``;
+		// including modded textures creates a separate less useful percentage
+		const doUpdateChannels = version === "latest" && !checkModded;
+		const channelUpdateProms: Promise<void>[] = [];
 
-			// modded messes with the percentage so we don't update VCs if it's enabled
-			if (updateChannels && !checkModded) updateProgressChannel(interaction.client, response.data);
+		for (const res of responses) {
+			const packInfo = `${packName} for version \`${res.data.version}\``;
 
-			// no repo found for the asked pack + edition
-			if (!response.diffFile) {
+			// error occurred but not the end of the world, show status and try next response
+			if ("error" in res) {
 				resultEmbed.addFields({
-					name: fieldTitle,
-					// error messages are stored in response.results[0] (stupid I know)
-					value: response.results[0],
+					name: `${packInfo} could not be computed!`,
+					value: `> ${res.error}`,
 				});
 				continue;
 			}
 
-			if (response.results.length)
-				files.push(
-					new AttachmentBuilder(response.diffFile, {
-						name: `missing-${pack.replace(/_/g, "-")}-${response.data.edition}.txt`,
-					}),
-				);
+			// non-blocking, await at end
+			if (doUpdateChannels)
+				channelUpdateProms.push(updateProgressChannel(interaction.client, progressData, res));
 
-			if (response.nonvanillaFile && interaction.options.getBoolean("nonvanilla", false))
-				files.push(
-					new AttachmentBuilder(response.nonvanillaFile, {
-						name: `nonvanilla-${pack.replace(/_/g, "-")}-${response.data.edition}.txt`,
-					}),
-				);
+			const slug = `${pack.replace(/_/g, "-")}-${res.data.edition}`;
 
+			if (res.stats.missing)
+				files.push(new AttachmentBuilder(res.files.diff, { name: `missing-${slug}.txt` }));
+
+			// the compute function takes so many args it's easier to always compute and check here lol
+			if (interaction.options.getBoolean("nonvanilla", false) && res.files.nonvanilla)
+				files.push(new AttachmentBuilder(res.files.nonvanilla, { name: `nonvanilla-${slug}.txt` }));
+
+			const { percentage, missing, total } = res.stats;
 			resultEmbed.addFields({
-				name: fieldTitle + ` is ${response.data.completion}% complete!`,
-				value: `Missing ${response.results.length} of ${response.data.total} textures`,
+				name: `${packInfo} is ${percentage}% complete!`,
+				value: `> Missing ${missing} of ${total} textures.`,
 			});
 		}
 
-		return interaction.editReply({ embeds: [resultEmbed], files }).catch(() => {});
+		return Promise.all([
+			interaction.editReply({ embeds: [resultEmbed], files }).catch(() => {}),
+			...channelUpdateProms,
+		]);
 	},
 });
