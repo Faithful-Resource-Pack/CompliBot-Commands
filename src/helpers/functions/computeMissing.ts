@@ -126,9 +126,9 @@ export async function computeMissingEdition(
 
 	await onProgress("Searching for differences…");
 
-	// ignore modded textures if we aren't checking modded
+	// add modded textures to ignore list if not checking modded
 	const editionFilter = ignoredTextures[edition];
-	if (checkModded && edition === "java") editionFilter.push(...ignoredTextures.modded);
+	if (!checkModded || edition !== "java") editionFilter.push(...ignoredTextures.modded);
 
 	// todo: make this async? this can totally be done in parallel
 	const defaultTextures = getAllFiles(defaultPath, editionFilter).map((f) =>
