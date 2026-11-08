@@ -1,6 +1,6 @@
 <img
   src="https://database.faithfulpack.net/images/branding/logos/transparent/hd/complibot_logo.png?w=256"
-  alt="CompliBot Logo"
+  alt="CompliBot Commands Logo"
   height="256"
   align="right"
 />
@@ -37,8 +37,8 @@ pnpm dev
 
 1. Log into the **[Discord Developer Portal](https://discord.com/developers/applications)**.
 2. Create an application, navigate to the **Bot** tab in its settings, and copy its token.
-3. Rename `tokens.json.example` in the `json/` folder to `tokens.json`.
-4. Paste your token after `token`. Additional information like API tokens and various testing modes can be enabled from there as well.
+3. Rename [`tokens.json.example`](json/tokens.example.json) in the [`json/`](json) folder to `tokens.json`.
+4. Paste your token after `"token": ` in the newly-created `tokens.json` file. Additional information like API tokens and various testing modes can be set from there as well.
 
 ## API Reference
 
