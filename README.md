@@ -4,6 +4,7 @@
   height="256"
   align="right"
 />
+
 <div align="center">
   <h1>CompliBot Commands</h1>
   <h3>The official bot for the Faithful Discord servers.</h3>
@@ -23,22 +24,22 @@
 
 ## Running
 
-```bash
-pnpm install
-```
-
-```bash
-pnpm dev
-```
-
-> [!WARNING]
-> While CompliBot is designed to be reasonably easy to fork and run your own instance of, we can't offer individual support for your specific use case.
-> *Your mileage may vary in terms of necessary code modifications!*
-
 1. Log into the **[Discord Developer Portal](https://discord.com/developers/applications)**.
 2. Create an application, navigate to the **Bot** tab in its settings, and copy its token.
 3. Rename [`tokens.json.example`](json/tokens.example.json) in the [`json/`](json) folder to `tokens.json`.
 4. Paste your token after `"token": ` in the newly-created `tokens.json` file. Additional information like API tokens and various testing modes can be set from there as well.
+
+From there, install the project dependencies by running:
+
+```bash
+pnpm install
+```
+
+To start the bot, run:
+
+```bash
+pnpm dev
+```
 
 ## API Reference
 
