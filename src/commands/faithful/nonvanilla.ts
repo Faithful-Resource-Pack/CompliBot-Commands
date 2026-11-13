@@ -82,8 +82,10 @@ export default defineCommand({
 
 			const { total, nonvanilla, nonvanillaPercentage } = res.stats;
 			resultEmbed.addFields({
-				name: `${packInfo} has ${nonvanillaPercentage}% nonvanilla textures!`,
-				value: `> ${nonvanilla} nonvanilla of ${total} textures.`,
+				name: `${packInfo} is ${nonvanillaPercentage}% nonvanilla!`,
+				value: nonvanilla
+					? `> ${nonvanilla} of ${total + nonvanilla} textures are extraneous and should be either ignored or removed.`
+					: `> No textures need to be ignored or removed.`,
 			});
 		}
 
