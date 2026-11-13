@@ -5,7 +5,7 @@ import { SlashCommandBuilder, AttachmentBuilder } from "discord.js";
 import computeMissing, { updateProgressChannel, MissingEdition } from "@functions/computeMissing";
 import axios from "axios";
 import formatPack from "@utility/formatPack";
-import addDeleteButton from "@utility/addDeleteButton";
+import progressEmbed from "@helpers/progressEmbed";
 
 export default defineCommand({
 	async data(client) {
@@ -61,39 +61,21 @@ export default defineCommand({
 		const version = interaction.options.getString("version") ?? "latest";
 		const checkModded = interaction.options.getBoolean("modded", false) ?? false;
 
-		const [loadingImage, progressData] = await Promise.all([
-			axios
-				.get<string>(`${interaction.client.tokens.apiUrl}settings/images.loading`)
-				.then((res) => res.data),
-			axios
-				// { pack: { edition: <channel id> } }
-				.get<Record<string, Record<MinecraftEdition, string>>>(
-					`${interaction.client.tokens.apiUrl}settings/discord.channels.pack_progress`,
-				)
-				.then((res) => res.data[pack]),
-		]);
+		const progressData = (
+			await axios.get<Record<MinecraftEdition, string>>(
+				`${interaction.client.tokens.apiUrl}settings/discord.channels.pack_progress.${pack}`,
+			)
+		).data;
 
-		const loadingEmbed = new EmbedBuilder()
-			.setTitle("Searching for missing textures…")
-			.setDescription("This can take some time, please wait…")
-			.setThumbnail(loadingImage)
-			.addFields({ name: "Steps", value: "\u200b" });
+		const onProgress = await progressEmbed(interaction, "Searching for missing textures…");
 
-		await interaction.editReply({ embeds: [loadingEmbed], components: addDeleteButton() });
-
-		const steps: string[] = [];
 		const responses = await computeMissing(
 			interaction.client,
 			pack,
 			edition,
 			version,
 			checkModded,
-			// update embed with new step after each call
-			async (step: string) => {
-				steps.push(step || "No step name provided…");
-				loadingEmbed.spliceFields(0, 1, { name: "Steps", value: steps.join("\n") });
-				await interaction.editReply({ embeds: [loadingEmbed] }).catch(() => {});
-			},
+			onProgress,
 		);
 
 		const packName = formatPack(pack).name;

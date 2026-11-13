@@ -1,4 +1,5 @@
 import type { MinecraftEdition, Pack, PackGitHub } from "@interfaces/database";
+import type { ProgressCallback } from "@helpers/progressEmbed";
 import formatPack from "@utility/formatPack";
 import { toTitleCase } from "@utility/methods";
 import { Client } from "@client";
@@ -53,7 +54,7 @@ export default async function computeMissing(
 	edition: MissingEdition,
 	rawVersion: string,
 	checkModded: boolean,
-	onProgress?: (step: string) => Promise<void>,
+	onProgress?: ProgressCallback,
 ): Promise<MissingResult<boolean>[]> {
 	// if something goes wrong return MissingResult-like data that can be handled by the caller
 	function onError(err: unknown, data: MissingData): MissingResult<false> {
@@ -110,7 +111,7 @@ export async function computeMissingEdition(
 	edition: MinecraftEdition,
 	version: string,
 	checkModded: boolean,
-	onProgress: (step: string) => Promise<void> = async () => {},
+	onProgress: ProgressCallback = async () => {},
 ): Promise<MissingResult<boolean>> {
 	const packs = (await axios.get<Record<string, Pack>>(`${client.tokens.apiUrl}packs/raw`)).data;
 	if (!packs[pack].github[edition])
@@ -215,7 +216,7 @@ export async function syncRepo(
 	pack: Pack,
 	edition: MinecraftEdition,
 	version: string,
-	onProgress?: (step: string) => Promise<void>,
+	onProgress?: ProgressCallback,
 ) {
 	const githubInfo: PackGitHub = pack.github[edition];
 	const url = `https://github.com/${githubInfo.org}/${githubInfo.repo}.git`;
@@ -227,7 +228,7 @@ export async function syncRepo(
 		await exec(`git clone ${url} .`, { cwd });
 	}
 
-	await onProgress?.(`Updating ${pack.name} to latest \`${version}\` commit…`);
+	await onProgress?.(`Updating ${pack.name} to latest commit on branch \`${version}\`…`);
 	await series(
 		["git stash", "git remote update", "git fetch", `git checkout ${version}`, `git pull`],
 		{ cwd },
