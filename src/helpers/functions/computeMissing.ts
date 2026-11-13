@@ -22,13 +22,15 @@ export type MissingEdition = MinecraftEdition | "all";
 
 interface MissingSuccess {
 	stats: {
-		missing: number;
 		total: number;
-		percentage: number;
+		missing: number;
+		missingPercentage: number;
+		nonvanilla: number;
+		nonvanillaPercentage: number;
 	};
 	files: {
-		diff: Buffer;
-		nonvanilla?: Buffer;
+		missing: Buffer;
+		nonvanilla: Buffer;
 	};
 }
 
@@ -143,8 +145,8 @@ export async function computeMissingEdition(
 	const check = new Set(requestTextures);
 
 	// get texture that aren't in the check object
-	const diffResult = defaultTextures.filter((path) => !check.has(path));
-	const nonvanillaTextures = requestTextures.filter((path) => {
+	const missingResult = defaultTextures.filter((path) => !check.has(path));
+	const nonvanillaResult = requestTextures.filter((path) => {
 		const normalizedPath = path.replace(/\\/g, "/");
 		const validDir =
 			normalizedPath.startsWith("/assets/minecraft/textures") ||
@@ -159,24 +161,22 @@ export async function computeMissingEdition(
 		);
 	});
 
-	// fix for returning an empty buffer which is still truthy
-	const nonvanillaFile = nonvanillaTextures.length
-		? Buffer.from(formatResults(nonvanillaTextures), "utf8")
-		: undefined;
-
-	const percentage = 100 * (1 - diffResult.length / defaultTextures.length);
+	const missingPercentage = 100 * (1 - missingResult.length / defaultTextures.length);
+	const nonvanillaPercentage = 100 * (nonvanillaResult.length / defaultTextures.length);
 
 	return {
 		data: { edition, version },
 		stats: {
-			missing: diffResult.length,
 			total: defaultTextures.length,
-			// cap to two decimals then shave off unnecessary zeros
-			percentage: Number(percentage.toFixed(2)),
+			missing: missingResult.length,
+			// technically it's the % complete, not missing
+			missingPercentage: Number(missingPercentage.toFixed(2)),
+			nonvanilla: nonvanillaResult.length,
+			nonvanillaPercentage: Number(nonvanillaPercentage.toFixed(2)),
 		},
 		files: {
-			diff: Buffer.from(formatResults(diffResult), "utf8"),
-			nonvanilla: nonvanillaFile,
+			missing: Buffer.from(formatResults(missingResult), "utf8"),
+			nonvanilla: Buffer.from(formatResults(nonvanillaResult), "utf8"),
 		},
 	};
 }
@@ -199,8 +199,8 @@ export async function updateProgressChannel(
 	switch (channel.type) {
 		case ChannelType.GuildVoice: {
 			const pattern = /[.\d+]+(?!.*[.\d+])/;
-			if (channel.name.match(pattern)?.[0] === results.stats.percentage.toString()) break;
-			const updatedName = channel.name.replace(pattern, results.stats.percentage.toString());
+			if (channel.name.match(pattern)?.[0] === results.stats.missingPercentage.toString()) break;
+			const updatedName = channel.name.replace(pattern, results.stats.missingPercentage.toString());
 			channel.setName(updatedName).catch(console.error);
 			break;
 		}

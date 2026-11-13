@@ -45,12 +45,6 @@ export default defineCommand({
 					.setName("modded")
 					.setDescription("Also scan modded textures (e.g. Forge, Fabric).")
 					.setRequired(false),
-			)
-			.addBooleanOption((option) =>
-				option
-					.setName("nonvanilla")
-					.setDescription("Show nonvanilla textures in addition to the missing list.")
-					.setRequired(false),
 			);
 	},
 	async execute(interaction) {
@@ -103,17 +97,12 @@ export default defineCommand({
 				channelUpdateProms.push(updateProgressChannel(interaction.client, progressData, res));
 
 			const slug = `${pack.replace(/_/g, "-")}-${res.data.edition}`;
-
 			if (res.stats.missing)
-				files.push(new AttachmentBuilder(res.files.diff, { name: `missing-${slug}.txt` }));
+				files.push(new AttachmentBuilder(res.files.missing, { name: `missing-${slug}.txt` }));
 
-			// the compute function takes so many args it's easier to always compute and check here lol
-			if (interaction.options.getBoolean("nonvanilla", false) && res.files.nonvanilla)
-				files.push(new AttachmentBuilder(res.files.nonvanilla, { name: `nonvanilla-${slug}.txt` }));
-
-			const { percentage, missing, total } = res.stats;
+			const { total, missing, missingPercentage } = res.stats;
 			resultEmbed.addFields({
-				name: `${packInfo} is ${percentage}% complete!`,
+				name: `${packInfo} is ${missingPercentage}% complete!`,
 				value: `> Missing ${missing} of ${total} textures.`,
 			});
 		}
