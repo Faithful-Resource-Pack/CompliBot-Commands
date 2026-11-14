@@ -39,6 +39,11 @@ type MissingBase = { data: MissingData };
 export type MissingResult<Success extends boolean> = MissingBase &
 	(Success extends true ? MissingSuccess : { error: string });
 
+export interface ExtraChecks {
+	modded?: boolean;
+	mers?: boolean;
+}
+
 /**
  * Compute missing results for a given pack and set of editions/versions
  * @author Evorp
@@ -55,7 +60,7 @@ export default async function computeMissing(
 	pack: string,
 	edition: MissingEdition,
 	rawVersion: string,
-	checkModded: boolean,
+	checks: ExtraChecks,
 	onProgress?: ProgressCallback,
 ): Promise<MissingResult<boolean>[]> {
 	// if something goes wrong return MissingResult-like data that can be handled by the caller
@@ -81,7 +86,7 @@ export default async function computeMissing(
 		return Promise.all(
 			editions.map((edition) => {
 				const version = normalizeVersion(versions[edition], rawVersion);
-				return computeMissingEdition(client, pack, edition, version, checkModded, onProgress).catch(
+				return computeMissingEdition(client, pack, edition, version, checks, onProgress).catch(
 					(err: unknown) => onError(err, { edition, version }),
 				);
 			}),
@@ -90,7 +95,7 @@ export default async function computeMissing(
 
 	const version = normalizeVersion(versions[edition], rawVersion);
 	return [
-		await computeMissingEdition(client, pack, edition, version, checkModded, onProgress).catch(
+		await computeMissingEdition(client, pack, edition, version, checks, onProgress).catch(
 			(err: unknown) => onError(err, { edition, version }),
 		),
 	];
@@ -112,7 +117,7 @@ export async function computeMissingEdition(
 	pack: string,
 	edition: MinecraftEdition,
 	version: string,
-	checkModded: boolean,
+	checks: ExtraChecks = { modded: false, mers: false },
 	onProgress: ProgressCallback = async () => {},
 ): Promise<MissingResult<boolean>> {
 	const packs = (await axios.get<Record<string, Pack>>(`${client.tokens.apiUrl}packs/raw`)).data;
@@ -131,7 +136,8 @@ export async function computeMissingEdition(
 
 	// add modded textures to ignore list if not checking modded
 	const editionFilter = ignoredTextures[edition];
-	if (!checkModded || edition !== "java") editionFilter.push(...ignoredTextures.modded);
+	if (!checks.modded) editionFilter.push(...ignoredTextures.modded);
+	if (!checks.mers) editionFilter.push(...ignoredTextures.mers);
 
 	// todo: make this async? this can totally be done in parallel
 	const defaultTextures = getAllFiles(defaultPath, editionFilter).map((f) =>

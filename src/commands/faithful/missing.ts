@@ -14,7 +14,7 @@ export default defineCommand({
 			.then((res) => res.data);
 		return new SlashCommandBuilder()
 			.setName("missing")
-			.setDescription("Displays the missing textures for a particular resource pack")
+			.setDescription("Displays missing textures for a particular resource pack and version.")
 			.addStringOption((option) =>
 				option
 					.setName("pack")
@@ -43,7 +43,13 @@ export default defineCommand({
 			.addBooleanOption((option) =>
 				option
 					.setName("modded")
-					.setDescription("Also scan modded textures (e.g. Forge, Fabric).")
+					.setDescription("Also scan modded textures, for Fabric, Forge, and Mod Menu support.")
+					.setRequired(false),
+			)
+			.addBooleanOption((option) =>
+				option
+					.setName("mers")
+					.setDescription("Also scan Bedrock MERS textures, for Vibrant Visuals support.")
 					.setRequired(false),
 			);
 	},
@@ -54,6 +60,7 @@ export default defineCommand({
 		const edition = interaction.options.getString("edition", true) as MissingEdition;
 		const version = interaction.options.getString("version") ?? "latest";
 		const checkModded = interaction.options.getBoolean("modded", false) ?? false;
+		const checkMers = interaction.options.getBoolean("mers", false) ?? false;
 
 		const progressData = (
 			await axios.get<Record<MinecraftEdition, string>>(
@@ -68,7 +75,7 @@ export default defineCommand({
 			pack,
 			edition,
 			version,
-			checkModded,
+			{ modded: checkModded, mers: checkMers },
 			onProgress,
 		);
 
@@ -76,8 +83,8 @@ export default defineCommand({
 		const resultEmbed = new EmbedBuilder().setTimestamp();
 		const files: AttachmentBuilder[] = [];
 
-		// including modded textures creates a separate less useful percentage
-		const doUpdateChannels = version === "latest" && !checkModded;
+		// including modded/mers textures creates a separate less useful percentage
+		const doUpdateChannels = version === "latest" && !checkModded && !checkMers;
 		const channelUpdateProms: Promise<void>[] = [];
 
 		for (const res of responses) {

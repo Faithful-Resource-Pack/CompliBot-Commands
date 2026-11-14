@@ -7,6 +7,7 @@
         "assets/fml/",
         "assets/modmenu/"
     ],
+    "mers": ["_mers.tga"],
     "java": [
         "environment/end_sky.png",
         "gui/title/mojangstudios.png",
@@ -146,7 +147,6 @@
         "palettes/"
     ],
     "bedrock": [
-        "_mers.tga",
         "font/",
         "colormap/",
         "items/egg_",

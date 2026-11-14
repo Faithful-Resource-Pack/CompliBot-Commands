@@ -14,7 +14,7 @@ export default defineCommand({
 			.then((res) => res.data);
 		return new SlashCommandBuilder()
 			.setName("nonvanilla")
-			.setDescription("Displays the nonvanilla textures in a particular resource pack")
+			.setDescription("Displays nonvanilla textures for a particular resource pack and version.")
 			.addStringOption((option) =>
 				option
 					.setName("pack")
@@ -56,7 +56,7 @@ export default defineCommand({
 			pack,
 			edition,
 			version,
-			false,
+			{ modded: false, mers: false },
 			onProgress,
 		);
 
