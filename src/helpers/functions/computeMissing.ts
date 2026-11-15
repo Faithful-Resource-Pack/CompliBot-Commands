@@ -6,7 +6,8 @@ import { Client } from "@client";
 
 import { exec, series } from "@helpers/exec";
 import walkSync from "@helpers/walkSync";
-import { existsSync, mkdirSync } from "fs";
+import { existsSync } from "fs";
+import { mkdir } from "fs/promises";
 import { join } from "path";
 
 import { ChannelType } from "discord.js";
@@ -74,9 +75,13 @@ export default async function computeMissing(
 		return { data, error: errMessage };
 	}
 
-	const versions = (
-		await axios.get<Record<MinecraftEdition, string[]>>(`${client.tokens.apiUrl}versions/raw`)
-	).data;
+	// cache packs so we don't need to fetch twice for multiple editions
+	const [packs, versions] = await Promise.all([
+		axios.get<Record<string, Pack>>(`${client.tokens.apiUrl}packs/raw`).then((res) => res.data),
+		axios
+			.get<Record<MinecraftEdition, string[]>>(`${client.tokens.apiUrl}versions/raw`)
+			.then((res) => res.data),
+	]);
 
 	if (edition === "all") {
 		const editions = (
@@ -87,7 +92,7 @@ export default async function computeMissing(
 		return Promise.all(
 			editions.map((edition) => {
 				const version = normalizeVersion(versions[edition], rawVersion);
-				return computeMissingEdition(client, pack, edition, version, checks, onProgress).catch(
+				return computeMissingEdition(packs, pack, edition, version, checks, onProgress).catch(
 					(err: unknown) => onError(err, { edition, version }),
 				);
 			}),
@@ -96,7 +101,7 @@ export default async function computeMissing(
 
 	const version = normalizeVersion(versions[edition], rawVersion);
 	return [
-		await computeMissingEdition(client, pack, edition, version, checks, onProgress).catch(
+		await computeMissingEdition(packs, pack, edition, version, checks, onProgress).catch(
 			(err: unknown) => onError(err, { edition, version }),
 		),
 	];
@@ -105,7 +110,7 @@ export default async function computeMissing(
 /**
  * Compute missing results for a given pack, edition, and version
  * @author Juknum, Evorp
- * @param client Discord client
+ * @param packs Existing packs
  * @param pack Pack to compute results for
  * @param edition Edition to compute for
  * @param version Version to compute for
@@ -114,14 +119,13 @@ export default async function computeMissing(
  * @returns A result object for the given edition
  */
 export async function computeMissingEdition(
-	client: Client,
+	packs: Record<string, Pack>,
 	pack: string,
 	edition: MinecraftEdition,
 	version: string,
 	checks: ExtraChecks = { modded: false, mers: false },
 	onProgress: ProgressCallback = async () => {},
 ): Promise<MissingResult<boolean>> {
-	const packs = (await axios.get<Record<string, Pack>>(`${client.tokens.apiUrl}packs/raw`)).data;
 	if (!packs[pack].github[edition])
 		throw new Error(
 			`${formatPack(pack).name} doesn't currently support ${toTitleCase(edition)} Edition.`,
@@ -129,8 +133,8 @@ export async function computeMissingEdition(
 
 	// same steps are reused for compared repos
 	const [defaultPath, requestPath] = await Promise.all([
-		syncRepo(packs.default, edition, version, onProgress),
-		syncRepo(packs[pack], edition, version, onProgress),
+		syncRepo(packs.default.github[edition], version, onProgress),
+		syncRepo(packs[pack].github[edition], version, onProgress),
 	]);
 
 	await onProgress("Searching for differences…");
@@ -215,22 +219,20 @@ export async function updateProgressChannel(
  * @returns Cloned path
  */
 export async function syncRepo(
-	pack: Pack,
-	edition: MinecraftEdition,
+	githubInfo: PackGitHub,
 	version: string,
 	onProgress?: ProgressCallback,
 ) {
-	const githubInfo: PackGitHub = pack.github[edition];
 	const url = `https://github.com/${githubInfo.org}/${githubInfo.repo}.git`;
 	const cwd = join(process.cwd(), BASE_REPOS_PATH, githubInfo.repo);
 
 	if (!existsSync(cwd)) {
-		await onProgress?.(`Downloading repository \`${githubInfo.org}/${githubInfo.repo}\`…`);
-		mkdirSync(cwd, { recursive: true });
+		await onProgress?.(`Downloading ${githubInfo.repo}…`);
+		await mkdir(cwd, { recursive: true });
 		await exec(`git clone ${url} .`, { cwd });
 	}
 
-	await onProgress?.(`Updating ${pack.name} to latest commit on branch \`${version}\`…`);
+	await onProgress?.(`Updating ${githubInfo.repo} to latest commit on branch \`${version}\`…`);
 	await series(
 		["git stash", "git remote update", "git fetch", `git checkout ${version}`, `git pull`],
 		{ cwd },
