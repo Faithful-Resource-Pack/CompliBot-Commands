@@ -6,6 +6,6 @@ export default defineEvent({
 	name: "clientReady",
 	async execute(client) {
 		console.log(`${success}${client.user.username} is online!`);
-		client.user.setActivity(`commands`, { type: ActivityType.Listening });
+		client.user.setActivity({ name: "/info", type: ActivityType.Listening });
 	},
 });

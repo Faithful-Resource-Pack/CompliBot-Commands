@@ -207,23 +207,26 @@ export async function updateProgressChannel(client: Client, channelID: string, p
 /**
  * Update or create a GitHub repository
  * @author Evorp, Juknum
+ * @param packGitHub org and repo data to download
+ * @param version branch to check out
+ * @param onProgress progress callback
  * @returns Cloned path
  */
 export async function syncRepo(
-	githubInfo: PackGitHub,
+	packGitHub: PackGitHub,
 	version: string,
 	onProgress?: ProgressCallback,
 ) {
-	const url = `https://github.com/${githubInfo.org}/${githubInfo.repo}.git`;
-	const cwd = join(process.cwd(), BASE_REPOS_PATH, githubInfo.repo);
+	const url = `https://github.com/${packGitHub.org}/${packGitHub.repo}.git`;
+	const cwd = join(process.cwd(), BASE_REPOS_PATH, packGitHub.repo);
 
 	if (!existsSync(cwd)) {
-		await onProgress?.(`Downloading ${githubInfo.repo}…`);
+		await onProgress?.(`Downloading ${packGitHub.repo}…`);
 		await mkdir(cwd, { recursive: true });
 		await exec(`git clone ${url} .`, { cwd });
 	}
 
-	await onProgress?.(`Updating ${githubInfo.repo} to latest commit on branch \`${version}\`…`);
+	await onProgress?.(`Updating ${packGitHub.repo} to latest commit on branch \`${version}\`…`);
 	await series(
 		["git stash", "git remote update", "git fetch", `git checkout ${version}`, `git pull`],
 		{ cwd },
