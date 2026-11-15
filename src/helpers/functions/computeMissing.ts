@@ -5,8 +5,9 @@ import { toTitleCase } from "@utility/methods";
 import { Client } from "@client";
 
 import { exec, series } from "@helpers/exec";
-import { existsSync, mkdirSync, readdirSync, statSync } from "fs";
-import { join, normalize } from "path";
+import walkSync from "@helpers/walkSync";
+import { existsSync, mkdirSync } from "fs";
+import { join } from "path";
 
 import { ChannelType } from "discord.js";
 import axios from "axios";
@@ -139,13 +140,8 @@ export async function computeMissingEdition(
 	if (!checks.modded) editionFilter.push(...ignoredTextures.modded);
 	if (!checks.mers) editionFilter.push(...ignoredTextures.mers);
 
-	// todo: make this async? this can totally be done in parallel
-	const defaultTextures = getAllFiles(defaultPath, editionFilter).map((f) =>
-		f.replace(defaultPath, ""),
-	);
-	const requestTextures = getAllFiles(requestPath, editionFilter).map((f) =>
-		f.replace(requestPath, ""),
-	);
+	const defaultTextures = walkRepo(defaultPath, editionFilter);
+	const requestTextures = walkRepo(requestPath, editionFilter);
 
 	// https://dev.to/arnaud/using-array-prototype-includes-vs-set-prototype-has-to-filter-arrays-41fg
 	const check = new Set(requestTextures);
@@ -244,29 +240,21 @@ export async function syncRepo(
 }
 
 /**
- * Recursively get all files from a directory with a given filter
- * @author Evorp, Juknum
- * @param dir directory used for recursion
- * @param filter stuff to disallow
- * @returns array of all paths in the directory
+ * Get all non-git files in a repository with an exclusion list
+ * @author Evorp
+ * @param dir directory to search
+ * @param filter array of patterns to exclude
+ * @returns array of relative file paths
  */
-export function getAllFiles(dir: string, filter: string[] = []): string[] {
-	const fileList: string[] = [];
-	readdirSync(dir).forEach((file) => {
-		file = normalize(join(dir, file));
-		const stat = statSync(file);
-
-		if (file.includes(".git")) return;
-		if (stat.isDirectory()) return fileList.push(...getAllFiles(file, filter));
-		if (
-			ignoredTextures.allowed_extensions.some((ex) => file.endsWith(`.${ex}`)) &&
-			!filter.some((i) => file.includes(i))
+export const walkRepo = (dir: string, filter: string[] = []): string[] =>
+	walkSync(dir)
+		.filter(
+			(file) =>
+				ignoredTextures.allowed_extensions.some((ex) => file.endsWith(`.${ex}`)) &&
+				!filter.some((i) => file.includes(i)),
 		)
-			fileList.push(file);
-	});
-
-	return fileList;
-}
+		// returning relative paths is considerably more useful
+		.map((file) => file.replace(dir, ""));
 
 /**
  * Format an array of texture paths into a more human-readable format

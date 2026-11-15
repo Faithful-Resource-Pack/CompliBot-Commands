@@ -1,5 +1,5 @@
 import { dev } from "@json/tokens.json";
-import { SpawnOptions, spawn } from "child_process";
+import { spawn, type SpawnOptions } from "child_process";
 
 /**
  * spawn a child process and execute shell command
