@@ -2,7 +2,11 @@ import { defineCommand } from "@interfaces/interactions";
 import type { MinecraftEdition, Pack } from "@interfaces/database";
 import { EmbedBuilder } from "@client";
 import { SlashCommandBuilder, AttachmentBuilder } from "discord.js";
-import computeMissing, { updateProgressChannel, MissingEdition } from "@functions/computeMissing";
+import computeMissing, {
+	updateProgressChannel,
+	MissingEdition,
+	formatPercentage,
+} from "@functions/computeMissing";
 import axios from "axios";
 import formatPack from "@utility/formatPack";
 import progressEmbed from "@helpers/progressEmbed";
@@ -99,19 +103,22 @@ export default defineCommand({
 				continue;
 			}
 
-			// non-blocking, await at end
-			if (doUpdateChannels)
-				channelUpdateProms.push(updateProgressChannel(interaction.client, progressData, res));
-
 			const slug = `${pack.replace(/_/g, "-")}-${res.data.edition}`;
 			if (res.stats.missing)
 				files.push(new AttachmentBuilder(res.files.missing, { name: `missing-${slug}.txt` }));
 
-			const { total, missing, missingPercentage } = res.stats;
+			const { total, missing } = res.stats;
+			const percentage = formatPercentage(1 - missing, total);
 			resultEmbed.addFields({
-				name: `${packInfo} is ${missingPercentage}% complete!`,
+				name: `${packInfo} is ${percentage}% complete!`,
 				value: `> Missing ${missing} of ${total} textures.`,
 			});
+
+			// non-blocking, await at end
+			if (doUpdateChannels && progressData[res.data.edition])
+				channelUpdateProms.push(
+					updateProgressChannel(interaction.client, progressData[res.data.edition], percentage),
+				);
 		}
 
 		return Promise.all([

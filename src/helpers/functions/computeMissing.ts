@@ -26,9 +26,7 @@ interface MissingSuccess {
 	stats: {
 		total: number;
 		missing: number;
-		missingPercentage: number;
 		nonvanilla: number;
-		nonvanillaPercentage: number;
 	};
 	files: {
 		missing: Buffer;
@@ -167,18 +165,12 @@ export async function computeMissingEdition(
 		);
 	});
 
-	const missingPercentage = 100 * (1 - missingResult.length / defaultTextures.length);
-	const nonvanillaPercentage = 100 * (nonvanillaResult.length / defaultTextures.length);
-
 	return {
 		data: { edition, version },
 		stats: {
 			total: defaultTextures.length,
 			missing: missingResult.length,
-			// technically it's the % complete, not missing
-			missingPercentage: Number(missingPercentage.toFixed(2)),
 			nonvanilla: nonvanillaResult.length,
-			nonvanillaPercentage: Number(nonvanillaPercentage.toFixed(2)),
 		},
 		files: {
 			missing: Buffer.from(formatResults(missingResult), "utf8"),
@@ -191,22 +183,21 @@ export async function computeMissingEdition(
  * Updates a progress channel with computed data
  * @author Evorp
  * @param client client to get channel with
- * @param results results to format channel with
+ * @param channelID progress channel to update
+ * @param percentage new percentage
  */
-export async function updateProgressChannel(
-	client: Client,
-	packProgress: Record<MinecraftEdition, string>,
-	results: MissingResult<true>,
-) {
-	const channel = client.channels.cache.get(packProgress[results.data.edition]);
-	if (!packProgress || !packProgress[results.data.edition] || !channel) return;
+export async function updateProgressChannel(client: Client, channelID: string, percentage: number) {
+	const channel = client.channels.cache.get(channelID);
+
+	// bot isn't in server or something, it's fine
+	if (!channel) return;
 
 	// you can add different patterns depending on the channel type
 	switch (channel.type) {
 		case ChannelType.GuildVoice: {
 			const pattern = /[.\d+]+(?!.*[.\d+])/;
-			if (channel.name.match(pattern)?.[0] === results.stats.missingPercentage.toString()) break;
-			const updatedName = channel.name.replace(pattern, results.stats.missingPercentage.toString());
+			if (channel.name.match(pattern)?.[0] === percentage.toString()) break;
+			const updatedName = channel.name.replace(pattern, percentage.toString());
 			channel.setName(updatedName).catch(console.error);
 			break;
 		}
@@ -271,6 +262,17 @@ export const formatResults = (results: string[]) =>
 		.replace(/\/assets\/minecraft/g, "")
 		// only match at start of line so realms/optifine aren't affected
 		.replace(/^\/textures\//gm, "");
+
+/**
+ * Format a completion ratio to a percentage
+ * @author Evorp
+ * @param done How much is done
+ * @param total Total results
+ * @param round Decimal digits to round to
+ * @returns Formatted percentage
+ */
+export const formatPercentage = (done: number, total: number, round = 2) =>
+	Number((100 * (done / total)).toFixed(round));
 
 /**
  * Make sure that a user-provided version is valid

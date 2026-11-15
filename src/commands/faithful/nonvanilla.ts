@@ -2,7 +2,7 @@ import { defineCommand } from "@interfaces/interactions";
 import type { Pack } from "@interfaces/database";
 import { EmbedBuilder } from "@client";
 import { SlashCommandBuilder, AttachmentBuilder } from "discord.js";
-import computeMissing, { MissingEdition } from "@functions/computeMissing";
+import computeMissing, { formatPercentage, MissingEdition } from "@functions/computeMissing";
 import axios from "axios";
 import formatPack from "@utility/formatPack";
 import progressEmbed from "@helpers/progressEmbed";
@@ -80,9 +80,10 @@ export default defineCommand({
 			if (res.stats.nonvanilla)
 				files.push(new AttachmentBuilder(res.files.nonvanilla, { name: `nonvanilla-${slug}.txt` }));
 
-			const { total, nonvanilla, nonvanillaPercentage } = res.stats;
+			const { total, nonvanilla } = res.stats;
+			const percentage = formatPercentage(nonvanilla, total);
 			resultEmbed.addFields({
-				name: `${packInfo} is ${nonvanillaPercentage}% nonvanilla!`,
+				name: `${packInfo} is ${percentage}% nonvanilla!`,
 				value: nonvanilla
 					? `> ${nonvanilla} of ${total + nonvanilla} textures are extraneous and should be either ignored or removed.`
 					: `> No textures need to be ignored or removed.`,
