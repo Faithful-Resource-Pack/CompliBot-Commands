@@ -108,7 +108,7 @@ export default defineCommand({
 				files.push(new AttachmentBuilder(res.files.missing, { name: `missing-${slug}.txt` }));
 
 			const { total, missing } = res.stats;
-			const percentage = formatPercentage(1 - missing, total);
+			const percentage = formatPercentage(total - missing, total);
 			resultEmbed.addFields({
 				name: `${packInfo} is ${percentage}% complete!`,
 				value: `> Missing ${missing} of ${total} textures.`,
